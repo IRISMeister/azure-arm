@@ -1,8 +1,8 @@
 #!/bin/bash 
 
 rg=IRIS-Group
-branch=master
-#branch=dev
+#branch=master
+branch=dev
 
 echo "deleting a resource group"
 az group delete --name $rg --yes
