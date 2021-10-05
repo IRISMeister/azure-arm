@@ -2,7 +2,7 @@
 
 rg=IRIS-Group
 #branch=master
-branch=dev
+branch=$(git branch | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
 
 echo "deleting a resource group"
 az group delete --name $rg --yes
