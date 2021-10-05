@@ -112,9 +112,9 @@ then
   apt-get install -y openjdk-8-jdk-headless
 
   # iris jdbc driver and others
-  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}"
-  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}"
-  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}"
+  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
+  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
   mv *.jar $USERHOME
 
   # sample open data
@@ -238,7 +238,7 @@ sudo systemctl start ISCAgent.service
 sudo systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
-# additional config if any
+# enable shard
 cat << 'EOS' > $USERHOME/merge.cpf
 [Startup]
 EnableSharding=1
