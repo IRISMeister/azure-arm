@@ -147,7 +147,6 @@ if [ "$NODETYPE" == "DATA-1" ];
 then
   echo "Initializing as data node"
   IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
-  #IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).JoinCluster(\"datavm0.internal.cloudapp.net\")"  
 fi
 
 # ++ edit here for optimal settings ++
