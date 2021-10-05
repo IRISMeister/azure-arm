@@ -45,7 +45,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:t:L:T:u: optname; do
+while getopts :m:s:t:L:T:u:A: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -65,6 +65,9 @@ while getopts :m:s:t:L:T:u: optname; do
       ;;
     u) #template uri
       TEMPLATEURI=${OPTARG}
+      ;;
+    A) #admin username
+      ADMINUSER=${OPTARG}
       ;;
     h)  #show help
       help
@@ -92,6 +95,7 @@ install_iris_server() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
+USERHOME=/home/$ADMINUSER
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
@@ -107,20 +111,28 @@ then
   apt-get update -y
   apt-get install -y openjdk-8-jdk-headless
 
-  # iris jdbc driver
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-jdbc-3.2.0.jar
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-xep-3.2.0.jar
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-utils-3.2.0.jar
+  # iris jdbc driver and others
+  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
+  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
+  mv *.jar $USERHOME
 
   # sample open data
   wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-01.csv -O - | sed  '/^.$/d' > ./green_tripdata_2016-01.csv
+  mv *.csv $USERHOME
 
   wget ${TEMPLATEBASEURI}/loader/envs.sh
-  wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/loader/green.sh
+  wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/JDBCSample.java
-
   chmod +x *.sh
+  mv envs.sh $USERHOME
+  mv green.sh $USERHOME
+  mv *.conf $USERHOME
+  mv *.java $USERHOME
+
+  chown irismeister:irismeister $USERHOME/*
+
   exit 0
 else
  wget ${TEMPLATEBASEURI}/iris.service
@@ -139,7 +151,6 @@ if [ "$NODETYPE" == "DATA-1" ];
 then
   echo "Initializing as data node"
   IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
-  #IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).JoinCluster(\"datavm0.internal.cloudapp.net\")"  
 fi
 
 # ++ edit here for optimal settings ++
@@ -227,7 +238,7 @@ sudo systemctl start ISCAgent.service
 sudo systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
-# additional config if any
+# enable shard
 cat << 'EOS' > $USERHOME/merge.cpf
 [Startup]
 EnableSharding=1
