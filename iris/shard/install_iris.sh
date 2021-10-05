@@ -92,6 +92,7 @@ install_iris_server() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
+USERHOME=/home/irismeister
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
@@ -111,16 +112,23 @@ then
   wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-jdbc-3.2.0.jar
   wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-xep-3.2.0.jar
   wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-utils-3.2.0.jar
+  mv *.jar $USERHOME
 
   # sample open data
   wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-01.csv -O - | sed  '/^.$/d' > ./green_tripdata_2016-01.csv
+  mv *.csv $USERHOME
 
   wget ${TEMPLATEBASEURI}/loader/envs.sh
-  wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/loader/green.sh
+  wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/JDBCSample.java
-
   chmod +x *.sh
+  mv *.sh $USERHOME
+  mv *.conf $USERHOME
+  mv *.java $USERHOME
+
+  chown irismeister:irismeister $USERHOME/*
+
   exit 0
 else
  wget ${TEMPLATEBASEURI}/iris.service
