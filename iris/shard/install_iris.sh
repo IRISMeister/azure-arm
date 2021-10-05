@@ -45,7 +45,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:t:L:T:u: optname; do
+while getopts :m:s:t:L:T:u:A: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -65,6 +65,9 @@ while getopts :m:s:t:L:T:u: optname; do
       ;;
     u) #template uri
       TEMPLATEURI=${OPTARG}
+      ;;
+    A) #admin username
+      ADMINUSER=${OPTARG}
       ;;
     h)  #show help
       help
@@ -92,7 +95,7 @@ install_iris_server() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
-USERHOME=/home/irismeister
+USERHOME=/home/$ADMINUSER
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
@@ -108,10 +111,10 @@ then
   apt-get update -y
   apt-get install -y openjdk-8-jdk-headless
 
-  # iris jdbc driver
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-jdbc-3.2.0.jar
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-xep-3.2.0.jar
-  wget https://github.com/intersystems-community/iris-driver-distribution/raw/main/JDK18/intersystems-utils-3.2.0.jar
+  # iris jdbc driver and others
+  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}"
+  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}"
+  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}"
   mv *.jar $USERHOME
 
   # sample open data
@@ -123,7 +126,8 @@ then
   wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/JDBCSample.java
   chmod +x *.sh
-  mv *.sh $USERHOME
+  mv envs.sh $USERHOME
+  mv green.sh $USERHOME
   mv *.conf $USERHOME
   mv *.java $USERHOME
 
