@@ -76,7 +76,7 @@
               },
               "loadBalancerBackendAddressPools": [
                 {
-                  "id": "[if(equals(variables('ilb'), 'Disabled'), null, [resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')]) ]"
+                  "id": "[if(equals(variables('ilb'), 'Disabled'), null, resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')) ]"
                 }
               ]
             }
