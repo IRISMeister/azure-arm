@@ -84,13 +84,6 @@ done
 echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS CLIENTIP=$CLIENTIP NODETYPE=$NODETYPE" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI" >> params.log
 
-# MAIN ROUTINE
-echo "calling install_iris_service"
-install_iris_service
-echo "ending install_iris_service"
-
-exit 0
-
 install_iris_service() {
 #!/bin/bash -e
 
@@ -276,4 +269,9 @@ fi
 
 }
 
+# MAIN ROUTINE
+echo "calling install_iris_service"
+install_iris_service
+echo "ending install_iris_service"
 
+exit 0

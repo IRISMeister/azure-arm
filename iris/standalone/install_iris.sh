@@ -70,13 +70,6 @@ done
 echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS CLIENTIP=$CLIENTIP NODETYPE=$NODETYPE" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI" >> params.log
 
-# MAIN ROUTINE
-echo "calling install_iris_service"
-install_iris_service
-echo "ending install_iris_service"
-
-exit 0
-
 install_iris_service() {
 #!/bin/bash -e
 
@@ -188,3 +181,10 @@ EOS
 # merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 }
+
+# MAIN ROUTINE
+echo "calling install_iris_service"
+install_iris_service
+echo "ending install_iris_service"
+
+exit 0
