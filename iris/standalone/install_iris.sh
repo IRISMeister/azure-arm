@@ -30,20 +30,6 @@ then
     exit 3
 fi
 
-#Format the data disk
-bash vm-disk-utils-0.1.sh -s
-
-# Get today's date into YYYYMMDD format
-now=$(date +"%Y%m%d")
-
-# Get passed in parameters $1, $2, $3, $4, and others...
-MASTERIP=""
-SUBNETADDRESS=""
-CLIENTIP=""
-NODETYPE=""
-SECRETURL=""
-SECRETSASTOKEN=""
-
 #Loop through options passed
 while getopts :m:s:t:L:T:u:A: optname; do
     echo "Option $optname set with value ${OPTARG}"
@@ -97,62 +83,8 @@ install_iris_service() {
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 USERHOME=/home/$ADMINUSER
 
-if [ "$NODETYPE" == "CLIENT" ];
-then
-  echo "Initializing as Client"
-  # occasionally apt-get update fails
-  # Some packages could not be installed. This may mean that you have
-  # requested an impossible situation or if you are using the unstable
-  # distribution that some required packages have not yet been created
-  # or been moved out of Incoming.
-  sleep 10
-  
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update -y
-  apt-get install -y openjdk-8-jdk-headless
-
-  # iris jdbc driver and others
-  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
-  mv *.jar $USERHOME
-
-  # sample open data
-  wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-01.csv -O - | sed  '/^.$/d' > ./green_tripdata_2016-01.csv
-  mv *.csv $USERHOME
-
-  wget ${TEMPLATEBASEURI}/loader/envs.sh
-  wget ${TEMPLATEBASEURI}/loader/green.sh
-  wget ${TEMPLATEBASEURI}/loader/green.conf
-  wget ${TEMPLATEBASEURI}/JDBCSample.java
-  chmod +x *.sh
-  mv envs.sh $USERHOME
-  mv green.sh $USERHOME
-  mv *.conf $USERHOME
-  mv *.java $USERHOME
-
-  chown irismeister:irismeister $USERHOME/*
-
-  exit 0
-else
-  wget ${TEMPLATEBASEURI}/iris.service
-  wget ${TEMPLATEBASEURI}/Installer.cls
-fi
-
-# The vm name (hence hostname) for this node is data-mastervm0
-if [ "$NODETYPE" == "DATA-0" ];
-then
-  echo "Initializing as the first data node (hence DM)"
-  IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).InitializeCluster()"
-fi
-
-# The vm name (hence hostname) for this/these node is/are datavm0,datavm1...
-if [ "$NODETYPE" == "DATA-1" ];
-then
-  echo "Initializing as data node"
-  IRIS_COMMAND_INIT_SHARD="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
-fi
-
+wget ${TEMPLATEBASEURI}/iris.service
+wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
 kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
 #kit=IRISHealth-2021.1.0.215.0-lnxubuntux64
@@ -239,16 +171,11 @@ sudo systemctl start ISCAgent.service
 sudo systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
-# enable shard
+# additional config if any
 cat << 'EOS' > $USERHOME/merge.cpf
-[Startup]
-EnableSharding=1
-
 [config]
 globals=0,0,128,0,0,0
 gmheap=75136
-MaxServerConn=64
-MaxServers=64
 locksiz=33554432
 routines=128
 wijdir=/iris/wij/
@@ -258,22 +185,6 @@ AlternateDirectory=/iris/journal2/
 CurrentDirectory=/iris/journal1/
 EOS
 
-# merge cpf to enable shard.
+# merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
-sleep 2
-echo "executing $IRIS_COMMAND_INIT_SHARD" 
-sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT_SHARD" 
-
-# Create table(s), if any
-if [ "$NODETYPE" == "DATA-0" ];
-then
-  wget ${TEMPLATEBASEURI}/sql/01_createtable.sql -O /home/irisowner/01_createtable.sql
-  wget ${TEMPLATEBASEURI}/sql/import.cos
-
-  chown irisowner:irisowner /home/irisowner/01_createtable.sql
-  export sqls=$(pwd); sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
-fi
-
 }
-
-
