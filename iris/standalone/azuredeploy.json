@@ -299,7 +299,7 @@
                         "[uri(parameters('_artifactsLocation'), concat('iris.service', parameters('_artifactsLocationSasToken')))]",
                         "[uri(parameters('_artifactsLocation'), concat('Installer.cls', parameters('_artifactsLocationSasToken')))]"
                     ],
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('commonSettings').adminUsername,variables('singleQuote') )]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote') )]"
                 }
             }
         }
