@@ -4,7 +4,7 @@
   "parameters": {
     "ilb": {
       "type": "string",
-      "defaultValue": "Enabled",
+      "defaultValue": "Disabled",
       "allowedValues": [
         "Enabled",
         "Disabled"
