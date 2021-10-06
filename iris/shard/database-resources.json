@@ -52,7 +52,7 @@
     "vmCount": "[parameters('machineSettings').vmCount]",
     "singleQuote": "'",
     "loadBalancerName": "[parameters('loadBalancerName')]",
-    "ilb": "[if(equals(variables('ilb'), 'Disabled'), null, [resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')]) ]"
+    "ilb": "Disabled"
   },
   "resources": [
     {
@@ -76,7 +76,7 @@
               },
               "loadBalancerBackendAddressPools": [
                 {
-                  "id": "[variables('ilb')]"
+                  "id": "[if(equals(variables('ilb'), 'Disabled'), null, [resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')]) ]"
                 }
               ]
             }
