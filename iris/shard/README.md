@@ -1,13 +1,5 @@
 # iris shard
 WIP  
-仕組みは https://github.com/IRISMeister/iris-azure-arm と同じ。
-# デプロイ方法
-```bash
-./deploy.sh
-```
-
-# 一括削除方法
-$ rg=IRIS-Group; az group delete --name $rg --yes
 
 # アクセス
 ```bash
@@ -19,10 +11,6 @@ http://localhost:8888/csp/sys/UtilHome.csp SuperUser/sys
 http://localhost:8889/csp/sys/UtilHome.csp SuperUser/sys
 http://localhost:8890/csp/sys/UtilHome.csp SuperUser/sys
 ```
-
-# スクリプトなどの場所
-/var/lib/waagent/custom-script/download/0
-
 # データのロード
 ## SimpleMover
 動かし方

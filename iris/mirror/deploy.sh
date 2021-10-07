@@ -12,7 +12,7 @@ az group create --name $rg --location "Japan East"
 az deployment group create \
   --name ExampleDeployment \
   --resource-group $rg \
-  --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" \
+  --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/mirror/azuredeploy.json" \
   --parameters @azuredeploy.parameters.json
 
 az vm list-ip-addresses --resource-group $rg --output table
