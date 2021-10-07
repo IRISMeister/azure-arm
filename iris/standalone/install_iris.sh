@@ -68,7 +68,7 @@ while getopts :m:s:t:L:T:u:A: optname; do
 done
 
 echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS CLIENTIP=$CLIENTIP NODETYPE=$NODETYPE" >> params.log
-echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI" >> params.log
+echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
@@ -164,7 +164,7 @@ sudo systemctl start ISCAgent.service
 sudo systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
-# additional config if any
+# create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
 globals=0,0,128,0,0,0

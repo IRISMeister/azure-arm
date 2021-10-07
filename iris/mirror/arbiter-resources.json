@@ -1,0 +1,131 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "commonSettings": {
+      "type": "object"
+    },
+    "osSettings": {
+      "type": "object"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "machineSettings": {
+      "type": "object"
+    },
+    "subnet": {
+      "type": "object"
+    },
+    "masterIpAddress": {
+      "type": "string"
+    },
+    "dbType": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "_secretsLocation": {
+      "type": "string"
+    },
+    "_secretsLocationSasToken": {
+      "type": "securestring"
+    },
+    "vmSize": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "namespace": "[parameters('commonSettings').namespace]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('subnet').vnet, parameters('subnet').name)]",
+    "vmName": "[concat(variables('namespace'), 'vm')]",
+    "nicName": "[concat(variables('namespace'), 'nic')]",
+    "singleQuote": "'"
+  },
+  "resources": [
+    {
+      "apiVersion": "2019-11-01",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[variables('nicName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAddress": "10.0.1.10",
+              "privateIPAllocationMethod": "Static",
+              "subnet": {
+                "id": "[variables('subnetRef')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2019-12-01",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vmName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+      ],
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('machineSettings').availabilitySet)]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vmName')]",
+          "adminUsername": "[parameters('commonSettings').adminUsername]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": "[parameters('osSettings').imageReference]",
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('vmName'), '/install_iris')]",
+      "apiVersion": "2019-12-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Azure.Extensions",
+        "type": "CustomScript",
+        "typeHandlerVersion": "2.0",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "fileUris": "[parameters('osSettings').scripts]"
+        },
+        "protectedSettings": {
+          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote') )]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "arbiterip": {
+      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress]",
+      "type": "string"
+    }
+  }
+}

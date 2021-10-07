@@ -1,3 +1,4 @@
 memo.txt
 iris/shard/azuredeploy.parameters.json
 iris/standalone/azuredeploy.parameters.json
+iris/mirror/azuredeploy.parameters.json
