@@ -157,7 +157,7 @@
           "fileUris": "[parameters('osSettings').scripts]"
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -a ', parameters('arbiterIpAddress'), ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote') )]"
+          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -a ', parameters('arbiterIpAddress'), ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('commonSettings').adminUsername,variables('singleQuote') )]"
         }
       }
     }
