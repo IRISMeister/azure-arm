@@ -39,7 +39,7 @@ now=$(date +"%Y%m%d")
 # Get passed in parameters $1, $2, $3, $4, and others...
 MASTERIP=""
 SUBNETADDRESS=""
-CLIENTIP=""
+ARBITERIP=""
 NODETYPE=""
 SECRETURL=""
 SECRETSASTOKEN=""
@@ -54,7 +54,10 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
   	s) #Data storage subnet space
       SUBNETADDRESS=${OPTARG}
       ;;
-    t) #Type of node (DATA-0/DATA-1/...)
+    a) #arbiter ip address
+      ARBITERIP=${OPTARG}
+      ;;
+    t) #Type of node (MASTER/SLAVE)
       NODETYPE=${OPTARG}
       ;;
     L) #secret url
@@ -81,7 +84,7 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
   esac
 done
 
-echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS CLIENTIP=$CLIENTIP NODETYPE=$NODETYPE" >> params.log
+echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS ARBITERIP=$ARBITERIP NODETYPE=$NODETYPE" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
 
 install_iris_service() {
@@ -89,39 +92,38 @@ install_iris_service() {
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 USERHOME=/home/$ADMINUSER
+export MirrorDBName='MYDB'
+export MirrorArbiterIP=$ARBITERIP
 
-if [ "$NODETYPE" == "CLIENT" ];
+if [ "$NODETYPE" == "ARBITER" ];
 then
-  echo "Initializing as Client"
-  # occasionally apt-get update fails
-  # Some packages could not be installed. This may mean that you have
-  # requested an impossible situation or if you are using the unstable
-  # distribution that some required packages have not yet been created
-  # or been moved out of Incoming.
-  sleep 10
-  
+  echo "Initializing as Arbiter"
+  kit=ISCAgent-2021.1.0.215.0-lnxubuntux64
+  mkdir /tmp/irisdistr
+  pushd /tmp/irisdistr
+  wget "${SECRETURL}blob/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
+
+  tar -xvf $kit.tar.gz
+  cd $kit
+  ./agentinstall << END
+1
+yes
+END
+  popd
+  systemctl daemon-reload
+  systemctl enable ISCAgent.service
+  systemctl start ISCAgent.service
+
+  # get a jdbc driver for loadbalancer testing purpose
+  echo "Installing an ivp java program on Arbiter"
+
   export DEBIAN_FRONTEND=noninteractive
   apt-get update -y
   apt-get install -y openjdk-8-jdk-headless
-
   # iris jdbc driver and others
   wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
   mv *.jar $USERHOME
-
-  # sample open data
-  wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-01.csv -O - | sed  '/^.$/d' > ./green_tripdata_2016-01.csv
-  mv *.csv $USERHOME
-
-  wget ${TEMPLATEBASEURI}/loader/envs.sh
-  wget ${TEMPLATEBASEURI}/loader/green.sh
-  wget ${TEMPLATEBASEURI}/loader/green.conf
   wget ${TEMPLATEBASEURI}/JDBCSample.java
-  chmod +x *.sh
-  mv envs.sh $USERHOME
-  mv green.sh $USERHOME
-  mv *.conf $USERHOME
   mv *.java $USERHOME
 
   chown irismeister:irismeister $USERHOME/*
@@ -132,18 +134,19 @@ else
   wget ${TEMPLATEBASEURI}/Installer.cls
 fi
 
-# The vm name (hence hostname) for this node is data-mastervm0
-if [ "$NODETYPE" == "DATA-0" ];
+if [ "$NODETYPE" == "MASTER" ];
 then
-  echo "Initializing as the first data node (hence DM)"
-  IRIS_COMMAND_INIT="##class(Silent.Installer).InitializeCluster()"
+  echo "Initializing as PRIMARY mirror member"
+  IRIS_COMMAND_INIT="##class(Silent.Installer).CreateMirrorSet(\"${MirrorArbiterIP}\")"
+  IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
+
 fi
 
-# The vm name (hence hostname) for this/these node is/are datavm0,datavm1...
-if [ "$NODETYPE" == "DATA-1" ];
+if [ "$NODETYPE" == "SLAVE" ];
 then
-  echo "Initializing as data node"
-  IRIS_COMMAND_INIT="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
+  echo "Initializing as FAILOVER mirror member"
+  IRIS_COMMAND_INIT="##class(Silent.Installer).JoinAsFailover(\"${MASTERIP}\")"
+  IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
 fi
 
 # ++ edit here for optimal settings ++
@@ -234,14 +237,9 @@ sudo systemctl enable iris
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
-[Startup]
-EnableSharding=1
-
 [config]
 globals=0,0,128,0,0,0
 gmheap=75136
-MaxServerConn=64
-MaxServers=64
 locksiz=33554432
 routines=128
 wijdir=/iris/wij/
@@ -253,19 +251,20 @@ EOS
 
 # merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
+sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 sleep 2
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
-# Create table(s), if any
-if [ "$NODETYPE" == "DATA-0" ];
+# Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
+if [ "$NODETYPE" == "SLAVE" ]
 then
-  wget ${TEMPLATEBASEURI}/sql/01_createtable.sql -O /home/irisowner/01_createtable.sql
-  wget ${TEMPLATEBASEURI}/sql/import.cos
-
-  chown irisowner:irisowner /home/irisowner/01_createtable.sql
-  export sqls=$(pwd); sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
+  sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
 fi
+
+sleep 5
+echo "executing $IRIS_COMMAND_CREATE_DB"
+sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
 
 }
 

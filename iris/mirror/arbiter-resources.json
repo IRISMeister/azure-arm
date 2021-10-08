@@ -58,7 +58,8 @@
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddress": "10.0.1.10",
+              "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[variables('subnetRef')]"
               }
@@ -126,7 +127,7 @@
     }
   ],
   "outputs": {
-    "clientip": {
+    "arbiterip": {
       "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress]",
       "type": "string"
     }

@@ -20,10 +20,16 @@
     "masterIpAddress": {
       "type": "string"
     },
+    "arbiterIpAddress": {
+      "type": "string"
+    },
     "dbType": {
       "type": "string"
     },
     "location": {
+      "type": "string"
+    },
+    "privateIPAddress": {
       "type": "string"
     },
     "_artifactsLocation": {
@@ -35,33 +41,46 @@
     "_secretsLocationSasToken": {
       "type": "securestring"
     },
-    "vmSize": {
+    "loadBalancerName": {
       "type": "string"
     }
+
   },
   "variables": {
     "namespace": "[parameters('commonSettings').namespace]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('subnet').vnet, parameters('subnet').name)]",
     "vmName": "[concat(variables('namespace'), 'vm')]",
-    "adminUsername": "[parameters('commonSettings').adminUsername]",
     "nicName": "[concat(variables('namespace'), 'nic')]",
-    "singleQuote": "'"
+    "adminUsername": "[parameters('commonSettings').adminUsername]",
+    "vmCount": "[parameters('machineSettings').vmCount]",
+    "singleQuote": "'",
+    "loadBalancerName": "[parameters('loadBalancerName')]"
   },
   "resources": [
     {
       "apiVersion": "2019-11-01",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "name": "[concat(variables('nicName'), copyindex())]",
       "location": "[parameters('location')]",
+      "copy": {
+        "name": "nicCopyLoop",
+        "count": "[variables('vmCount')]"
+      },
       "properties": {
         "ipConfigurations": [
           {
             "name": "ipconfig1",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddress": "[parameters('privateIPAddress')]",
+              "privateIPAllocationMethod": "Static",
               "subnet": {
                 "id": "[variables('subnetRef')]"
-              }
+              },
+              "loadBalancerBackendAddressPools": [
+                {
+                  "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')]"
+                }
+              ]
             }
           }
         ]
@@ -70,34 +89,51 @@
     {
       "apiVersion": "2019-12-01",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[variables('vmName')]",
+      "name": "[concat(variables('vmName'), copyindex())]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+        "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyindex()))]"
       ],
+      "copy": {
+        "name": "vmCopyLoop",
+        "count": "[variables('vmCount')]"
+      },
       "properties": {
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('machineSettings').availabilitySet)]"
         },
         "hardwareProfile": {
-          "vmSize": "[parameters('vmSize')]"
+          "vmSize": "[parameters('machineSettings').vmSize]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[concat(variables('vmName'), copyindex())]",
           "adminUsername": "[variables('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
           "imageReference": "[parameters('osSettings').imageReference]",
           "osDisk": {
+            "name": "[concat(variables('vmName'), copyindex(),'_OSDisk')]",
             "caching": "ReadWrite",
             "createOption": "FromImage"
-          }
+          },
+          "copy": [
+            {
+              "name": "dataDisks",
+              "count": "[parameters('machineSettings').diskCount]",
+              "input": {
+                "diskSizeGB": "[parameters('machineSettings').diskSize]",
+                "lun": "[copyIndex('dataDisks')]",
+                "caching": "None",
+                "createOption": "Empty"
+              }
+            }
+          ]
         },
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyindex()) )]"
             }
           ]
         }
@@ -105,12 +141,16 @@
     },
     {
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'), '/install_iris')]",
+      "name": "[concat(variables('vmName'), copyindex(), '/install_iris')]",
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyindex()))]"
       ],
+      "copy": {
+        "name": "scriptCopyLoop",
+        "count": "[variables('vmCount')]"
+      },
       "properties": {
         "publisher": "Microsoft.Azure.Extensions",
         "type": "CustomScript",
@@ -120,14 +160,14 @@
           "fileUris": "[parameters('osSettings').scripts]"
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),variables('adminUsername'),variables('singleQuote') )]"
+          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -a ', parameters('arbiterIpAddress'), ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),variables('adminUsername'),variables('singleQuote') )]"
         }
       }
     }
   ],
   "outputs": {
-    "clientip": {
-      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress]",
+    "masterip": {
+      "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'),0))).ipConfigurations[0].properties.privateIPAddress]",
       "type": "string"
     }
   }
