@@ -135,7 +135,7 @@ Configuration 'IRIS'   (default)
         directory:    /usr/irissys
         versionid:    2021.1.0.215.0
         datadir:      /usr/irissys
-        conf file:    iris.cpf  (SuperServer port = 51773, WebServer = 52773)
+        conf file:    iris.cpf  (SuperServer port = 1972, WebServer = 52773)
         status:       running, since Wed Aug  4 07:12:45 2021
         mirroring: Member Type = Failover; Status = Primary
         state:        ok

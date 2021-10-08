@@ -141,7 +141,7 @@ Printing out contents of SELECT query:
 同じコマンドを2回実行すると、同リクエストが同じサーバ(現プライマリメンバ)に到達するためエラーが発生する。
 ```
 root@arbitervm:/var/lib/waagent/custom-script/download/0# java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
-Connecting to jdbc:IRIS://10.0.1.4:51773/MYAPP
+Connecting to jdbc:IRIS://10.0.1.4:1972/MYAPP
 Exception in thread "main" java.sql.SQLException: [SQLCODE: <-201>:<Table or view name not unique>]
 [Location: <ServerLoop>]
 [%msg: <Table 'SQLUser.People' already exists>]
@@ -163,7 +163,7 @@ Configuration 'IRIS'   (default)
         directory:    /usr/irissys
         versionid:    2021.1.0.215.0
         datadir:      /usr/irissys
-        conf file:    iris.cpf  (SuperServer port = 51773, WebServer = 52773)
+        conf file:    iris.cpf  (SuperServer port = 1972, WebServer = 52773)
         status:       down, last used Mon Aug 16 09:33:43 2021
         product:      InterSystems IRISHealth
 ```
@@ -171,7 +171,7 @@ Configuration 'IRIS'   (default)
 この時点で、同コマンドを再実行すると、同リクエストは新プライマリメンバ(旧バックアップメンバ)に到達するため成功する。
 ```
 root@arbitervm:/var/lib/waagent/custom-script/download/0# java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
-Connecting to jdbc:IRIS://10.0.1.4:51773/MYAPP
+Connecting to jdbc:IRIS://10.0.1.4:1972/MYAPP
 Printing out contents of SELECT query:
 1, John, Smith
 2, Jane, Doe

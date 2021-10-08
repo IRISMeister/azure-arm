@@ -109,8 +109,8 @@
                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancerName'), 'lbprobe')]"
               },
               "protocol": "Tcp",
-              "frontendPort": 51773,
-              "backendPort": 51773,
+              "frontendPort": 1972,
+              "backendPort": 1972,
               "idleTimeoutInMinutes": 15
             },
             "Name": "lbrule"

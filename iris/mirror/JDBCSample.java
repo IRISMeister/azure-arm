@@ -10,7 +10,7 @@ public class JDBCSample {
             ip=args[0];
         }
 
-        String url = "jdbc:IRIS://"+ip+":51773/MYAPP";
+        String url = "jdbc:IRIS://"+ip+":1972/MYAPP";
         System.out.println("Connecting to "+url);
 
         Class.forName("com.intersystems.jdbc.IRISDriver");
