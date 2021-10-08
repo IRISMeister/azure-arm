@@ -115,14 +115,14 @@ SuperUser/sys
 
 ### SSH
 各VMホストへのSSH方法は下記の通り。sshキーファイルは、[adminPasswordOrKey]で指定したものと対になるもの。
-- スタンドアロン
+- スタンドアロン  
 IRIS稼働VMが持つPublic IPに直接接続します。
 ```bash
 ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 例)
 ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
-- それ以外
+- それ以外  
 踏み台ホスト経由で接続します。パスワードは[adminPassword]で指定したもの。
 ```bash
 ssh [adminUsername]@[domainName].japaneast.cloudapp.azure.com
