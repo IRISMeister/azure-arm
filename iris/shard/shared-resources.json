@@ -2,17 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "ilb": {
-      "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
-      "metadata": {
-        "description": "The flag allowing to enable or disable provisioning of the internal load balancer"
-      }
-    },
     "availabilitySetSettings": {
       "type": "object"
     },
@@ -76,69 +65,6 @@
       "properties": {
         "platformFaultDomainCount": "[parameters('availabilitySetSettings').fdCount]",
         "platformUpdateDomainCount": "[parameters('availabilitySetSettings').udCount]"
-      }
-    },
-    {
-      "condition": "[equals('Enabled', parameters('ilb'))]",
-      "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2020-06-01",
-      "name": "[variables('loadBalancerName')]",
-      "location": "[parameters('location')]",
-      "sku": {
-        "name": "Standard"
-      },
-      "dependsOn": [
-        "[parameters('networkSettings').vnetName]"
-      ],
-      "properties": {
-        "frontendIPConfigurations": [
-          {
-            "properties": {
-              "subnet": {
-                "id": "[variables('subnetRef')]"
-              },
-              "privateIPAllocationMethod": "Dynamic"
-            },
-            "name": "LoadBalancerFrontend"
-          }
-        ],
-        "backendAddressPools": [
-          {
-            "name": "BackendPool1"
-          }
-        ],
-        "loadBalancingRules": [
-          {
-            "properties": {
-              "frontendIPConfiguration": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', variables('loadBalancerName'), 'LoadBalancerFrontend')]"
-              },
-              "backendAddressPool": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', variables('loadBalancerName'), 'BackendPool1')]"
-              },
-              "probe": {
-                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', variables('loadBalancerName'), 'lbprobe')]"
-              },
-              "protocol": "Tcp",
-              "frontendPort": 1972,
-              "backendPort": 1972,
-              "idleTimeoutInMinutes": 15
-            },
-            "Name": "lbrule"
-          }
-        ],
-        "probes": [
-          {
-            "properties": {
-              "protocol": "Http",
-              "port": 52773,
-              "requestPath": "/csp/bin/mirror_status.cxw",
-              "intervalInSeconds": 15,
-              "numberOfProbes": 2
-            },
-            "name": "lbprobe"
-          }
-        ]
       }
     },
     {
