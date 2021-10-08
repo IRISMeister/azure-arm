@@ -35,30 +35,24 @@ WIP
 IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、15分ほどで完了。  
 ![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/deployment.png)
 
-プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用してIRISにアクセスする。
-bash端末((Windows上のGit bashなどでも可)を2個開き、下記を実行する。
+プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用してIRISにアクセスする。bash端末(Windows上のGit bashなどでも可)を2個開き、下記を実行する。
 
-端末1
 ```bash
+端末1
 ssh -L 8888:msvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 [adminUsername]@[domainName].japaneast.cloudapp.azure.com
-```
-
 端末2
-```bash
 ssh -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 ```
 
 例) 
-端末1
 ```bash
+端末1
 ssh -L 8888:msvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
-```
 端末2
-```bash
 ssh -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
@@ -68,7 +62,7 @@ http://localhost:8888/csp/sys/UtilHome.csp
 バックアップサーバ  
 http://localhost:8889/csp/sys/UtilHome.csp
 
-## 補足
+## 補足事項
 
 ### 障害ドメイン
 日本リージョンには、障害ドメイン(Fault Domain)は2個しかない。  
