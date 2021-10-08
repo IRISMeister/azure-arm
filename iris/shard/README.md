@@ -35,7 +35,7 @@ irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 データサーバ#1(MASTER)  
 http://localhost:8888/csp/sys/UtilHome.csp  
 データサーバ#2  
-http://localhost:8889/csp/sys/UtilHome.csp
+http://localhost:8889/csp/sys/UtilHome.csp  
 データサーバ#3  
 http://localhost:8890/csp/sys/UtilHome.csp
 
