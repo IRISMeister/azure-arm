@@ -295,6 +295,9 @@
           "privateIPAddress" : {
             "value": "10.0.1.11"
           },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
           "_secretsLocation": {
             "value": "[parameters('_secretsLocation')]"
           },
@@ -361,6 +364,9 @@
           "privateIPAddress" : {
             "value": "10.0.1.12"
           },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
+          },
           "_secretsLocation": {
             "value": "[parameters('_secretsLocation')]"
           },
@@ -421,6 +427,9 @@
           },
           "dbType": {
             "value": "ARBITER"
+          },
+          "_artifactsLocation": {
+            "value": "[parameters('_artifactsLocation')]"
           },
           "_secretsLocation": {
             "value": "[parameters('_secretsLocation')]"

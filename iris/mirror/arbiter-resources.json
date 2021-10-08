@@ -26,6 +26,9 @@
     "location": {
       "type": "string"
     },
+    "_artifactsLocation": {
+      "type": "string"
+    },
     "_secretsLocation": {
       "type": "string"
     },
@@ -40,6 +43,7 @@
     "namespace": "[parameters('commonSettings').namespace]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('subnet').vnet, parameters('subnet').name)]",
     "vmName": "[concat(variables('namespace'), 'vm')]",
+    "adminUsername": "[parameters('commonSettings').adminUsername]",
     "nicName": "[concat(variables('namespace'), 'nic')]",
     "singleQuote": "'"
   },
@@ -81,7 +85,7 @@
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('commonSettings').adminUsername]",
+          "adminUsername": "[variables('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
         "storageProfile": {
@@ -117,7 +121,7 @@
           "fileUris": "[parameters('osSettings').scripts]"
         },
         "protectedSettings": {
-          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote') )]"
+          "commandToExecute": "[concat('bash install_iris.sh -m ', parameters('masterIpAddress'), ' -s ', parameters('subnet').prefix, ' -t ', parameters('dbType'),' -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),variables('adminUsername'),variables('singleQuote') )]"
         }
       }
     }
