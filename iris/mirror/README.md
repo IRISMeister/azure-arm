@@ -1,69 +1,7 @@
-## パラメータ一覧
+# iris mirror
+WIP
 
-| パラメータ名 | 用途 | 備考 |設定例|
-| ------------ | ------ | ---- | --- |
-|adminUsername|sudo可能なO/Sユーザ名,全VM共通||irismeister|
-|adminPasswordOrKey|SSH public key|ssh接続時に使用。StandAloneのみ|ssh-rsa AAA... generated-by-azure|
-|adminPassword|パスワード|Mirrorの場合,全VM共通|Passw0rd|
-|domainName|Public DNS名|StandAloneのIRIS,MirrorのJumpBox用DNSホスト名|my-iris-123|
-|_artifactsLocation|ARMテンプレートのURL|自動設定||
-|_artifactsLocationSasToken|同Sas Token|未使用||
-|_secretsLocation|プライべートファイルのURL|Azure Blobを想定。Kit,ライセンスキーなど|https://irismeister.blob.core.windows.net/|
-|_secretsLocationSasToken|同Sas Token||sp=r&st=2021...|
-||||
-
-> Public DNS名はユニークである必要がある
-
-## デプロイ後のアクセス
-使用したデプロイ構成によりアクセス方法が異なる。  
-
-### 共通点
-IRIS管理ポータルのユーザ名/パスワードはいずれも
-```
-SuperUser/sys
-```
-
-VMホストへのSSH後の、IRISセッションへのログインはO/S認証を使用。
-```
-irismeister@MyubuntuVM:~$ sudo -u irisowner iris session iris
-Node: MyubuntuVM, Instance: IRIS
-USER>
-
-```
-
-### スタンドアロン構成の場合
-IRISサーバ用のVMにパブリックIPがアサインされるため直接接続が可能。  
-> ポート22(SSH)及び52773(IRIS管理ポータル用のapache)が公開されるので注意
-
-指定したリソースグループ下に下記が作成される。
-|NAME|	TYPE|	LOCATION|
-|--|--|--|
-|myNSG	|Network security group	|Japan East|
-|myPublicIP	|Public IP address	|Japan East|
-|MyubuntuVM	|Virtual machine	|Japan East|
-|MyubuntuVM_OSDisk	|Disk	|Japan East|
-|myVMNic	|Network interface	|Japan East|
-|MyVNET	|Virtual network	|Japan East|
-
-
-- IRIS管理ポータル  
-    http://[domainName].japaneast.cloudapp.azure.com:52773/csp/sys/UtilHome.csp
-    例)  
-    http://my-iris-123.japaneast.cloudapp.azure.com:52773/csp/sys/UtilHome.csp
-
-- SSH
-    ```bash
-    ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
-    例)
-    ssh -i my-azure-keypair.pem irismeister@my-iris-123.japaneast.cloudapp.azure.com
-    ```
-
-### ミラーリング構成の場合
-IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、15分ほどで完了。  
-![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/deployment.png)
-
-
-
+## リソースグループ
 指定したリソースグループ下に下記が作成される。
 
 |NAME|	TYPE|	LOCATION|備考|
@@ -91,10 +29,13 @@ IRISサーバはプライベートネットワーク上のVMにデプロイさ�
 |slvm0_OSDisk	|Disk|Japan East|バックアップ|
 |vnet	|Virtual network|Japan East|バックアップ|
 
+## デプロイ後のアクセス
+### IRIS管理ポータル  
 
+IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、15分ほどで完了。  
+![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/deployment.png)
 
 プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用してIRISにアクセスする。
-
 bash端末((Windows上のGit bashなどでも可)を2個開き、下記を実行する。
 
 端末1
@@ -113,52 +54,19 @@ ssh -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/n
 端末1
 ```bash
 ssh -L 8888:msvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-irismeister@my-iris-123.japaneast.cloudapp.azure.com
+irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
 ```
 端末2
 ```bash
 ssh -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-irismeister@my-iris-123.japaneast.cloudapp.azure.com
+irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
 ```
-
-- IRIS管理ポータル  
 プライマリサーバ  
 http://localhost:8888/csp/sys/UtilHome.csp  
 バックアップサーバ  
 http://localhost:8889/csp/sys/UtilHome.csp
-
-- SSH
-    プライマリサーバへは端末1から。パスワードは[adminPassword]で指定したもの。
-    ```bash
-    [adminUsername]@jumpboxvm:~$ ssh [adminUsername]@msvm0
-    
-    例)
-    irismeister@jumpboxvm:~$ ssh irismeister@msvm0
-    irismeister@msvm0:~$
-    irismeister@msvm0:~$ iris list
-    
-    Configuration 'IRIS'   (default)
-            directory:    /usr/irissys
-            versionid:    2021.1.0.215.0
-            datadir:      /usr/irissys
-            conf file:    iris.cpf  (SuperServer port = 51773, WebServer = 52773)
-            status:       running, since Wed Aug  4 07:12:45 2021
-            mirroring: Member Type = Failover; Status = Primary
-            state:        ok
-            product:      InterSystems IRISHealth
-    irismeister@msvm0:~$
-    ```
-
-    バックアップサーバへは端末2から。パスワードは[adminPassword]で指定したもの。
-    ```bash
-    [adminUsername]@jumpboxvm:~$ ssh [adminUsername]@slvm0
-    
-    例)
-    irismeister@jumpboxvm:~$ ssh irismeister@slvm0
-    irismeister@slvm0:~$
-    ```
 
 ## 補足
 

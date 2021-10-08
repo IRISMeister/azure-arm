@@ -9,13 +9,13 @@ WIP
 ## 事前準備
 1. 事前にIRISライセンスキーファイル(iris.key)及びキット(IRISHealth-2021.1.0.215.0-lnxubuntux64.tar.gzなど)を用意し、**非公開設定**のAzure Blobにアップロードする(このURLをパラメータの_secretsLocationで指定する)。  
 2. Generate SASでキー(Signing method:Account key)を作成(パラメータの_secretsLocationSasTokenで指定する)。  
-3. install_iris.shl内から、下記のようにwgetで取得している。ただし  
+install_iris.shl内から、下記のようにwgetで取得している。
+```
 _secretsLocation => SECRETURL  
 _secretsLocationSasToken => SECRETSASTOKEN  
-```
 wget "${SECRETURL}blob/iris.key?${SECRETSASTOKEN}" -O iris.key
 ```
-4. (オプション)Azure CLIをインストールし、az loginを完了させておく。
+3. (オプション)Azure CLIをインストールし、az loginを完了させておく。
 
 ## デプロイ方法
 スタンドアロン構成のデプロイ  
@@ -70,7 +70,7 @@ cat azuredeploy.parameters.json
       "value": "abcdEFG123"  <==任意のパスワード用文字列を設定する
     },
     "domainName": {
-      "value": "my-iris-123" <==任意のホスト名を設定する
+      "value": "my-irishost-1" <==任意のホスト名を設定する
     },
     "_secretsLocation": {
       "value": "https://irismeister.blob.core.windows.net/"  <==Azure BlobのURLを設定する
@@ -81,12 +81,76 @@ cat azuredeploy.parameters.json
   }
 }
 ```
-> 以後、上記編集例に習い、adminUsernameには"irismeister", domainNameには"my-iris-123"を指定した例を使用している。
+> 以後、上記編集例に習い、adminUsernameには"irismeister", domainNameには"my-irishost-1"を指定した例を使用している。
+
+## パラメータ一覧
+
+| パラメータ名 | 用途 | 備考 |設定例|
+| ------------ | ------ | ---- | --- |
+|adminUsername|sudo可能なO/Sユーザ名,全VM共通||irismeister|
+|adminPasswordOrKey|SSH public key|ssh接続時に使用。StandAloneのみ|ssh-rsa AAA... generated-by-azure|
+|adminPassword|パスワード|Mirrorの場合,全VM共通|Passw0rd|
+|domainName|Public DNS名|StandAloneのIRIS,MirrorのJumpBox用DNSホスト名|my-irishost-1|
+|_artifactsLocation|ARMテンプレートのURL|自動設定||
+|_artifactsLocationSasToken|同Sas Token|未使用||
+|_secretsLocation|プライべートファイルのURL|Azure Blobを想定。Kit,ライセンスキーなど|https://irismeister.blob.core.windows.net/|
+|_secretsLocationSasToken|同Sas Token||sp=r&st=2021...|
+||||
+> Public DNS名はユニークである必要がある
+
 
 ## 一括削除方法
 ```bash
 $ rg=IRIS-Group; az group delete --name $rg --yes
 ```
+## デプロイ後のアクセス
+### IRIS管理ポータル
+IRIS管理ポータルのURLは、デプロイ対象により異なる。  
+スタンドアロンの場合は、IRIS稼働VMが持つPublic IPに直接接続する。それ以外の場合は、踏み台ホスト経由で接続する。実際のアクセス方法は、[スタンドアロン](iris\standalone\README.md),[ミラー](iris\mirror\README.md),[シャード](iris\shard\README.md)を参照ください。  
+
+ユーザ名/パスワードはいずれも
+```
+SuperUser/sys
+```
+
+### SSH
+各VMホストへのSSH方法は下記の通り。sshキーファイルは、[adminPasswordOrKey]で指定したものと対になるもの。
+- スタンドアロン
+IRIS稼働VMが持つPublic IPに直接接続します。
+```bash
+ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
+例)
+ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+```
+- それ以外
+踏み台ホスト経由で接続します。パスワードは[adminPassword]で指定したもの。
+```bash
+ssh [adminUsername]@[domainName].japaneast.cloudapp.azure.com
+ssh [adminUsername]@VM名
+例)
+ssh irismeister@my-irishost-1.japaneast.cloudapp.azure.com =>パスワード入力
+ssh irismeister@msvm0 =>パスワード入力
+irismeister@msvm0:~$ iris list
+Configuration 'IRIS'   (default)
+        directory:    /usr/irissys
+        versionid:    2021.1.0.215.0
+        datadir:      /usr/irissys
+        conf file:    iris.cpf  (SuperServer port = 51773, WebServer = 52773)
+        status:       running, since Wed Aug  4 07:12:45 2021
+        mirroring: Member Type = Failover; Status = Primary
+        state:        ok
+        product:      InterSystems IRISHealth
+irismeister@msvm0:~$
+```
+
+### IRISへのログイン
+各VMホストへのSSH後の、IRISセッションへのログインはO/S認証を使用。
+```
+irismeister@MyubuntuVM:~$ sudo -u irisowner iris session iris
+Node: MyubuntuVM, Instance: IRIS
+USER>
+```
+
 
 ## カスタマイズ手順
 本稿はARMテンプレートやインストーラをGitHubの公開レポジトリに配置することを前提にしている(それゆえ_artifactsLocationSasTokenは未使用)。Azure Blobに配置することも可能だが、本稿では触れない。
