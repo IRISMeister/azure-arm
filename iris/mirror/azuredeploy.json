@@ -355,9 +355,7 @@
           },
           "machineSettings": {
             "value": {
-              "linuxConfiguration": {
-                "value": "[variables('linuxConfiguration')]"
-              },
+              "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
