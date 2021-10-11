@@ -15,10 +15,10 @@
         "description": "Virtual machine administrator username"
       }
     },
-    "adminPassword": {
-      "type": "securestring",
+    "adminPasswordOrKey": {
+    "type": "securestring",
       "metadata": {
-        "description": "Virtual machine administrator password"
+      "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
       }
     },
     "tshirtSize": {
@@ -258,8 +258,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -327,8 +327,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -404,8 +404,8 @@
               "namespace": "arbiter"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.data]"
@@ -467,8 +467,8 @@
               "namespace": "jumpbox"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.dmz]"
