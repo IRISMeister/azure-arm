@@ -8,7 +8,7 @@
     "osSettings": {
       "type": "object"
     },
-    "adminPassword": {
+    "adminPasswordOrKey": {
       "type": "securestring"
     },
     "machineSettings": {
@@ -108,7 +108,8 @@
         "osProfile": {
           "computerName": "[concat(variables('vmName'), copyindex())]",
           "adminUsername": "[variables('adminUsername')]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "linuxConfiguration": "[parameters('machineSettings').linuxConfiguration]"
         },
         "storageProfile": {
           "imageReference": "[parameters('osSettings').imageReference]",

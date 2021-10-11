@@ -15,9 +15,6 @@
         "description": "Virtual machine administrator username"
       }
     },
-    "adminPassword": {
-      "type": "securestring"
-    },
     "adminPasswordOrKey": {
     "type": "securestring",
       "metadata": {
@@ -272,8 +269,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -341,8 +338,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -358,6 +355,9 @@
           },
           "machineSettings": {
             "value": {
+              "linuxConfiguration": {
+                "value": "[variables('linuxConfiguration')]"
+              },
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
