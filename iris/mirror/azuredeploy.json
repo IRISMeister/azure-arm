@@ -15,6 +15,9 @@
         "description": "Virtual machine administrator username"
       }
     },
+    "adminPassword": {
+      "type": "securestring"
+    },
     "adminPasswordOrKey": {
     "type": "securestring",
       "metadata": {
