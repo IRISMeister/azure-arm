@@ -8,7 +8,10 @@
     "osSettings": {
       "type": "object"
     },
-    "adminPassword": {
+    "linuxConfiguration": {
+      "type": "object"
+    },
+    "adminPasswordOrKey": {
       "type": "securestring"
     },
     "subnet": {
@@ -25,10 +28,12 @@
     }
   },
   "variables": {
+    "namespace": "[parameters('commonSettings').namespace]",
     "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('subnet').vnet, parameters('subnet').name)]",
-    "nicName": "[concat(parameters('commonSettings').namespace, 'nic')]",
-    "vmName": "[concat(parameters('commonSettings').namespace, 'vm')]",
-    "publicIpName": "[concat(parameters('commonSettings').namespace, 'publicIp')]"
+    "vmName": "[concat(variables('namespace'), 'vm')]",
+    "adminUsername": "[parameters('commonSettings').adminUsername]",
+    "nicName": "[concat(variables('namespace'), 'nic')]",
+    "publicIpName": "[concat(variables('namespace'), 'publicIp')]"
   },
   "resources": [
     {
@@ -82,8 +87,9 @@
         },
         "osProfile": {
           "computerName": "[variables('vmName')]",
-          "adminUsername": "[parameters('commonSettings').adminUsername]",
-          "adminPassword": "[parameters('adminPassword')]"
+          "adminUsername": "[variables('adminUsername')]",
+          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "linuxConfiguration": "[parameters('linuxConfiguration')]"
         },
         "storageProfile": {
           "imageReference": "[parameters('osSettings').imageReference]",

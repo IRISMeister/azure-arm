@@ -66,8 +66,8 @@ cat azuredeploy.parameters.json
     "adminUsername": {
       "value": "irismeister" <==任意のLinuxユーザ名を設定する
     },
-    "adminPassword": {
-      "value": "abcdEFG123"  <==任意のパスワード用文字列を設定する
+    "adminPasswordOrKey": {
+      "value": "ssh-rsa AA ... BX/s= generated-by-azure"  <==秘密鍵を設定
     },
     "domainName": {
       "value": "my-irishost-1" <==任意のホスト名を設定する

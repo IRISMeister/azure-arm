@@ -15,10 +15,10 @@
         "description": "Virtual machine administrator username"
       }
     },
-    "adminPassword": {
-      "type": "securestring",
+    "adminPasswordOrKey": {
+    "type": "securestring",
       "metadata": {
-        "description": "Virtual machine administrator password"
+      "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
       }
     },
     "tshirtSize": {
@@ -194,6 +194,17 @@
         "version": "latest"
       }
     },
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": true,
+      "ssh": {
+          "publicKeys": [
+              {
+                  "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('adminPasswordOrKey')]"
+              }
+          ]
+      }
+    },
     "networkSettings": {
       "vnetName": "[parameters('virtualNetworkName')]",
       "addressPrefix": "10.0.0.0/16",
@@ -258,8 +269,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -275,6 +286,7 @@
           },
           "machineSettings": {
             "value": {
+              "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
@@ -327,8 +339,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -344,6 +356,7 @@
           },
           "machineSettings": {
             "value": {
+              "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
@@ -404,14 +417,17 @@
               "namespace": "arbiter"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.data]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
+          },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
           },
           "vmSize": {
             "value": "[parameters('arbiterSize')]"
@@ -467,14 +483,17 @@
               "namespace": "jumpbox"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.dmz]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
+          },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
           },
           "vmSize": {
             "value": "[parameters('jumpBoxSize')]"
