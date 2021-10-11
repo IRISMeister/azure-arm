@@ -8,9 +8,6 @@
     "osSettings": {
       "type": "object"
     },
-    "adminPassword": {
-      "type": "securestring"
-    },
     "adminPasswordOrKey": {
       "type": "securestring"
     },
