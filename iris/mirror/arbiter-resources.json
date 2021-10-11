@@ -101,7 +101,7 @@
           "computerName": "[variables('vmName')]",
           "adminUsername": "[variables('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[variables('linuxConfiguration'))]"
+          "linuxConfiguration": "[variables('linuxConfiguration')]"
         },
         "storageProfile": {
           "imageReference": "[parameters('osSettings').imageReference]",
