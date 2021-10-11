@@ -261,8 +261,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -330,8 +330,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPassword": {
+            "value": "[parameters('adminPassword')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
