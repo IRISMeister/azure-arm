@@ -197,6 +197,17 @@
         "version": "latest"
       }
     },
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": true,
+      "ssh": {
+          "publicKeys": [
+              {
+                  "path": "[concat('/home/', variables('adminUsername'), '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('adminPasswordOrKey')]"
+              }
+          ]
+      }
+    },
     "networkSettings": {
       "vnetName": "[parameters('virtualNetworkName')]",
       "addressPrefix": "10.0.0.0/16",
@@ -416,6 +427,9 @@
           "osSettings": {
             "value": "[variables('osSettings')]"
           },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
+          },
           "vmSize": {
             "value": "[parameters('arbiterSize')]"
           },
@@ -478,6 +492,9 @@
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
+          },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
           },
           "vmSize": {
             "value": "[parameters('jumpBoxSize')]"

@@ -8,6 +8,9 @@
     "osSettings": {
       "type": "object"
     },
+    "linuxConfiguration": {
+      "type": "object"
+    },
     "adminPasswordOrKey": {
       "type": "securestring"
     },
@@ -30,18 +33,7 @@
     "vmName": "[concat(variables('namespace'), 'vm')]",
     "adminUsername": "[parameters('commonSettings').adminUsername]",
     "nicName": "[concat(variables('namespace'), 'nic')]",
-    "publicIpName": "[concat(variables('namespace'), 'publicIp')]",
-    "linuxConfiguration": {
-      "disablePasswordAuthentication": true,
-      "ssh": {
-          "publicKeys": [
-              {
-                  "path": "[concat('/home/', variables('adminUsername'), '/.ssh/authorized_keys')]",
-                  "keyData": "[parameters('adminPasswordOrKey')]"
-              }
-          ]
-      }
-    }
+    "publicIpName": "[concat(variables('namespace'), 'publicIp')]"
   },
   "resources": [
     {
@@ -97,7 +89,7 @@
           "computerName": "[variables('vmName')]",
           "adminUsername": "[variables('adminUsername')]",
           "adminPassword": "[parameters('adminPasswordOrKey')]",
-          "linuxConfiguration": "[variables('linuxConfiguration')]"
+          "linuxConfiguration": "[parameters('linuxConfiguration')]"
         },
         "storageProfile": {
           "imageReference": "[parameters('osSettings').imageReference]",
