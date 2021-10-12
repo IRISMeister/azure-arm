@@ -1,5 +1,4 @@
 # iris shard
-WIP  
 ## リソースグループ
 指定したリソースグループ下に下記が作成される。
 
@@ -35,11 +34,12 @@ WIP
 ## デプロイ後のアクセス
 ### IRIS管理ポータル  
 
-IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、15分ほどで完了。  
-プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用してIRISにアクセスする。bash端末(Windows上のGit bashなどでも可)を2個開き、下記を実行する。
+IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、10分ほどで完了。  
+![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/deployment-shard.png)
+
+プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用して管理ポータルにアクセスします。bash端末(Windows上のGit bashなどでも可)を3個開き、下記を実行します。
 
 ```bash
-端末を3台使用します。各端末でポートフォワーディングを実行します。
 ssh -i [秘密鍵] -L [local-port]:[VM名]]:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 
@@ -55,11 +55,11 @@ irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ssh -i my-azure-keypair.pem -L 8890:datavm1:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
-データサーバ#1(MASTER)  
+データノード#1(MASTER)  
 http://localhost:8888/csp/sys/UtilHome.csp  
-データサーバ#2  
+データノード#2  
 http://localhost:8889/csp/sys/UtilHome.csp  
-データサーバ#3  
+データノード#3  
 http://localhost:8890/csp/sys/UtilHome.csp
 
 ## 補足事項

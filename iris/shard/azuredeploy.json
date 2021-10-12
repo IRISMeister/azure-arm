@@ -247,7 +247,7 @@
       }
     },
     {
-      "name": "data-0",
+      "name": "data-node-master",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -314,11 +314,11 @@
       }
     },
     {
-      "name": "data-1",
+      "name": "data-node",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'data-0')]"
+        "[resourceId('Microsoft.Resources/deployments', 'data-node-master')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -357,7 +357,7 @@
             }
           },
           "masterIpAddress": {
-            "value": "[reference('data-0').outputs.masterip.value]"
+            "value": "[reference('data-node-master').outputs.masterip.value]"
           },
           "dbType": {
             "value": "DATA-1"
