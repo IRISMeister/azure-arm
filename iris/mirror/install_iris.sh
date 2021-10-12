@@ -84,6 +84,8 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
   esac
 done
 
+timedatectl set-timezone Asia/Tokyo
+
 echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS ARBITERIP=$ARBITERIP NODETYPE=$NODETYPE" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
 
