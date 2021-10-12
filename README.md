@@ -99,7 +99,7 @@ cat azuredeploy.parameters.json
 | パラメータ名 | 用途 | 備考 |設定例|
 | ------------ | ------ | ---- | --- |
 |adminUsername|sudo可能なO/Sユーザ名,全VM共通||irismeister|
-|adminPasswordOrKey|SSH public key|ssh接続時に使用。StandAloneのみ|ssh-rsa AAA... generated-by-azure|
+|adminPasswordOrKey|SSH public key|ssh接続時に使用|ssh-rsa AAA... generated-by-azure|
 |domainName|Public DNS名|StandAloneのIRIS、あるいはMirror/Shard構成のJumpBox用VMのDNSホスト名|my-irishost-1|
 |_artifactsLocation|ARMテンプレートのURL|自動設定||
 |_artifactsLocationSasToken|同Sas Token|未使用||
@@ -179,7 +179,7 @@ USER>
 ```
   --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" \
 ```
-IRIS自身のインストールは、[install_iris.sh](iris\standalone\install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris\standalone\Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。
+IRIS自身のインストールは、[install_iris.sh](iris\standalone\install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris\standalone\Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。タイムゾーン指定(Asia/Tokyo)もinstall_iris.shで行っています。
 
 ## デバッグ
 ### ファイルのデプロイ先
