@@ -120,7 +120,7 @@ Public IPが公開されているVM=IRIS稼働VMです。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 例)
-$ ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+$ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 - それ以外  
 Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインします。
