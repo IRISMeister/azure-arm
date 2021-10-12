@@ -10,6 +10,8 @@
 
    このURLをパラメータの_secretsLocationで指定します。
 
+![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/azure-blob.png)
+
 2. Generate SASでキー(Signing method:Account key)を作成
 
    この値をパラメータの_secretsLocationSasTokenで指定します。
