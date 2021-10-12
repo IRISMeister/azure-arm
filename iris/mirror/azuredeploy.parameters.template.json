@@ -6,7 +6,7 @@
       "value": "GEN-UNQIUE"
     },
     "adminPasswordOrKey": {
-      "value": ""
+      "value": "GEN-SSH-PUB-KEY"
     },
     "domainName": {
       "value": "GEN-UNIQUE"
