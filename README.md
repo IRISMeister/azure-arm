@@ -123,12 +123,14 @@ $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 $ ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 - それ以外  
-Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用します。
+Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインします。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com -A
 $ ssh VM名
 例)
-$ ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
+$ eval `ssh-agent`
+$ ssh-add my-azure-keypair.pem
+$ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
 irismeister@jumpboxvm:~$ ssh msvm0
 irismeister@msvm0:~$ iris list
 Configuration 'IRIS'   (default)
