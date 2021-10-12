@@ -144,6 +144,16 @@ Configuration 'IRIS'   (default)
         product:      InterSystems IRISHealth
 irismeister@msvm0:~$
 ```
+VM名は以下の通りです。
+| デプロイタイプ | VM名 | 用途 |
+| ------------ | ------ | ---- |
+|mirror|arbitervm|Arbiter|
+|mirror|msvm0|ミラープライマリメンバ|
+|mirror|slvm0|ミラーバックアップメンバ|
+|shard|clientvm|汎用クライアントVM|
+|shard|data-mastervm0|データノード #1(マスタ)|
+|shard|datavm0|データノード #2|
+|shard|datavm1|データノード #3|
 
 ### IRISへのログイン
 各VMホストへのSSH後の、IRISセッションへのログインはO/S認証を使用。
