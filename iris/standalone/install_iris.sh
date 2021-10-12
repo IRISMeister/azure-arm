@@ -92,7 +92,7 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 
 # download iris binary kit
-wget "${SECRETURL}blob/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
+wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 
 # add a user and group for iris
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
@@ -136,7 +136,7 @@ rm -fR $kittemp
 iris stop $ISC_PACKAGE_INSTANCENAME quietly
 
 # copy iris.key from secure location...
-wget "${SECRETURL}blob/iris.key?${SECRETSASTOKEN}" -O iris.key
+wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi

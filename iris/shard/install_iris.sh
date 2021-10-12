@@ -105,9 +105,9 @@ then
   apt-get install -y openjdk-8-jdk-headless
 
   # iris jdbc driver and others
-  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
-  wget "${SECRETURL}blob/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
+  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  wget "${SECRETURL}/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
+  wget "${SECRETURL}/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
   mv *.jar $USERHOME
 
   # sample open data
@@ -160,7 +160,7 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 
 # download iris binary kit
-wget "${SECRETURL}blob/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
+wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 
 # add a user and group for iris
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
@@ -204,7 +204,7 @@ rm -fR $kittemp
 iris stop $ISC_PACKAGE_INSTANCENAME quietly
 
 # copy iris.key from secure location...
-wget "${SECRETURL}blob/iris.key?${SECRETSASTOKEN}" -O iris.key
+wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi
