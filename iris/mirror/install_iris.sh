@@ -84,6 +84,8 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
   esac
 done
 
+timedatectl set-timezone Asia/Tokyo
+
 echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS ARBITERIP=$ARBITERIP NODETYPE=$NODETYPE" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
 
@@ -101,7 +103,7 @@ then
   kit=ISCAgent-2021.1.0.215.0-lnxubuntux64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
-  wget "${SECRETURL}blob/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
+  wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
 
   tar -xvf $kit.tar.gz
   cd $kit
@@ -121,7 +123,7 @@ END
   apt-get update -y
   apt-get install -y openjdk-8-jdk-headless
   # iris jdbc driver and others
-  wget "${SECRETURL}blob/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
   mv *.jar $USERHOME
   wget ${TEMPLATEBASEURI}/JDBCSample.java
   mv *.java $USERHOME
@@ -163,7 +165,7 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 
 # download iris binary kit
-wget "${SECRETURL}blob/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
+wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 
 # add a user and group for iris
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
@@ -207,7 +209,7 @@ rm -fR $kittemp
 iris stop $ISC_PACKAGE_INSTANCENAME quietly
 
 # copy iris.key from secure location...
-wget "${SECRETURL}blob/iris.key?${SECRETSASTOKEN}" -O iris.key
+wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi

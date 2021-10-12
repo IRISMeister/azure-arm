@@ -15,13 +15,13 @@
         "description": "Virtual machine administrator username"
       }
     },
-    "adminPassword": {
+    "adminPasswordOrKey": {
       "type": "securestring",
-      "metadata": {
-        "description": "Virtual machine administrator password"
-      }
-    },
-    "tshirtSize": {
+        "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+        }
+      },
+      "tshirtSize": {
       "type": "string",
       "defaultValue": "Small",
       "allowedValues": [
@@ -188,6 +188,17 @@
         "version": "latest"
       }
     },
+    "linuxConfiguration": {
+      "disablePasswordAuthentication": true,
+      "ssh": {
+          "publicKeys": [
+              {
+                  "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('adminPasswordOrKey')]"
+              }
+          ]
+      }
+    },
     "networkSettings": {
       "vnetName": "[parameters('virtualNetworkName')]",
       "addressPrefix": "10.0.0.0/16",
@@ -236,7 +247,7 @@
       }
     },
     {
-      "name": "data-0",
+      "name": "data-node-master",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "dependsOn": [
@@ -252,8 +263,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -269,6 +280,7 @@
           },
           "machineSettings": {
             "value": {
+              "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
@@ -302,11 +314,11 @@
       }
     },
     {
-      "name": "data-1",
+      "name": "data-node",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2019-10-01",
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'data-0')]"
+        "[resourceId('Microsoft.Resources/deployments', 'data-node-master')]"
       ],
       "properties": {
         "mode": "Incremental",
@@ -318,8 +330,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -335,6 +347,7 @@
           },
           "machineSettings": {
             "value": {
+              "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
@@ -344,7 +357,7 @@
             }
           },
           "masterIpAddress": {
-            "value": "[reference('data-0').outputs.masterip.value]"
+            "value": "[reference('data-node-master').outputs.masterip.value]"
           },
           "dbType": {
             "value": "DATA-1"
@@ -392,14 +405,17 @@
               "namespace": "client"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.data]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
+          },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
           },
           "vmSize": {
             "value": "[parameters('clientSize')]"
@@ -455,14 +471,17 @@
               "namespace": "jumpbox"
             }
           },
-          "adminPassword": {
-            "value": "[parameters('adminPassword')]"
+          "adminPasswordOrKey": {
+            "value": "[parameters('adminPasswordOrKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.dmz]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
+          },
+          "linuxConfiguration": {
+            "value": "[variables('linuxConfiguration')]"
           },
           "vmSize": {
             "value": "[parameters('jumpBoxSize')]"

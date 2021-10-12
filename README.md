@@ -13,7 +13,7 @@ install_iris.shl内から、下記のようにwgetで取得している。
 ```
 _secretsLocation => SECRETURL  
 _secretsLocationSasToken => SECRETSASTOKEN  
-wget "${SECRETURL}blob/iris.key?${SECRETSASTOKEN}" -O iris.key
+wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 ```
 3. (オプション)Azure CLIをインストールし、az loginを完了させておく。
 
@@ -67,13 +67,13 @@ cat azuredeploy.parameters.json
       "value": "irismeister" <==任意のLinuxユーザ名を設定する
     },
     "adminPasswordOrKey": {
-      "value": "ssh-rsa AA ... BX/s= generated-by-azure"  <==秘密鍵を設定
+      "value": "ssh-rsa AA ... BX/s= generated-by-azure"  <==公開鍵を設定
     },
     "domainName": {
       "value": "my-irishost-1" <==任意のホスト名を設定する
     },
     "_secretsLocation": {
-      "value": "https://irismeister.blob.core.windows.net/"  <==Azure BlobのURLを設定する
+      "value": "https://irismeister.blob.core.windows.net/blob"  <==Azure BlobのURLを設定する
     },
     "_secretsLocationSasToken": {
         "value": "sp=r&st=2021..." <==正しいSAS Tokenを設定する
@@ -114,22 +114,24 @@ SuperUser/sys
 ```
 
 ### SSH
-各VMホストへのSSH方法は下記の通り。sshキーファイルは、[adminPasswordOrKey]で指定したものと対になるもの。
+各VMホストへのSSH方法は下記の通り。ssh秘密鍵ファイルは、[adminPasswordOrKey]で指定したものと対になるものです。
 - スタンドアロン  
-IRIS稼働VMが持つPublic IPに直接接続します。
+Public IPが公開されているVM=IRIS稼働VMです。
 ```bash
-ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
+$ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 例)
-ssh -i my-azure-keypair.pem irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+$ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 - それ以外  
-踏み台ホスト経由で接続します。パスワードは[adminPassword]で指定したもの。
+Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインします。
 ```bash
-ssh [adminUsername]@[domainName].japaneast.cloudapp.azure.com
-ssh [adminUsername]@VM名
+$ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com -A
+$ ssh VM名
 例)
-ssh irismeister@my-irishost-1.japaneast.cloudapp.azure.com =>パスワード入力
-ssh irismeister@msvm0 =>パスワード入力
+$ eval `ssh-agent`
+$ ssh-add my-azure-keypair.pem
+$ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
+irismeister@jumpboxvm:~$ ssh msvm0
 irismeister@msvm0:~$ iris list
 Configuration 'IRIS'   (default)
         directory:    /usr/irissys
@@ -142,6 +144,16 @@ Configuration 'IRIS'   (default)
         product:      InterSystems IRISHealth
 irismeister@msvm0:~$
 ```
+VM名は以下の通りです。
+| デプロイタイプ | VM名 | 用途 |
+| ------------ | ------ | ---- |
+|mirror|arbitervm|Arbiter|
+|mirror|msvm0|ミラープライマリメンバ|
+|mirror|slvm0|ミラーバックアップメンバ|
+|shard|clientvm|汎用クライアントVM|
+|shard|data-mastervm0|データノード #1(マスタ)|
+|shard|datavm0|データノード #2|
+|shard|datavm1|データノード #3|
 
 ### IRISへのログイン
 各VMホストへのSSH後の、IRISセッションへのログインはO/S認証を使用。
