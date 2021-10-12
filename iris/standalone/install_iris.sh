@@ -144,7 +144,6 @@ if [ -e iris.key ]; then
 fi
 
 # create related folders. 
-# See https://github.com/IRISMeister/iris-private-cloudformation/blob/master/iris-full.yml for more options
 mkdir /iris
 mkdir /iris/wij
 mkdir /iris/journal1

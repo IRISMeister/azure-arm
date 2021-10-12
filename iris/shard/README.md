@@ -1,6 +1,6 @@
 # iris shard
 ## リソースグループ
-指定したリソースグループ下に下記が作成される。
+指定したリソースグループ下に下記が作成されます。
 
 |NAME|	TYPE|	LOCATION|備考|
 |--|--|--|--|
@@ -34,10 +34,10 @@
 ## デプロイ後のアクセス
 ### IRIS管理ポータル  
 
-IRISサーバはプライベートネットワーク上のVMにデプロイされる。正常に動作した場合、10分ほどで完了。  
+IRISサーバはプライベートネットワーク上のVMにデプロイされます。正常に動作した場合、10分ほどで完了します。  
 ![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/deployment-shard.png)
 
-プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用して管理ポータルにアクセスします。bash端末(Windows上のGit bashなどでも可)を3個開き、下記を実行します。
+プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用して管理ポータルにアクセスします。bash端末(Windows上のGit bashなどでも可)を3個開き、下記を実行しください。
 
 ```bash
 ssh -i [秘密鍵] -L [local-port]:[VM名]]:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
@@ -64,7 +64,9 @@ http://localhost:8890/csp/sys/UtilHome.csp
 
 ## 補足事項
 ### サンプルデータのロード
-### SimpleMover
+#### SimpleMoverの使用例
+
+[ニューヨーク市のタクシー運航データのオープンデータ](https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page)をロードします。
 ```bash
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
 irismeister@jumpboxvm:~$ ssh clientvm
@@ -79,7 +81,8 @@ Time elapsed:     121s. Read: 99.9999%; Written: 99.9999%; Success Rate:  100.00
 TOTAL Time between:  120.00s and  121.19s;       Insertion Rate is between:   11925.8761 and   12044.1420 row/sec
 irismeister@clientvm:~$
 ```
-#### JDBC
+#### JDBCの使用例
+ごく簡単な[JDBCアクセス](iris\shard\JDBCSample.java)の例です。
 ```bash
 irismeister@clientvm:~$ javac JDBCSample.java
 irismeister@clientvm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample

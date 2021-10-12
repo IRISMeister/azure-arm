@@ -1,9 +1,9 @@
 # iris standalone
-IRISサーバ用のVMにパブリックIPがアサインされるため直接接続が可能。  
-> ポート22(SSH)及び52773(IRIS管理ポータル用のapache)が公開されるので注意
+IRISサーバ用のVMにパブリックIPがアサインされるため直接接続が可能です。  
+> ポート22(SSH)、1972(スーパーサーバ)、52773(IRIS管理ポータル用のapache)が公開されるのでご注意ください
 
 ## リソースグループ
-指定したリソースグループ下に下記が作成される。
+指定したリソースグループ下に下記が作成されます。
 |NAME|	TYPE|	LOCATION|
 |--|--|--|
 |myNSG	|Network security group	|Japan East|
