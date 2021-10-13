@@ -1,7 +1,10 @@
 # iris arm templates
-テスト目的のIRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)をデプロイすることを目的としています。プロダクション用途には使用しないでください。
+IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)をテスト・評価目的でAzureにデプロイすることを目的としています。
+> **プロダクション用途を想定したものではありません。**
 
 [こちら](https://github.com/Azure/azure-quickstart-templates)のサイト(特に、[postgre](https://github.com/Azure/azure-quickstart-templates/tree/master/application-workloads/postgre))を参考にさせていただきました。  
+
+IRIS本体やデータベース格納用のディスクの作成には[こちらの](https://github.com/Azure/azure-quickstart-templates/blob/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh)のスクリプトを使用しています。
 
 # 共通事項
 
@@ -16,19 +19,27 @@
 
    この値をパラメータの_secretsLocationSasTokenで指定します。
 
-  > Azure Blobからのファイル取得は、install_iris.shl内で、下記のようにwgetを実行しています。
+Azure Blobからのファイル取得は、install_iris.shl内で、下記のようにwgetを実行しています。
 
-```
+```bash
 _secretsLocation => SECRETURL  
 _secretsLocationSasToken => SECRETSASTOKEN  
 wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 ```
+事前に手元のPC(私は実行環境として、Windows10+Git bashを使用しています)で下記を実行できる事を確認しておいてください。
+```bash
+$ git version
+git version 2.33.0.windows.2
+$ SECRETURL=https://xxxx.blob.core.windows.net/yyyy
+$ SECRETSASTOKEN="sp=r&st=...%3D"
+$ curl "${SECRETURL}/iris.key?${SECRETSASTOKEN}"
+```
+
 3. Azure SSH keysで、SSH用のキーペアを作成します。
 
    公開鍵の値をパラメータのadminPasswordOrKeyで指定します。
 
-4. (オプション)Azure CLIをインストールし、az loginが可能な環境にしておきます。
-
+4. (オプションですがお勧めです)[Azure CLI](https://docs.microsoft.com/ja-jp/cli/azure/)をインストールし、az loginを実行します。
 ## デプロイ方法
 スタンドアロン構成のデプロイ  
 [![Deploy To Azure Standalone](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FIRISMeister%2Fazure-arm%2Fmaster%2Firis%2Fstandalone%2Fazuredeploy.json)
@@ -134,12 +145,18 @@ $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 - それ以外  
-Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインします。
+Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com -A
 $ ssh VM名
 例)
 $ eval `ssh-agent`
+$ ps
+      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
+     1927       1    1927       9692  ?         197609 11:15:31 /usr/bin/mintty
+     1928    1927    1928       9900  pty0      197609 11:15:31 /usr/bin/bash
+     1982    1928    1982      14092  pty0      197609 11:18:01 /usr/bin/ps
+     1978       1    1978       3536  ?         197609 11:18:00 /usr/bin/ssh-agent
 $ ssh-add my-azure-keypair.pem
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
 irismeister@jumpboxvm:~$ ssh msvm0
@@ -153,7 +170,10 @@ Configuration 'IRIS'   (default)
         mirroring: Member Type = Failover; Status = Primary
         state:        ok
         product:      InterSystems IRISHealth
-irismeister@msvm0:~$
+irismeister@msvm0:~$ [Do Your Staff]
+irismeister@msvm0:~$ logout
+irismeister@jumpboxvm:~$ logout
+$ eval `ssh-agent -k`
 ```
 VM名は以下の通りです。
 | デプロイタイプ | VM名 | 用途 |
