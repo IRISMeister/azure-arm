@@ -4,7 +4,7 @@ IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャ
 
 [こちら](https://github.com/Azure/azure-quickstart-templates)のサイト(特に、[postgre](https://github.com/Azure/azure-quickstart-templates/tree/master/application-workloads/postgre))を参考にさせていただきました。  
 
-IRIS本体やデータベース格納用のディスクの作成には[こちらの](https://github.com/Azure/azure-quickstart-templates/blob/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh)のスクリプトを使用しています。
+IRIS本体やデータベース格納用のディスクの作成には[こちら](https://github.com/Azure/azure-quickstart-templates/blob/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh)のスクリプトを使用しています。
 
 # 共通事項
 
