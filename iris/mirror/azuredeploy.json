@@ -108,69 +108,23 @@
       "Small": {
         "vmSize": "Standard_A2_v2",
         "diskSize": 1023,
-        "diskCount": 2,
-        "vmCount": 2,
-        "slaveCount": 1,
-        "storage": {
-          "count": 1,
-          "pool": "db",
-          "map": [
-            0,
-            0
-          ],
-          "jumpbox": 0
-        }
+        "diskCount": 1,
+        "vmCount": 1,
+        "slaveCount": 1
       },
       "Medium": {
-        "vmSize": "Standard_A2_v2",
-        "diskSize": 1023,
-        "diskCount": 8,
-        "vmCount": 2,
-        "slaveCount": 1,
-        "storage": {
-          "count": 2,
-          "pool": "db",
-          "map": [
-            0,
-            1
-          ],
-          "jumpbox": 0
-        }
-      },
-      "Large": {
         "vmSize": "Standard_A4_v2",
         "diskSize": 1023,
-        "diskCount": 16,
-        "vmCount": 3,
-        "slaveCount": 2,
-        "storage": {
-          "count": 2,
-          "pool": "db",
-          "map": [
-            0,
-            1,
-            1
-          ],
-          "jumpbox": 0
-        }
+        "diskCount": 4,
+        "vmCount": 1,
+        "slaveCount": 1
       },
-      "XLarge": {
+      "Large": {
         "vmSize": "Standard_A8_v2",
         "diskSize": 1023,
-        "diskCount": 16,
-        "vmCount": 4,
-        "slaveCount": 3,
-        "storage": {
-          "count": 2,
-          "pool": "db",
-          "map": [
-            0,
-            0,
-            1,
-            1
-          ],
-          "jumpbox": 0
-        }
+        "diskCount": 8,
+        "vmCount": 1,
+        "slaveCount": 1
       }
     },
     "arbiterTemplateUrl": "[uri(parameters('_artifactsLocation'), concat('arbiter-resources.json', parameters('_artifactsLocationSasToken')))]",
@@ -284,7 +238,7 @@
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
               "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
               "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
-              "vmCount": 1,
+              "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].vmCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "2"
             }
