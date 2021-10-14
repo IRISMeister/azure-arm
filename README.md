@@ -86,6 +86,9 @@ cat azuredeploy.parameters.json
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "tshirtSize": {
+      "value": "Small" <=="Small","Medium","Large"のいずれかを設定。VMSIZEやDISK数の指定。
+    },
     "adminUsername": {
       "value": "irismeister" <==任意のLinuxユーザ名を設定
     },
@@ -104,7 +107,8 @@ cat azuredeploy.parameters.json
   }
 }
 ```
-> domainNameに設定するホスト名はユニークである必要があります。
+> tshirtSizeの内容は、各々のazuredeploy.jsonの変数deploymentSizeで定義されています。  
+> domainNameに設定するホスト名はユニークである必要があります。  
 > 以後、上記編集例に習い、adminUsernameには"irismeister", domainNameには"my-irishost-1"を指定した例を使用します。また、デプロイ先のリージョンはjapaneastを指定しています。
 
 ## パラメータ一覧
