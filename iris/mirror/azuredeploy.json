@@ -16,10 +16,10 @@
       }
     },
     "adminPasswordOrKey": {
-    "type": "securestring",
-      "metadata": {
-      "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
-      }
+      "type": "securestring",
+        "metadata": {
+        "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+        }
     },
     "tshirtSize": {
       "type": "string",
@@ -27,8 +27,7 @@
       "allowedValues": [
         "Small",
         "Medium",
-        "Large",
-        "XLarge"
+        "Large"
       ],
       "metadata": {
         "description": "T-shirt size of the IRIS deployment"
@@ -107,14 +106,14 @@
     "deploymentSize": {
       "Small": {
         "vmSize": "Standard_A2_v2",
-        "diskSize": 1023,
-        "diskCount": 1,
+        "diskSize": 256,
+        "diskCount": 2,
         "vmCount": 1,
         "slaveCount": 1
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
-        "diskSize": 1023,
+        "diskSize": 512,
         "diskCount": 4,
         "vmCount": 1,
         "slaveCount": 1

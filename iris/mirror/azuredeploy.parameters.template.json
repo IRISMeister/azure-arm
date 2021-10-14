@@ -2,8 +2,11 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "tshirtSize": {
+      "value": "" // pick "Small","Medium","Large"
+    },
     "adminUsername": {
-      "value": "GEN-UNQIUE"
+      "value": "GEN-UNIQUE"
     },
     "adminPasswordOrKey": {
       "value": "GEN-SSH-PUB-KEY"
