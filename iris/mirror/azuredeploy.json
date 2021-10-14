@@ -106,7 +106,7 @@
     "deploymentSize": {
       "Small": {
         "vmSize": "Standard_A2_v2",
-        "diskSize": 256,
+        "diskSize": 512,
         "diskCount": 2,
         "vmCount": 1,
         "slaveCount": 1
