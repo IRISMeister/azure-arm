@@ -132,7 +132,7 @@
     "osSettings": {
       "scripts": [
         "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]",
-        "[uri(parameters('_artifactsLocation'), concat('vm-disk-utils-0.1.sh', parameters('_artifactsLocationSasToken')))]"
+        "[uri(parameters('_artifactsLocation'), concat('mount-disks.sh', parameters('_artifactsLocationSasToken')))]"
       ],
       "imageReference": {
         "publisher": "Canonical",
