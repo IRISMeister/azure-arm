@@ -107,21 +107,21 @@
       "Small": {
         "vmSize": "Standard_A2_v2",
         "diskSize": 256,
-        "diskCount": 2,
+        "diskCount": 3,
         "vmCount": 1,
         "slaveCount": 1
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
         "diskSize": 512,
-        "diskCount": 4,
+        "diskCount": 3,
         "vmCount": 1,
         "slaveCount": 2
       },
       "Large": {
         "vmSize": "Standard_A8_v2",
         "diskSize": 1023,
-        "diskCount": 8,
+        "diskCount": 3,
         "vmCount": 1,
         "slaveCount": 4
       }
