@@ -168,15 +168,16 @@ wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
-#; change owner so that IRIS can create folders and database files
+# mount user disks and create iris related folders 
 ./mount-disks.sh
+# change owner so that IRIS can create folders and database files
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/db
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
 
-# use this later. any better way?
+# use this later. cpf merge requires this. any better way?
 chmod 777 /iris/journal1
 chmod 777 /iris/journal1
 
