@@ -269,7 +269,7 @@ then
 fi
 
 }
-
+exit 0
 # MAIN ROUTINE
 echo "calling install_iris_service"
 install_iris_service
