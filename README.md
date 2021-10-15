@@ -118,7 +118,7 @@ $ rg=IRIS-Group; az group delete --name $rg --yes
 ## デプロイ後のアクセス
 ### IRIS管理ポータル
 IRIS管理ポータルのURLは、デプロイ対象により異なります。  
-スタンドアロンの場合は、IRIS稼働VMが持つPublic IPに直接接続します。それ以外の場合は、踏み台ホスト経由で接続します。実際のアクセス方法は、[スタンドアロン](iris\standalone\README.md),[ミラー](iris\mirror\README.md),[シャード](iris\shard\README.md)を参照ください。  
+スタンドアロンの場合は、IRIS稼働VMが持つPublic IPに直接接続します。それ以外の場合は、踏み台ホスト経由で接続します。実際のアクセス方法は、[スタンドアロン](iris/standalone/README.md),[ミラー](iris/mirror/README.md),[シャード](iris/shard/README.md)を参照ください。  
 
 ユーザ名/パスワードはいずれも下記です。
 ```
@@ -189,17 +189,17 @@ USER>
 本稿はARMテンプレートやインストーラをGitHubの公開レポジトリに配置することを前提にしています(なので_artifactsLocationSasTokenは未使用)。これらをAzure Blobに配置することも可能ですが、本稿では触れません。  
 自前のGitHubの(公開)レポジトリを使用する場合は、deploy.shの下記のuriがそのGitHubレポを差すように修正してください。
 ```
-  --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" \
+  --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" /
 ```
-IRIS自身のインストールは、[install_iris.sh](iris\standalone\install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris\standalone\Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。タイムゾーン指定(Asia/Tokyo)もinstall_iris.shで行っています。
+IRIS自身のインストールは、[install_iris.sh](iris/standalone/install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris/standalone/Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。タイムゾーン指定(Asia/Tokyo)もinstall_iris.shで行っています。
 
 使用するリソースは下記で設定しています。必要に応じて増減してください。
 
 | デプロイタイプ | ファイル | 定義箇所 |
 | ------------ | ------ | ---- |
-|standalone|[iris\standalone\azuredeploy.json](iris\standalone\azuredeploy.json)|パラメータのVmSizeのみ|
-|mirror|[iris\mirror\azuredeploy.json](iris\mirror\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
-|shard|[iris\shard\azuredeploy.json](iris\shard\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
+|standalone|[iris/standalone/azuredeploy.json](iris/standalone/azuredeploy.json)|パラメータのVmSizeのみ|
+|mirror|[iris/mirror/azuredeploy.json](iris/mirror/azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
+|shard|[iris/shard/azuredeploy.json](iris/shard/azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
 
 ## デバッグ
 ### ファイルのデプロイ先

@@ -82,7 +82,7 @@ TOTAL Time between:  120.00s and  121.19s;       Insertion Rate is between:   11
 irismeister@clientvm:~$
 ```
 #### JDBCの使用例
-ごく簡単な[JDBCアクセス](iris\shard\JDBCSample.java)の例です。
+ごく簡単な[JDBCアクセス](JDBCSample.java)の例です。
 ```bash
 irismeister@clientvm:~$ javac JDBCSample.java
 irismeister@clientvm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
