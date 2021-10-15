@@ -30,9 +30,6 @@ then
     exit 3
 fi
 
-#Format the data disk
-#bash vm-disk-utils-0.1.sh -s
-
 # Get today's date into YYYYMMDD format
 now=$(date +"%Y%m%d")
 
