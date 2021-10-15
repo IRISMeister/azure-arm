@@ -30,8 +30,18 @@ then
     exit 3
 fi
 
+# Get today's date into YYYYMMDD format
+now=$(date +"%Y%m%d")
+
+# Get passed in parameters $1, $2, $3, $4, and others...
+MASTERIP=""
+SUBNETADDRESS=""
+NODETYPE=""
+SECRETURL=""
+SECRETSASTOKEN=""
+
 #Loop through options passed
-while getopts :m:s:t:L:T:u:A: optname; do
+while getopts :m:s:a:t:L:T:u:A: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -39,9 +49,6 @@ while getopts :m:s:t:L:T:u:A: optname; do
       ;;
   	s) #Data storage subnet space
       SUBNETADDRESS=${OPTARG}
-      ;;
-    t) #Type of node (DATA-0/DATA-1/...)
-      NODETYPE=${OPTARG}
       ;;
     L) #secret url
       SECRETURL=${OPTARG}
@@ -69,16 +76,17 @@ done
 
 timedatectl set-timezone Asia/Tokyo
 
-echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS CLIENTIP=$CLIENTIP NODETYPE=$NODETYPE" >> params.log
+echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS" >> params.log
 echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
+TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 USERHOME=/home/$ADMINUSER
 
-wget ${TEMPLATEBASEURI}/iris.service
+wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
 kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
@@ -100,8 +108,23 @@ wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
-#; change owner so that IRIS can create folders and database files
-chown irisowner:irisusr /datadisks/disk1/
+# mount user disks and create iris related folders 
+wget ${TEMPLATECMNURI}/mount-disks.sh
+chmod +x ./mount-disks.sh
+./mount-disks.sh
+# change owner so that IRIS can create folders and database files
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/db
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
+
+# installer (manifest) requires this.
+chmod 775 /iris/db
+
+# cpf merge requires this.
+chmod 777 /iris/journal1
+chmod 777 /iris/journal2
 
 # install iris
 mkdir -p $kittemp
@@ -142,20 +165,6 @@ wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi
-
-# create related folders. 
-mkdir /iris
-mkdir /iris/wij
-mkdir /iris/journal1
-mkdir /iris/journal2
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
-
-# any better way?
-chmod 777 /iris/journal1
-chmod 777 /iris/journal1
 
 cp iris.service /etc/systemd/system/iris.service
 chmod 644 /etc/systemd/system/iris.service

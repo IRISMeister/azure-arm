@@ -269,7 +269,24 @@
                         "name": "[concat(variables('vmName'),'_OSDisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage"
-                    }
+                    },
+                    "dataDisks": [
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 0,
+                          "createOption": "Empty"
+                        },
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 1,
+                          "createOption": "Empty"
+                        },
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 2,
+                          "createOption": "Empty"
+                        }
+                      ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
@@ -295,9 +312,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]",
-                        "[uri(parameters('_artifactsLocation'), concat('iris.service', parameters('_artifactsLocationSasToken')))]",
-                        "[uri(parameters('_artifactsLocation'), concat('Installer.cls', parameters('_artifactsLocationSasToken')))]"
+                        "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]"
                     ],
                     "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote') )]"
                 }
