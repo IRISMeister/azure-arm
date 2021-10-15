@@ -5,7 +5,7 @@ XData setup [ XMLNamespace = INSTALLER ]
 {
 <Manifest>
   <Var Name="Namespace" Value="myapp"/>
-  <Var Name="DBDIR" Value="/iris/db"/>
+  <Var Name="DBDIR" Value="/iris/db/"/>
   <Var Name="Import" Value="0"/>
 
 <If Condition='(##class(Config.Namespaces).Exists("${Namespace}")=0)'>
