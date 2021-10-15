@@ -1,6 +1,7 @@
 # iris arm templates
-IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)をテスト・評価目的でAzureにデプロイすることを目的としています。
-> **プロダクション用途を想定したものではありません。**
+IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)を機能テスト・評価目的でAzureにデプロイすることを目的としています。
+> **プロダクション用途を想定したものではありません。**  
+> **リソース(CPU,Memory,DISK)をかなり低めに抑えていますので、このままではベンチマークにも不向きです。**
 
 [こちら](https://github.com/Azure/azure-quickstart-templates)のサイト(特に、[postgre](https://github.com/Azure/azure-quickstart-templates/tree/master/application-workloads/postgre))を参考にさせていただきました。  
 
@@ -206,6 +207,14 @@ USER>
   --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" \
 ```
 IRIS自身のインストールは、[install_iris.sh](iris\standalone\install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris\standalone\Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。タイムゾーン指定(Asia/Tokyo)もinstall_iris.shで行っています。
+
+使用するリソースは下記で設定しています。必要に応じて増減してください。
+
+| デプロイタイプ | ファイル | 定義箇所 |
+| ------------ | ------ | ---- |
+|standalone|[iris\standalone\azuredeploy.json](iris\standalone\azuredeploy.json)|パラメータのVmSizeのみ|
+|mirror|[iris\mirror\azuredeploy.json](iris\mirror\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
+|shard|[iris\shard\azuredeploy.json](iris\shard\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
 
 ## デバッグ
 ### ファイルのデプロイ先
