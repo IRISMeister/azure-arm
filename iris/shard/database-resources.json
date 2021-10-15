@@ -110,16 +110,21 @@
             "caching": "ReadWrite",
             "createOption": "FromImage"
           },
-          "copy": [
+          "dataDisks": [
             {
-              "name": "dataDisks",
-              "count": "[parameters('machineSettings').diskCount]",
-              "input": {
-                "diskSizeGB": "[parameters('machineSettings').diskSize]",
-                "lun": "[copyIndex('dataDisks')]",
-                "caching": "None",
-                "createOption": "Empty"
-              }
+              "diskSizeGB": "[parameters('machineSettings').dbSize]",
+              "lun": 0,
+              "createOption": "Empty"
+            },
+            {
+              "diskSizeGB": "[parameters('machineSettings').wijSize]",
+              "lun": 1,
+              "createOption": "Empty"
+            },
+            {
+              "diskSizeGB": "[parameters('machineSettings').j1Size]",
+              "lun": 2,
+              "createOption": "Empty"
             }
           ]
         },

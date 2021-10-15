@@ -4,7 +4,9 @@ Class Silent.Installer
 XData setup [ XMLNamespace = INSTALLER ]
 {
 <Manifest>
-  <Var Name="Namespace" Value="myapp"/>
+  <Var Name="Namespace" Value="IRISDM"/>
+  <Var Name="Namespace-cluster" Value="IRISCLUSTER"/>
+  <Var Name="DBDIR" Value="/iris/db/"/>
   <Var Name="Import" Value="0"/>
 
 <If Condition='(##class(Config.Namespaces).Exists("${Namespace}")=0)'>
@@ -12,7 +14,7 @@ XData setup [ XMLNamespace = INSTALLER ]
   <Namespace Name="${Namespace}" Create="yes" Code="${Namespace}" Ensemble="0" Data="${Namespace}">
     <Configuration>
       <Database Name="${Namespace}"
-        Dir="${MGRDIR}${Namespace}"
+        Dir="${DBDIR}${Namespace}"
         Create="overwrite"
         Resource="%DB_${Namespace}"
         PublicPermissions="RW"
@@ -20,6 +22,19 @@ XData setup [ XMLNamespace = INSTALLER ]
     </Configuration>
   </Namespace>
   <Log Text="End Creating namespace ${Namespace}" Level="0"/>
+</If>
+<If Condition='(##class(Config.Namespaces).Exists("${Namespace-cluster}")=0)'>
+  <Namespace Name="${Namespace-cluster}" Create="yes" Code="${Namespace-cluster}" Ensemble="0" Data="${Namespace-cluster}">
+    <Configuration>
+      <Database Name="${Namespace-cluster}"
+        Dir="${DBDIR}${Namespace-cluster}"
+        Create="overwrite"
+        Resource="%DB_${Namespace-cluster}"
+        PublicPermissions="RW"
+        MountAtStartup="true"/>
+    </Configuration>
+  </Namespace>
+  <Log Text="End Creating namespace ${Namespace-cluster}" Level="0"/>
 </If>
 
 <Namespace Name="${Namespace}" Create="no">
@@ -58,12 +73,6 @@ ClassMethod setupExt() As %Status
 	  Set tSC=e.AsStatus()
   }
   Return tSC
-}
-
-ClassMethod EnableShardService() As %Status
-{
-  set sc = $SYSTEM.Cluster.Initialize()
-  quit sc
 }
 
 ClassMethod InitializeCluster() As %Status

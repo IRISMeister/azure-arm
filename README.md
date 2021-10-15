@@ -1,10 +1,9 @@
 # iris arm templates
-IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)をテスト・評価目的でAzureにデプロイすることを目的としています。
-> **プロダクション用途を想定したものではありません。**
+IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)を機能テスト・評価目的でAzureにデプロイすることを目的としています。
+> **プロダクション用途を想定したものではありません。**  
+> **リソース設定(CPU,Memory,DISK性能)をかなり低めに抑えていますので、このままではベンチマークにも不向きです。**
 
 [こちら](https://github.com/Azure/azure-quickstart-templates)のサイト(特に、[postgre](https://github.com/Azure/azure-quickstart-templates/tree/master/application-workloads/postgre))を参考にさせていただきました。  
-
-IRIS本体やデータベース格納用のディスクの作成には[こちら](https://github.com/Azure/azure-quickstart-templates/blob/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh)のスクリプトを使用しています。
 
 # 共通事項
 
@@ -86,6 +85,9 @@ cat azuredeploy.parameters.json
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "tshirtSize": {
+      "value": "Small" <=="Small","Medium","Large"のいずれかを設定。VMSIZEやDISK数の指定。
+    },
     "adminUsername": {
       "value": "irismeister" <==任意のLinuxユーザ名を設定
     },
@@ -104,7 +106,8 @@ cat azuredeploy.parameters.json
   }
 }
 ```
-> domainNameに設定するホスト名はユニークである必要があります。
+> tshirtSizeの内容は、各々のazuredeploy.jsonの変数deploymentSizeで定義されています。  
+> domainNameに設定するホスト名はユニークである必要があります。  
 > 以後、上記編集例に習い、adminUsernameには"irismeister", domainNameには"my-irishost-1"を指定した例を使用します。また、デプロイ先のリージョンはjapaneastを指定しています。
 
 ## パラメータ一覧
@@ -202,6 +205,14 @@ USER>
   --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" \
 ```
 IRIS自身のインストールは、[install_iris.sh](iris\standalone\install_iris.sh)でサイレントインストールを行っています。その際に、[Silent.Installer.cls](iris\standalone\Installer.cls)が実行されるようになっているので、このクラスに必要な変更を加えてください。タイムゾーン指定(Asia/Tokyo)もinstall_iris.shで行っています。
+
+使用するリソースは下記で設定しています。必要に応じて増減してください。
+
+| デプロイタイプ | ファイル | 定義箇所 |
+| ------------ | ------ | ---- |
+|standalone|[iris\standalone\azuredeploy.json](iris\standalone\azuredeploy.json)|パラメータのVmSizeのみ|
+|mirror|[iris\mirror\azuredeploy.json](iris\mirror\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
+|shard|[iris\shard\azuredeploy.json](iris\shard\azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
 
 ## デバッグ
 ### ファイルのデプロイ先
