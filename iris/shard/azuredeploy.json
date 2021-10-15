@@ -115,19 +115,19 @@
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
-        "dbSize": 256,
-        "wijSize": 256,
-        "j1Size": 256,
-        "j2Size": 256,
+        "dbSize": 512,
+        "wijSize": 512,
+        "j1Size": 512,
+        "j2Size": 512,
         "vmCount": 1,
         "slaveCount": 2
       },
       "Large": {
         "vmSize": "Standard_A8_v2",
-        "dbSize": 256,
-        "wijSize": 256,
-        "j1Size": 256,
-        "j2Size": 256,
+        "dbSize": 512,
+        "wijSize": 512,
+        "j1Size": 512,
+        "j2Size": 512,
         "vmCount": 1,
         "slaveCount": 4
       }

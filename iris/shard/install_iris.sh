@@ -177,9 +177,12 @@ chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
 
-# use this later. cpf merge requires this. any better way?
+# installer (manifest) requires this.
+chmod 775 /iris/db
+
+# cpf merge requires this.
 chmod 777 /iris/journal1
-chmod 777 /iris/journal1
+chmod 777 /iris/journal2
 
 # install iris
 mkdir -p $kittemp
