@@ -109,11 +109,10 @@ useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
 # mount user disks and create iris related folders 
-mkdir /iris
-mkdir /iris/db
-mkdir /iris/wij
-mkdir /iris/journal1
-mkdir /iris/journal2
+wget ${TEMPLATECMNURI}/mount-disks.sh
+chmod +x ./mount-disks.sh
+./mount-disks.sh
+# change owner so that IRIS can create folders and database files
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/db
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij

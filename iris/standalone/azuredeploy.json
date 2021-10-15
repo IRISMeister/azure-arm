@@ -269,7 +269,24 @@
                         "name": "[concat(variables('vmName'),'_OSDisk')]",
                         "caching": "ReadWrite",
                         "createOption": "FromImage"
-                    }
+                    },
+                    "dataDisks": [
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 0,
+                          "createOption": "Empty"
+                        },
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 1,
+                          "createOption": "Empty"
+                        },
+                        {
+                          "diskSizeGB": 256,
+                          "lun": 2,
+                          "createOption": "Empty"
+                        }
+                      ]
                 },
                 "networkProfile": {
                     "networkInterfaces": [
