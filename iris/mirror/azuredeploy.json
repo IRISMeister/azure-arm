@@ -106,24 +106,30 @@
     "deploymentSize": {
       "Small": {
         "vmSize": "Standard_A2_v2",
-        "diskSize": 512,
-        "diskCount": 2,
+        "dbSize": 256,
+        "wijSize": 256,
+        "j1Size": 256,
+        "j2Size": 256,
         "vmCount": 1,
         "slaveCount": 1
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
-        "diskSize": 512,
-        "diskCount": 4,
+        "dbSize": 512,
+        "wijSize": 512,
+        "j1Size": 512,
+        "j2Size": 512,
         "vmCount": 1,
-        "slaveCount": 1
+        "slaveCount": 2
       },
       "Large": {
         "vmSize": "Standard_A8_v2",
-        "diskSize": 1023,
-        "diskCount": 8,
+        "dbSize": 512,
+        "wijSize": 512,
+        "j1Size": 512,
+        "j2Size": 512,
         "vmCount": 1,
-        "slaveCount": 1
+        "slaveCount": 4
       }
     },
     "arbiterTemplateUrl": "[uri(parameters('_artifactsLocation'), concat('arbiter-resources.json', parameters('_artifactsLocationSasToken')))]",
@@ -132,7 +138,7 @@
     "osSettings": {
       "scripts": [
         "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]",
-        "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/shared_scripts/ubuntu/vm-disk-utils-0.1.sh"
+        "[uri(parameters('_artifactsLocation'), concat('mount-disks.sh', parameters('_artifactsLocationSasToken')))]"
       ],
       "imageReference": {
         "publisher": "Canonical",
@@ -235,8 +241,10 @@
             "value": {
               "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
-              "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
-              "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
+              "dbSize": "[variables('deploymentSize')[parameters('tshirtSize')].dbSize]",
+              "wijSize": "[variables('deploymentSize')[parameters('tshirtSize')].wijSize]",
+              "j1Size": "[variables('deploymentSize')[parameters('tshirtSize')].j1Size]",
+              "j2Size": "[variables('deploymentSize')[parameters('tshirtSize')].j2Size]",
               "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].vmCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "2"
@@ -305,8 +313,10 @@
             "value": {
               "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
-              "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
-              "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
+              "dbSize": "[variables('deploymentSize')[parameters('tshirtSize')].dbSize]",
+              "wijSize": "[variables('deploymentSize')[parameters('tshirtSize')].wijSize]",
+              "j1Size": "[variables('deploymentSize')[parameters('tshirtSize')].j1Size]",
+              "j2Size": "[variables('deploymentSize')[parameters('tshirtSize')].j2Size]",
               "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].slaveCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "3"

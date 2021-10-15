@@ -30,9 +30,6 @@ then
     exit 3
 fi
 
-#Format the data disk
-bash vm-disk-utils-0.1.sh -s
-
 # Get today's date into YYYYMMDD format
 now=$(date +"%Y%m%d")
 
@@ -171,8 +168,21 @@ wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
-#; change owner so that IRIS can create folders and database files
-chown irisowner:irisusr /datadisks/disk1/
+# mount user disks and create iris related folders 
+./mount-disks.sh
+# change owner so that IRIS can create folders and database files
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/db
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
+
+# installer (manifest) requires this.
+chmod 775 /iris/db
+
+# cpf merge requires this.
+chmod 777 /iris/journal1
+chmod 777 /iris/journal2
 
 # install iris
 mkdir -p $kittemp
@@ -213,20 +223,6 @@ wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi
-
-# create related folders. 
-mkdir /iris
-mkdir /iris/wij
-mkdir /iris/journal1
-mkdir /iris/journal2
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
-
-# any better way?
-chmod 777 /iris/journal1
-chmod 777 /iris/journal1
 
 cp iris.service /etc/systemd/system/iris.service
 chmod 644 /etc/systemd/system/iris.service
