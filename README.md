@@ -55,32 +55,19 @@ Shard構成のデプロイ
 
 - Azureポータルを使用する場合は、上部のDeploy to Azureリンクを使用してDeploymentを作成します。空白のパラメータに環境に応じた値を設定してください。
 - Azure CLIを使用する場合(お勧め)は、同梱のdeploy.shを使用します。
-    事前に、以下の要領でパラメータファイル(azuredeploy.parameters.json)を作成し、環境に応じた編集を行います。  
+    事前に、以下の要領で各構成用のパラメータファイル(azuredeploy.parameters.json)を作成し、環境に応じた編集を行います。  
 
-    スタンドアロン構成の場合
     ```bash
-    cd standalone
-    cp azuredeploy.parameters.template.json azuredeploy.parameters.json
-    vi azuredeploy.parameters.json
-    ./deploy.sh
+    $ cd standalone | mirror | shard
+    $ cp azuredeploy.parameters.template.json azuredeploy.parameters.json
+    $ vi azuredeploy.parameters.json
+    $ ../deploy.sh
     ```
-    ミラーリング構成の場合
-    ```bash
-    cd mirror
-    cp azuredeploy.parameters.template.json azuredeploy.parameters.json
-    vi azuredeploy.parameters.json
-    ./deploy.sh
-    ```
-    シャード構成の場合
-    ```bash
-    cd shard
-    cp azuredeploy.parameters.template.json azuredeploy.parameters.json
-    vi azuredeploy.parameters.json
-    ./deploy.sh
-    ```
+
     下記は、ミラー構成用のazuredeploy.parameters.jsonの編集例です。  
 ```
-cat azuredeploy.parameters.json
+$ cd mirror
+$ cat azuredeploy.parameters.json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
