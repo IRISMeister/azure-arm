@@ -169,7 +169,16 @@ useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
 #; change owner so that IRIS can create folders and database files
-chown irisowner:irisusr /datadisks/disk1/
+./mount-disks.sh
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/db
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
+
+# use this later. any better way?
+chmod 777 /iris/journal1
+chmod 777 /iris/journal1
 
 # install iris
 mkdir -p $kittemp
@@ -210,20 +219,6 @@ wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 if [ -e iris.key ]; then
   cp iris.key $ISC_PACKAGE_INSTALLDIR/mgr/
 fi
-
-# create related folders. 
-mkdir /iris
-mkdir /iris/wij
-mkdir /iris/journal1
-mkdir /iris/journal2
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/wij
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal1
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris/journal2
-
-# any better way?
-chmod 777 /iris/journal1
-chmod 777 /iris/journal1
 
 cp iris.service /etc/systemd/system/iris.service
 chmod 644 /etc/systemd/system/iris.service
@@ -269,7 +264,7 @@ then
 fi
 
 }
-exit 0
+
 # MAIN ROUTINE
 echo "calling install_iris_service"
 install_iris_service
