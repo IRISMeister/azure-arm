@@ -1,7 +1,7 @@
 # iris arm templates
 IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャード構成)を機能テスト・評価目的でAzureにデプロイすることを目的としています。
 > **プロダクション用途を想定したものではありません。**  
-> **リソース(CPU,Memory,DISK)をかなり低めに抑えていますので、このままではベンチマークにも不向きです。**
+> **リソース設定(CPU,Memory,DISK性能)をかなり低めに抑えていますので、このままではベンチマークにも不向きです。**
 
 [こちら](https://github.com/Azure/azure-quickstart-templates)のサイト(特に、[postgre](https://github.com/Azure/azure-quickstart-templates/tree/master/application-workloads/postgre))を参考にさせていただきました。  
 
