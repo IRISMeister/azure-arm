@@ -76,9 +76,10 @@ install_iris_service() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
+TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 USERHOME=/home/$ADMINUSER
 
-wget ${TEMPLATEBASEURI}/iris.service
+wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
 kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS

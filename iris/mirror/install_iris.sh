@@ -90,6 +90,7 @@ install_iris_service() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
+TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 USERHOME=/home/$ADMINUSER
 export MirrorDBName='MYDB'
 export MirrorArbiterIP=$ARBITERIP
@@ -129,7 +130,7 @@ END
 
   exit 0
 else
-  wget ${TEMPLATEBASEURI}/iris.service
+  wget ${TEMPLATECMNURI}/iris.service
   wget ${TEMPLATEBASEURI}/Installer.cls
 fi
 
@@ -169,6 +170,8 @@ useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
 # mount user disks and create iris related folders 
+wget ${TEMPLATECMNURI}/mount-disks.sh
+chmod +x ./mount-disks.sh
 ./mount-disks.sh
 # change owner so that IRIS can create folders and database files
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_IRISUSER /iris
