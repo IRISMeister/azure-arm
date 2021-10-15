@@ -1,8 +1,8 @@
 #!/bin/bash
 
 find_user_disks() {
-    #; is it safe to assume Host, Channel is always 3:0 ?
-    result=$(lsblk -o NAME,HCTL | grep -i "sd" | grep "3:0" | awk '{print $1}' )
+    #; is it safe to assume Host, Channel is always 3:0 ?-> No
+    result=$(lsblk -o NAME,HCTL | grep -i "sd" | grep "[3-9]:0" | awk '{print $1}' )
     echo $result
 }
 
