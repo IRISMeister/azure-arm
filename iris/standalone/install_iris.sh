@@ -101,9 +101,6 @@ wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
 useradd -m $ISC_PACKAGE_MGRUSER --uid 51773 | true
 useradd -m $ISC_PACKAGE_IRISUSER --uid 52773 | true
 
-#; change owner so that IRIS can create folders and database files
-chown irisowner:irisusr /datadisks/disk1/
-
 # install iris
 mkdir -p $kittemp
 chmod og+rx $kittemp
