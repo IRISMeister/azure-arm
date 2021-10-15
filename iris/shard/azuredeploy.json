@@ -106,22 +106,28 @@
     "deploymentSize": {
       "Small": {
         "vmSize": "Standard_A2_v2",
-        "diskSize": 256,
-        "diskCount": 3,
+        "dbSize": 256,
+        "wijSize": 256,
+        "j1Size": 256,
+        "j2Size": 256,
         "vmCount": 1,
         "slaveCount": 1
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
-        "diskSize": 512,
-        "diskCount": 3,
+        "dbSize": 256,
+        "wijSize": 256,
+        "j1Size": 256,
+        "j2Size": 256,
         "vmCount": 1,
         "slaveCount": 2
       },
       "Large": {
         "vmSize": "Standard_A8_v2",
-        "diskSize": 1023,
-        "diskCount": 3,
+        "dbSize": 256,
+        "wijSize": 256,
+        "j1Size": 256,
+        "j2Size": 256,
         "vmCount": 1,
         "slaveCount": 4
       }
@@ -235,8 +241,10 @@
             "value": {
               "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
-              "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
-              "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
+              "dbSize": "[variables('deploymentSize')[parameters('tshirtSize')].dbSize]",
+              "wijSize": "[variables('deploymentSize')[parameters('tshirtSize')].wijSize]",
+              "j1Size": "[variables('deploymentSize')[parameters('tshirtSize')].j1Size]",
+              "j2Size": "[variables('deploymentSize')[parameters('tshirtSize')].j2Size]",
               "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].vmCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "2"
@@ -302,8 +310,10 @@
             "value": {
               "linuxConfiguration": "[variables('linuxConfiguration')]",
               "vmSize": "[variables('deploymentSize')[parameters('tshirtSize')].vmSize]",
-              "diskCount": "[variables('deploymentSize')[parameters('tshirtSize')].diskCount]",
-              "diskSize": "[variables('deploymentSize')[parameters('tshirtSize')].diskSize]",
+              "dbSize": "[variables('deploymentSize')[parameters('tshirtSize')].dbSize]",
+              "wijSize": "[variables('deploymentSize')[parameters('tshirtSize')].wijSize]",
+              "j1Size": "[variables('deploymentSize')[parameters('tshirtSize')].j1Size]",
+              "j2Size": "[variables('deploymentSize')[parameters('tshirtSize')].j2Size]",
               "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].slaveCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "3"

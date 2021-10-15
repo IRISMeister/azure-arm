@@ -112,21 +112,18 @@
           },
           "dataDisks": [
             {
-              "diskSizeGB": 256,
+              "diskSizeGB": "[parameters('machineSettings').dbSize]",
               "lun": 0,
-              "caching": "None",
               "createOption": "Empty"
             },
             {
-              "diskSizeGB": 384,
+              "diskSizeGB": "[parameters('machineSettings').wijSize]",
               "lun": 1,
-              "caching": "None",
               "createOption": "Empty"
             },
             {
-              "diskSizeGB": 512,
+              "diskSizeGB": "[parameters('machineSettings').j1Size]",
               "lun": 2,
-              "caching": "None",
               "createOption": "Empty"
             }
           ]
