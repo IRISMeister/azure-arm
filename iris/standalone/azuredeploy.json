@@ -49,7 +49,7 @@
                 "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
             }
         },
-        "adminPasswordOrKey": {
+        "adminPublicKey": {
             "type": "securestring",
             "metadata": {
                 "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
@@ -69,16 +69,10 @@
         },        
         "_artifactsLocation": {
             "type": "string",
-            "metadata": {
-                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-            },
             "defaultValue": "[deployment().properties.templateLink.uri]"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
-            "metadata": {
-                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-            },
             "defaultValue": ""
         },
         "_secretsLocation": {
@@ -114,7 +108,7 @@
                 "publicKeys": [
                     {
                         "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                        "keyData": "[parameters('adminPasswordOrKey')]"
+                        "keyData": "[parameters('adminPublicKey')]"
                     }
                 ]
             }
@@ -255,7 +249,7 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPasswordOrKey')]",
+                    "adminPassword": "[parameters('adminPublicKey')]",
                     "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), json('null'), variables('linuxConfiguration'))]"
                 },
                 "storageProfile": {

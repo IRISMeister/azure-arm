@@ -3,3 +3,4 @@ iris/shard/azuredeploy.parameters.json
 iris/standalone/azuredeploy.parameters.json
 iris/mirror/azuredeploy.parameters.json
 vm-disk-utils-0.1.sh
+template

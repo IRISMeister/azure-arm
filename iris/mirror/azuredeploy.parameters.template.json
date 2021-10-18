@@ -8,7 +8,7 @@
     "adminUsername": {
       "value": "GEN-UNIQUE"
     },
-    "adminPasswordOrKey": {
+    "adminPublicKey": {
       "value": "GEN-SSH-PUB-KEY"
     },
     "domainName": {

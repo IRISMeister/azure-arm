@@ -15,7 +15,7 @@
         "description": "Virtual machine administrator username"
       }
     },
-    "adminPasswordOrKey": {
+    "adminPublicKey": {
       "type": "securestring",
         "metadata": {
         "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
@@ -152,7 +152,7 @@
           "publicKeys": [
               {
                   "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                  "keyData": "[parameters('adminPasswordOrKey')]"
+                  "keyData": "[parameters('adminPublicKey')]"
               }
           ]
       }
@@ -221,8 +221,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -293,8 +293,8 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
           },
           "osSettings": {
             "value": "[variables('osSettings')]"
@@ -373,8 +373,8 @@
               "namespace": "arbiter"
             }
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.data]"
@@ -439,8 +439,8 @@
               "namespace": "jumpbox"
             }
           },
-          "adminPasswordOrKey": {
-            "value": "[parameters('adminPasswordOrKey')]"
+          "adminPublicKey": {
+            "value": "[parameters('adminPublicKey')]"
           },
           "subnet": {
             "value": "[variables('networkSettings').subnets.dmz]"

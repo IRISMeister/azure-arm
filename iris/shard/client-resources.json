@@ -11,7 +11,7 @@
     "linuxConfiguration": {
       "type": "object"
     },
-    "adminPasswordOrKey": {
+    "adminPublicKey": {
       "type": "securestring"
     },
     "machineSettings": {
@@ -88,7 +88,7 @@
         "osProfile": {
           "computerName": "[variables('vmName')]",
           "adminUsername": "[variables('adminUsername')]",
-          "adminPassword": "[parameters('adminPasswordOrKey')]",
+          "adminPassword": "[parameters('adminPublicKey')]",
           "linuxConfiguration": "[parameters('linuxConfiguration')]"
         },
         "storageProfile": {

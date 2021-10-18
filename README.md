@@ -36,9 +36,13 @@ $ curl "${SECRETURL}/iris.key?${SECRETSASTOKEN}"
 
 3. Azure SSH keysで、SSH用のキーペアを作成します。
 
-   公開鍵の値をパラメータのadminPasswordOrKeyで指定します。
+   公開鍵の値をパラメータのadminPublicKeyで指定します。
 
 4. (オプションですがお勧めです)[Azure CLI](https://docs.microsoft.com/ja-jp/cli/azure/)をインストールし、az loginを実行します。
+```
+$ az login
+$ az account set --subscription "your subscription id"
+```
 ## デプロイ方法
 スタンドアロン構成のデプロイ  
 [![Deploy To Azure Standalone](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/1-CONTRIBUTION-GUIDE/images/deploytoazure.svg?sanitize=true)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FIRISMeister%2Fazure-arm%2Fmaster%2Firis%2Fstandalone%2Fazuredeploy.json)
@@ -78,7 +82,7 @@ $ cat azuredeploy.parameters.json
     "adminUsername": {
       "value": "irismeister" <==任意のLinuxユーザ名を設定
     },
-    "adminPasswordOrKey": {
+    "adminPublicKey": {
       "value": "ssh-rsa AA ... BX/s= generated-by-azure"  <==公開鍵を設定
     },
     "domainName": {
@@ -102,7 +106,7 @@ $ cat azuredeploy.parameters.json
 | パラメータ名 | 用途 | 備考 |設定例|
 | ------------ | ------ | ---- | --- |
 |adminUsername|sudo可能なO/Sユーザ名,全VM共通||irismeister|
-|adminPasswordOrKey|SSH public key|ssh接続時に使用|ssh-rsa AAA... generated-by-azure|
+|adminPublicKey|SSH public key|ssh接続時に使用|ssh-rsa AAA... generated-by-azure|
 |domainName|Public DNS名|StandAloneのIRIS、あるいはMirror/Shard構成のJumpBox用VMのDNSホスト名|my-irishost-1|
 |_artifactsLocation|ARMテンプレートのURL|自動設定||
 |_artifactsLocationSasToken|同Sas Token|未使用||
@@ -126,7 +130,7 @@ SuperUser/sys
 ```
 
 ### SSH
-各VMホストへのSSH方法は下記の通りです。ssh秘密鍵ファイルは、[adminPasswordOrKey]で指定したものと対になるものです。
+各VMホストへのSSH方法は下記の通りです。ssh秘密鍵ファイルは、[adminPublicKey]で指定したものと対になるものです。
 - スタンドアロン  
 Public IPが公開されているVM=IRIS稼働VMです。
 ```bash
