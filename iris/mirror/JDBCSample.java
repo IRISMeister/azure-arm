@@ -1,5 +1,5 @@
 //javac JDBCSample.java 
-//java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
+//java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample
 // ToDo: parameterize url 
 import java.sql.*;
 

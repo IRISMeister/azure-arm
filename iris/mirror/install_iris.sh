@@ -98,7 +98,7 @@ export MirrorArbiterIP=$ARBITERIP
 if [ "$NODETYPE" == "ARBITER" ];
 then
   echo "Initializing as Arbiter"
-  kit=ISCAgent-2021.1.0.215.0-lnxubuntux64
+  kit=ISCAgent-2022.1.0.209.0-lnxubuntu2004x64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
@@ -121,7 +121,7 @@ END
   apt-get update -y
   apt-get install -y openjdk-8-jdk-headless
   # iris jdbc driver and others
-  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  wget "${SECRETURL}/intersystems-jdbc-3.3.1.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.3.1.jar
   mv *.jar $USERHOME
   wget ${TEMPLATEBASEURI}/JDBCSample.java
   mv *.java $USERHOME
@@ -150,7 +150,7 @@ then
 fi
 
 # ++ edit here for optimal settings ++
-kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
+kit=IRIS-2022.1.0.209.0-lnxubuntu2004x64 # vanilla IRIS
 #kit=IRISHealth-2021.1.0.215.0-lnxubuntux64
 password=sys
 ssport=1972

@@ -119,19 +119,19 @@ irismeister@slvm0:~$ curl https://ipinfo.io/ip
 ```bash
 irismeister@jumpboxvm:~$ ssh arbitervm
 irismeister@arbitervm:~$ javac JDBCSample.java
-irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
+irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample
 Printing out contents of SELECT query:
 1, John, Smith
 2, Jane, Doe
 ```
 > 内部LBのIPアドレスを引数で指定可能(省略時値は10.0.1.4)です。
 > ```
-> java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample 172.16.0.4
+> java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample 172.16.0.4
 > ```
 
 同じコマンドを2回実行すると、同リクエストが同じサーバ(現プライマリメンバ)に到達するためエラーが発生します。
 ```
-irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
+irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample
 Connecting to jdbc:IRIS://10.0.1.4:1972/MYAPP
 Exception in thread "main" java.sql.SQLException: [SQLCODE: <-201>:<Table or view name not unique>]
 [Location: <ServerLoop>]
@@ -161,7 +161,7 @@ Configuration 'IRIS'   (default)
 
 この時点で、arbitervmから同じコマンドを再実行すると、同リクエストは新プライマリメンバ(旧バックアップメンバ)に到達するため成功します。
 ```
-irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
+irismeister@arbitervm:~$ java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample
 Connecting to jdbc:IRIS://10.0.1.4:1972/MYAPP
 Printing out contents of SELECT query:
 1, John, Smith

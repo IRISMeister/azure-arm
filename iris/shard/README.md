@@ -85,5 +85,5 @@ irismeister@clientvm:~$
 ごく簡単な[JDBCアクセス](JDBCSample.java)の例です。
 ```bash
 irismeister@clientvm:~$ javac JDBCSample.java
-irismeister@clientvm:~$ java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample
+irismeister@clientvm:~$ java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample
 ```

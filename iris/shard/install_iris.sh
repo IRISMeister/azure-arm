@@ -105,8 +105,10 @@ then
   apt-get install -y openjdk-8-jdk-headless
 
   # iris jdbc driver and others
-  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  wget "${SECRETURL}/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
+  wget "${SECRETURL}/intersystems-jdbc-3.3.1.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.3.1.jar
+  wget "${SECRETURL}/intersystems-xep-3.2.1.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.1.jar
+  wget "${SECRETURL}/intersystems-utils-3.3.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.3.0.jar
+  # obsolete SimpleMover
   wget "${SECRETURL}/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
   mv *.jar $USERHOME
 
@@ -147,7 +149,7 @@ then
 fi
 
 # ++ edit here for optimal settings ++
-kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
+kit=IRIS-2022.1.0.209.0-lnxubuntu2004x64 # vanilla IRIS
 #kit=IRISHealth-2021.1.0.215.0-lnxubuntux64
 password=sys
 ssport=1972

@@ -1,5 +1,5 @@
 //javac JDBCSample.java 
-//java -cp .:intersystems-jdbc-3.2.0.jar JDBCSample data-master-hostname
+//java -cp .:intersystems-jdbc-3.3.1.jar JDBCSample data-master-hostname
 import java.sql.*;
 
 public class JDBCSample {

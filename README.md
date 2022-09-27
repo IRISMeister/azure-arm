@@ -8,28 +8,32 @@ IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャ
 # 共通事項
 
 ## 事前準備
-1. 事前にIRISライセンスキーファイル(iris.key)及びキット(IRIS-2021.1.0.215.0-lnxubuntux64.tar.gzなど)を用意し、**非公開設定**のAzure Blobにアップロードします。
+1. 事前にIRISライセンスキーファイル(iris.key)及びキット(IRIS-2022.1.0.209.0-lnxubuntu2004x64.tar.gzなど)を用意し、**非公開設定**のAzure Blobにアップロードします。
 
-   このURLをパラメータの_secretsLocationで指定します。
+   このURLを、後にパラメータの_secretsLocationで指定しますので記録しておいてください。
 
 ![1](https://raw.githubusercontent.com/IRISMeister/doc-images/main/iris-azure-arm/azure-blob.png)
 
-2. Generate SASでキー(Signing method:Account key)を作成
+2. Generate SASでキーを作成
+下記を指定します。あとはデフォルトのままにします。
+```
+  Signing method:Account key
+  Expiryを適切な日付に変更
+```
+   生成された「Blob SAS token」値を後にパラメータの_secretsLocationSasTokenで指定しますので記録しておいてください。
 
-   この値をパラメータの_secretsLocationSasTokenで指定します。
-
-Azure Blobからのファイル取得は、install_iris.shl内で、下記のようにwgetを実行しています。
+> Azure Blobからのファイル取得は、install_iris.shl内で、下記のようにwgetを実行しています。
 
 ```bash
-_secretsLocation => SECRETURL  
-_secretsLocationSasToken => SECRETSASTOKEN  
+SECRETURL = _secretsLocation
+SECRETSASTOKEN = _secretsLocationSasToken
 wget "${SECRETURL}/iris.key?${SECRETSASTOKEN}" -O iris.key
 ```
-事前に手元のPC(私は実行環境として、Windows10+Git bashを使用しています)で下記を実行できる事を確認しておいてください。
+事前に手元のPC(私は実行環境として、Windows10+wsl2を使用しています)で下記を実行し、iris.keyファイルの内容が表示できる事を確認しておいてください。
 ```bash
 $ git version
 git version 2.33.0.windows.2
-$ SECRETURL=https://xxxx.blob.core.windows.net/yyyy
+$ SECRETURL="https://xxxx.blob.core.windows.net/yyyy"
 $ SECRETSASTOKEN="sp=r&st=...%3D"
 $ curl "${SECRETURL}/iris.key?${SECRETSASTOKEN}"
 ```
@@ -38,7 +42,7 @@ $ curl "${SECRETURL}/iris.key?${SECRETSASTOKEN}"
 
    公開鍵の値をパラメータのadminPublicKeyで指定します。
 
-4. (オプションですがお勧めです)[Azure CLI](https://docs.microsoft.com/ja-jp/cli/azure/)をインストールし、az loginを実行します。
+4. (オプションですがお勧めです)[Azure CLI](https://docs.microsoft.com/ja-jp/cli/azure/)を使用してデプロイする場合は、Azure CLIをインストールし、az loginを実行します。
 ```
 $ az login
 $ az account set --subscription "your subscription id"
@@ -139,7 +143,7 @@ $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 - それ以外  
-Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
+踏み台ホストのVMのみがPublic IPを公開しています。各VMには、SSH Agent転送を使用してログインすると便利です。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com -A
 $ ssh VM名
@@ -190,7 +194,9 @@ USER>
 
 
 ## カスタマイズ
-本稿はARMテンプレートやインストーラをGitHubの公開レポジトリに配置することを前提にしています(なので_artifactsLocationSasTokenは未使用)。これらをAzure Blobに配置することも可能ですが、本稿では触れません。  
+本稿はARMテンプレートやインストーラをGitHubの公開レポジトリに配置することを前提にしています(そのため、_artifactsLocationSasTokenは未使用)。修正を行った際には、deploy.sh実行前に、その変更を公開レポジトリに反映する必要があります。
+> これらをAzure Blobに配置することも可能ですが、本稿では触れません。  
+
 自前のGitHubの(公開)レポジトリを使用する場合は、deploy.shの下記のuriがそのGitHubレポを差すように修正してください。
 ```
   --template-uri "https://raw.githubusercontent.com/IRISMeister/azure-arm/$branch/iris/shard/azuredeploy.json" /
@@ -213,7 +219,7 @@ IRIS自身のインストールは、[install_iris.sh](iris/standalone/install_i
 irismeister@MyubuntuVM:~$ sudo su -
 root@MyubuntuVM:~# cd /var/lib/waagent/custom-script/download/0
 root@MyubuntuVM:/var/lib/waagent/custom-script/download/0# ls
-IRIS-2021.1.0.215.0-lnxubuntux64.tar.gz  install_iris.sh  iris.service  stderr
+IRIS-2022.1.0.209.0-lnxubuntu2004x64.tar.gz  install_iris.sh  iris.service  stderr
 Installer.cls                            iris.key         params.log    stdout
 root@MyubuntuVM:/var/lib/waagent/custom-script/download/0#
 ```
