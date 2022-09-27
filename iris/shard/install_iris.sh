@@ -271,9 +271,20 @@ fi
 
 }
 
+install_spark() {
+#!/bin/bash -e
+
+USERHOME=/home/$ADMINUSER
+
+cd /opt
+wget https://archive.apache.org/dist/spark/spark-2.4.6/spark-2.4.6-bin-hadoop2.7.tgz
+tar -xvzf spark-2.4.6-bin-hadoop2.7.tgz
+mv spark-2.4.6-bin-hadoop2.7 spark
+}
+
 # MAIN ROUTINE
 echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
-
+install_spark
 exit 0
