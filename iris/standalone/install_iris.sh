@@ -89,7 +89,7 @@ USERHOME=/home/$ADMINUSER
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
+kit=IRIS-2022.1.0.209.0-lnxubuntu2004x64 # vanilla IRIS
 #kit=IRISHealth-2021.1.0.215.0-lnxubuntux64
 password=sys
 ssport=1972
