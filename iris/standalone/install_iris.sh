@@ -89,8 +89,8 @@ USERHOME=/home/$ADMINUSER
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-kit=IRIS-2021.1.0.215.0-lnxubuntux64 # vanilla IRIS
-#kit=IRISHealth-2021.1.0.215.0-lnxubuntux64
+kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64 # vanilla IRIS
+#kit=IRISHealth-2023.1.3.517.0-lnxubuntu2204x64
 password=sys
 ssport=1972
 webport=52773

@@ -8,7 +8,7 @@ IRIS環境(スタンドアロン構成、同期ミラーリング構成、シャ
 # 共通事項
 
 ## 事前準備
-1. 事前にIRISライセンスキーファイル(iris.key)及びキット(IRIS-2021.1.0.215.0-lnxubuntux64.tar.gzなど)を用意し、**非公開設定**のAzure Blobにアップロードします。
+1. 事前にIRISライセンスキーファイル(iris.key)及びキット(IRIS-2023.1.3.517.0-lnxubuntu2204x64.tar.gzなど)を用意し、**非公開設定**のAzure Blobにアップロードします。
 
    このURLをパラメータの_secretsLocationで指定します。
 
@@ -213,7 +213,7 @@ IRIS自身のインストールは、[install_iris.sh](iris/standalone/install_i
 irismeister@MyubuntuVM:~$ sudo su -
 root@MyubuntuVM:~# cd /var/lib/waagent/custom-script/download/0
 root@MyubuntuVM:/var/lib/waagent/custom-script/download/0# ls
-IRIS-2021.1.0.215.0-lnxubuntux64.tar.gz  install_iris.sh  iris.service  stderr
+IRIS-2023.1.3.517.0-lnxubuntu2204x64.tar.gz  install_iris.sh  iris.service  stderr
 Installer.cls                            iris.key         params.log    stdout
 root@MyubuntuVM:/var/lib/waagent/custom-script/download/0#
 ```
