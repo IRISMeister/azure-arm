@@ -156,7 +156,7 @@ ISC_PACKAGE_CLIENT_COMPONENTS= \
 ISC_PACKAGE_SUPERSERVER_PORT=$ssport \
 ISC_PACKAGE_WEBSERVER_PORT=$webport \
 ISC_INSTALLER_MANIFEST=$kittemp/$kit/Installer.cls \
-ISC_INSTALLER_LOGFILE=installer_log \
+ISC_INSTALLER_LOGFILE=/var/log/iris_installer_log \
 ISC_INSTALLER_LOGLEVEL=3 \
 ./irisinstall_silent
 popd
