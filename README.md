@@ -205,6 +205,14 @@ IRIS自身のインストールは、[install_iris.sh](iris/standalone/install_i
 |mirror|[iris/mirror/azuredeploy.json](iris/mirror/azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
 |shard|[iris/shard/azuredeploy.json](iris/shard/azuredeploy.json)|変数deploymentSizeのSmall/Medium/Large|
 
+## O/Sの指定
+
+https://learn.microsoft.com/ja-jp/azure/virtual-machines/linux/cli-ps-findimage
+
+```
+az vm image list --output table
+```
+
 ## デバッグ
 ### ファイルのデプロイ先
 デプロイ時に使用されたファイル群は下記に存在します。stderr,stdout,params.logに実行ログなどが記録されています。

@@ -76,8 +76,13 @@ done
 
 timedatectl set-timezone Asia/Tokyo
 
-echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS" >> params.log
-echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
+echo NOW=$now >> params.log
+echo MASTERIP=$MASTERIP  >> params.log
+echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
+echo SECRETURL=$SECRETURL  >> params.log
+echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
+echo TEMPLATEURI=$TEMPLATEURI  >> params.log
+echo ADMINUSER=$ADMINUSER >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
