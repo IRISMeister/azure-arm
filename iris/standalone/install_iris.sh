@@ -182,7 +182,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
-globals=0,0,128,0,0,0
+globals=0,0,8192,0,0,0
 gmheap=75136
 locksiz=33554432
 routines=128
