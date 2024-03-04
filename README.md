@@ -211,6 +211,8 @@ https://learn.microsoft.com/ja-jp/azure/virtual-machines/linux/cli-ps-findimage
 
 ```
 az vm image list --output table
+az vm image list --all --publisher Canonical --architecture x64 --output table
+
 ```
 
 ## デバッグ
