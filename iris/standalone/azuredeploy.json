@@ -266,24 +266,33 @@
                     "dataDisks": [
                         {
                           "diskSizeGB": 1024,
+                          "diskIOPSReadWrite": 60000,
+                          "diskMBpsReadWrite": 1200,
                           "lun": 0,
                           "createOption": "Empty",
-                          "caching": "None",
+                          "caching": "ReadOnly",
                           "managedDisk": {
                             "storageAccountType": "PremiumV2_LRS"
                           }                          
                         },
                         {
-                          "diskSizeGB": 256,
+                          "diskSizeGB": 1024,
+                          "diskIOPSReadWrite": 60000,
+                          "diskMBpsReadWrite": 1200,
                           "lun": 1,
                           "createOption": "Empty",
-                          "caching": "ReadWrite"
+                          "caching": "ReadOnly",
+                          "managedDisk": {
+                            "storageAccountType": "PremiumV2_LRS"
+                          }                          
                         },
                         {
                           "diskSizeGB": 1024,
+                          "diskIOPSReadWrite": 60000,
+                          "diskMBpsReadWrite": 1200,
                           "lun": 2,
                           "createOption": "Empty",
-                          "caching": "None",
+                          "caching": "ReadOnly",
                           "managedDisk": {
                             "storageAccountType": "PremiumV2_LRS"
                           }                          
