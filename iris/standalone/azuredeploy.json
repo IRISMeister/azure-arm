@@ -266,7 +266,7 @@
                     "dataDisks": [
                         {
                           "diskSizeGB": 1024,
-                          "diskIOPSReadWrite": 60000,
+                          "diskIOPSReadWrite": 80000,
                           "diskMBpsReadWrite": 1200,
                           "lun": 0,
                           "createOption": "Empty",
@@ -277,7 +277,7 @@
                         },
                         {
                           "diskSizeGB": 1024,
-                          "diskIOPSReadWrite": 60000,
+                          "diskIOPSReadWrite": 80000,
                           "diskMBpsReadWrite": 1200,
                           "lun": 1,
                           "createOption": "Empty",
@@ -288,7 +288,7 @@
                         },
                         {
                           "diskSizeGB": 1024,
-                          "diskIOPSReadWrite": 60000,
+                          "diskIOPSReadWrite": 80000,
                           "diskMBpsReadWrite": 1200,
                           "lun": 2,
                           "createOption": "Empty",
