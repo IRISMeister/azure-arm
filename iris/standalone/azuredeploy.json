@@ -267,7 +267,10 @@
                         {
                           "diskSizeGB": 1024,
                           "lun": 0,
-                          "createOption": "Empty"
+                          "createOption": "Empty",
+                            "managedDisk": {
+                                "storageAccountType": "StandardSSD_LRS"
+                            }                          
                         },
                         {
                           "diskSizeGB": 256,
