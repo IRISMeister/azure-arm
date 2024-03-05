@@ -16,9 +16,9 @@
         },
         "VmSize": {
             "type": "string",
-            "defaultValue": "Standard_A8_v2",
+            "defaultValue": "Standard_D4s_v3",
             "allowedValues": [
-                "Standard_A8_v2","Standard_A2_v2"
+                "Standard_A8_v2","Standard_A2_v2","Standard_D4s_v3"
             ],            "metadata": {
                 "description": "The size of the virtual machines used when provisioning"
             }
@@ -268,9 +268,9 @@
                           "diskSizeGB": 1024,
                           "lun": 0,
                           "createOption": "Empty",
-                            "managedDisk": {
-                                "storageAccountType": "StandardSSD_LRS"
-                            }                          
+                          "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                          }                          
                         },
                         {
                           "diskSizeGB": 256,
@@ -280,7 +280,10 @@
                         {
                           "diskSizeGB": 1024,
                           "lun": 2,
-                          "createOption": "Empty"
+                          "createOption": "Empty",
+                          "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                          }                          
                         }
                       ]
                 },
