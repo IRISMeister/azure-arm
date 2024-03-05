@@ -228,7 +228,7 @@
             }
         },
         {
-            "apiVersion": "2020-12-01",
+            "apiVersion": "2023-03-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
             "location": "[parameters('location')]",
@@ -268,21 +268,24 @@
                           "diskSizeGB": 1024,
                           "lun": 0,
                           "createOption": "Empty",
+                          "caching": "None",
                           "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "PremiumV2_LRS"
                           }                          
                         },
                         {
                           "diskSizeGB": 256,
                           "lun": 1,
-                          "createOption": "Empty"
+                          "createOption": "Empty",
+                          "caching": "ReadWrite"
                         },
                         {
                           "diskSizeGB": 1024,
                           "lun": 2,
                           "createOption": "Empty",
+                          "caching": "None",
                           "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "PremiumV2_LRS"
                           }                          
                         }
                       ]
