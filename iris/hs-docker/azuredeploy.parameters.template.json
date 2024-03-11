@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "VmSize": {
+      "value": "" // // TODO: VMSIZE here
+    },
+    "adminUsername": {
+      "value": "GEN-UNIQUE"
+    },
+    "adminPublicKey": {
+      "value": "GEN-SSH-PUB-KEY"
+    },
+    "domainName": {
+      "value": "GEN-UNIQUE"
+    },
+    "_secretsLocation": {
+        "value": "" // TODO: Fill in parameter value
+    },
+    "_secretsLocationSasToken": {
+        "value": "" // TODO: Fill in parameter value
+    }
+  }
+}
