@@ -26,7 +26,7 @@ az vm list-ip-addresses --resource-group $rg --output table
 az network public-ip list --resource-group $rg --output table
 #>
 
-$target="standalone"
+$target=Split-Path (Get-Location).Path -Leaf
 $rg="IRIS-Group"
 $branch="dev"
 
