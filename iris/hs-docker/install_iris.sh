@@ -41,7 +41,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A: optname; do
+while getopts :m:s:a:t:L:T:u:A:D:d: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -61,6 +61,12 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
       ;;
     A) #admin username
       ADMINUSER=${OPTARG}
+      ;;
+    D) Docker Username
+      DOCKERUSER=${OPTARG}
+      ;;
+    d) Docker token
+      DOCKERTOKEN=${OPTARG}
       ;;
     h)  #show help
       help
@@ -83,6 +89,8 @@ echo SECRETURL=$SECRETURL  >> params.log
 echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
 echo TEMPLATEURI=$TEMPLATEURI  >> params.log
 echo ADMINUSER=$ADMINUSER >> params.log
+echo DOCKERUSER=$DOCKERUSER >> params.log
+echo DOCKERTOKEN=$DOCKERTOKEN >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
@@ -107,10 +115,14 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 
 # download iris binary kit
-kitcv=HealthShare_ClinicalViewer-2021.2.2CV-1000-0-lnxubuntux64 wget "${SECRETURL}/${kitcv}.tar.gz?${SECRETSASTOKEN}" -O $kitcv.tar.gz
-kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2021.2.1-1000-0-lnxubuntux64 wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
-kitwg=WebGateway-2021.1.2.338.0-lnxubuntux64.tar.gz wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
-kitdc=HealthShare-Docker wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
+kitcv=HealthShare_ClinicalViewer-2021.2.2CV-1000-0-lnxubuntux64 
+wget "${SECRETURL}/${kitcv}.tar.gz?${SECRETSASTOKEN}" -O $kitcv.tar.gz
+kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2021.2.1-1000-0-lnxubuntux64 
+wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
+kitwg=WebGateway-2021.1.2.338.0-lnxubuntux64
+wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
+kitdc=HealthShare-Docker 
+wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
 
 # mount user disks and create iris related folders 
 wget ${TEMPLATECMNURI}/container-mount-disks.sh
@@ -126,6 +138,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 
 # src, docker-compose etc...
+mkdir $kittemp
 tar -xvf $kitdc.tar.gz -C $kittemp
 cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
@@ -139,5 +152,14 @@ chown -R irismeister:irismeister $kittemp
 wget "${SECRETURL}/iris-hs.key?${SECRETSASTOKEN}" -O $kittemp/HealthShare-Docker/hs/build/iris.key
 wget "${SECRETURL}/iris-cv.key?${SECRETSASTOKEN}" -O $kittemp/HealthShare-Docker/viewer/build/iris.key
 
+cd $kittemp/HealthShare-Docker
+
+./create_cert_keys.sh
+docker login -u="${DOCKERUSER}" -p="${DOCKERTOKEN}"  containers.intersystems.com
+docker compose -f docker-compose-base.yml build hs
+./build.sh
 
 exit 0
+}
+
+install_iris_service

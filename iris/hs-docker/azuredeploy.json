@@ -85,7 +85,20 @@
             "metadata": {
               "description": "Generated Shared Acccess Signature token to access _secretsLocation"
             }
+          },
+          "dockerUsername": {
+            "type": "string",
+            "metadata": {
+              "description": ""
+            }
+          },
+          "dockerToken": {
+            "type": "securestring",
+            "metadata": {
+              "description": ""
+            }
           }
+
     },
     "variables": {
         "imagePublisher": "Canonical",
@@ -308,7 +321,7 @@
                     "fileUris": [
                         "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]"
                     ],
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote') )]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'), ' -D ',variables('singleQuote'),parameters('dockerUsername'),variables('singleQuote'), ' -d ',variables('singleQuote'),parameters('dockerToken'),variables('singleQuote'))]"
                 }
             }
         }

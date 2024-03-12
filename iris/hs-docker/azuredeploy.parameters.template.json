@@ -19,6 +19,12 @@
     },
     "_secretsLocationSasToken": {
         "value": "" // TODO: Fill in parameter value
+    },
+    "dockerUsername": {
+      "value": ""
+    },
+    "dockerToken": {
+      "value": ""
     }
   }
 }
