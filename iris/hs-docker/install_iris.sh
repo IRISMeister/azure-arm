@@ -107,7 +107,7 @@ kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64 # vanilla IRIS
 password=sys
 ssport=1972
 webport=52773
-kittemp=/home/irismeister/kit
+kittemp=/home/${ADMINUSER}/kit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
 ISC_PACKAGE_INSTANCENAME=iris
 ISC_PACKAGE_MGRUSER=irisowner
@@ -130,12 +130,13 @@ chmod +x ./container-mount-disks.sh
 ./container-mount-disks.sh
 
 # change owner so that IRIS can create folders and database files
-chown irismeister:irismeister /iris
-chown irismeister:irismeister /iris/durable
+chown ${ADMINUSER}:${ADMINUSER} /iris
+chown ${ADMINUSER}:${ADMINUSER} /iris/durable
 
 # install docker
 curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
+usermod -aG docker ${ADMINUSER}
 
 # src, docker-compose etc...
 mkdir $kittemp
@@ -144,7 +145,7 @@ cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/webgateway/build/
-chown -R irismeister:irismeister $kittemp
+chown -R ${ADMINUSER}:${ADMINUSER} $kittemp
 
 #rm -fR $kittemp
 
