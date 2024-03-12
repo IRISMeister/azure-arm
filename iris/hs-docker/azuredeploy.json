@@ -210,12 +210,12 @@
             "properties": {
               "securityRules": [
                 {
-                  "name": "iris-webgw",
+                  "name": "apache-iris-webgw",
                   "properties": {
-                    "description": "Allow HTTP",
+                    "description": "Allow HTTPS",
                     "protocol": "Tcp",
                     "sourcePortRange": "*",
-                    "destinationPortRange": "52773",
+                    "destinationPortRange": "443",
                     "sourceAddressPrefix": "Internet",
                     "destinationAddressPrefix": "*",
                     "access": "Allow",
