@@ -124,6 +124,12 @@ wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
 kitdc=HealthShare-Docker 
 wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
 
+# For upgrade test
+kitcv=HealthShare_ClinicalViewer-2023.2.0CV-1006-0-lnxubuntu2004x64
+wget "${SECRETURL}/${kitcv}.tar.gz?${SECRETSASTOKEN}" -O $kitcv.tar.gz
+kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2023.2-1015-0-lnxubuntu2004x64
+wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
+
 # mount user disks and create iris related folders 
 wget ${TEMPLATECMNURI}/container-mount-disks.sh
 chmod +x ./container-mount-disks.sh
