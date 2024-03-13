@@ -92,7 +92,7 @@ echo NOW=$now >> params.sh
 echo MASTERIP=$MASTERIP  >> params.sh
 echo SUBNETADDRESS=$SUBNETADDRESS >> params.sh
 echo SECRETURL=$SECRETURL  >> params.sh
-echo SECRETSASTOKEN="${SECRETSASTOKEN}"  >> params.sh
+echo SECRETSASTOKEN=\"${SECRETSASTOKEN}\"  >> params.sh
 echo TEMPLATEURI=$TEMPLATEURI  >> params.sh
 echo ADMINUSER=$ADMINUSER >> params.sh
 echo DOCKERUSER=$DOCKERUSER >> params.sh
@@ -162,7 +162,7 @@ chown ${ADMINUSER}:${ADMINUSER} $USERHOME/.netrc
 # src, docker-compose etc...
 mkdir $kittemp
 #tar -xvf $kitdc.tar.gz -C $kittemp
-git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp
+git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp/HealthShare-Docker
 cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/
