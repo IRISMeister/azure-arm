@@ -41,7 +41,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A:D:d: optname; do
+while getopts :m:s:a:t:L:T:u:A:D:d:G:g: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -68,6 +68,12 @@ while getopts :m:s:a:t:L:T:u:A:D:d: optname; do
     d) Docker token
       DOCKERTOKEN=${OPTARG}
       ;;
+    G) GitHub Username
+      GITUSER=${OPTARG}
+      ;;
+    g) GitHub token
+      GITTOKEN=${OPTARG}
+      ;;
     h)  #show help
       help
       exit 2
@@ -91,6 +97,8 @@ echo TEMPLATEURI=$TEMPLATEURI  >> params.sh
 echo ADMINUSER=$ADMINUSER >> params.sh
 echo DOCKERUSER=$DOCKERUSER >> params.sh
 echo DOCKERTOKEN=$DOCKERTOKEN >> params.sh
+echo GITUSER=$GITUSER >> params.sh
+echo GITTOKEN=$GITTOKEN >> params.sh
 
 install_iris_service() {
 #!/bin/bash -e
@@ -121,8 +129,8 @@ kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2021.2.1-1000-0-lnxubun
 wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
 kitwg=WebGateway-2021.1.2.338.0-lnxubuntux64
 wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
-kitdc=HealthShare-Docker 
-wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
+#kitdc=HealthShare-Docker 
+#wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
 
 # For upgrade test
 kitnewcv=HealthShare_ClinicalViewer-2023.2.0CV-1006-0-lnxubuntu2004x64
@@ -144,9 +152,17 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 usermod -aG docker ${ADMINUSER}
 
+# github user/pass
+echo "machine github.com" >> ~/.netrc
+echo "login ${GITUSER}" >> ~/.netrc
+echo "password ${GITTOKEN}" >> ~/.netrc
+cp ~/.netrc $USERHOME/.netrc
+chown ${ADMINUSER}:${ADMINUSER} $USERHOME/.netrc
+
 # src, docker-compose etc...
 mkdir $kittemp
-tar -xvf $kitdc.tar.gz -C $kittemp
+#tar -xvf $kitdc.tar.gz -C $kittemp
+git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp
 cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/

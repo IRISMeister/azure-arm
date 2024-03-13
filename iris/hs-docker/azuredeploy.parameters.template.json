@@ -25,6 +25,11 @@
     },
     "dockerToken": {
       "value": ""
-    }
-  }
+    },
+    "gitUsername": {
+      "value": ""
+    },
+    "gitToken": {
+      "value": ""
+    }  }
 }
