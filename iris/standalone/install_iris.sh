@@ -41,7 +41,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A: optname; do
+while getopts :m:s:a:t:L:T:u:A:I:W: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)

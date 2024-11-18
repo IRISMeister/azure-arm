@@ -32,6 +32,14 @@
         },
         "IRISKitName": {
             "type": "string",
+            "defaultValue": "IRIS-2024.1.2.398.0-lnxubuntu2204x64",
+            "metadata": {
+                "description": "Kit name of IRIS."
+            }
+        },
+        "WGWKitName": {
+            "type": "string",
+            "defaultValue": "WebGateway-2024.1.2.398.0-lnxubuntu2204x64",
             "metadata": {
                 "description": "Kit name of IRIS."
             }
@@ -325,7 +333,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote') )]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote'),' -W ',variables('singleQuote'),parameters('WGWKitName'),variables('singleQuote') )]"
                 }
             }
         }
