@@ -62,6 +62,12 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
     A) #admin username
       ADMINUSER=${OPTARG}
       ;;
+    I) #IRIS kit name
+      IRISKIT=${OPTARG}
+      ;;
+    W) #WGW kit name
+      WGWKIT=${OPTARG}
+      ;;
     h)  #show help
       help
       exit 2
@@ -83,6 +89,8 @@ echo SECRETURL=$SECRETURL  >> params.log
 echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
 echo TEMPLATEURI=$TEMPLATEURI  >> params.log
 echo ADMINUSER=$ADMINUSER >> params.log
+echo IRISKIT=$IRISKIT >> params.log
+echo WGWKIT=$WGWKIT >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
@@ -94,7 +102,8 @@ USERHOME=/home/$ADMINUSER
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64 # vanilla IRIS
+kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
+#kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64
 #kit=IRISHealth-2023.1.3.517.0-lnxubuntu2204x64
 password=sys
 ssport=1972

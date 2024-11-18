@@ -30,6 +30,12 @@
                 "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
             }
         },
+        "IRISKitName": {
+            "type": "string",
+            "metadata": {
+                "description": "Kit name of IRIS."
+            }
+        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -316,8 +322,10 @@
                 "settings": {
                     "fileUris": [
                         "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]"
-                    ],
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote') )]"
+                    ]
+                },
+                "protectedSettings": {
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote') )]"
                 }
             }
         }
