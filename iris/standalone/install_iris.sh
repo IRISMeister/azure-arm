@@ -41,7 +41,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A:I:W: optname; do
+while getopts :m:s:a:t:L:T:u:A:I: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -65,9 +65,6 @@ while getopts :m:s:a:t:L:T:u:A:I:W: optname; do
     I) #IRIS kit name
       IRISKIT=${OPTARG}
       ;;
-    W) #WGW kit name
-      WGWKIT=${OPTARG}
-      ;;
     h)  #show help
       help
       exit 2
@@ -90,7 +87,6 @@ echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
 echo TEMPLATEURI=$TEMPLATEURI  >> params.log
 echo ADMINUSER=$ADMINUSER >> params.log
 echo IRISKIT=$IRISKIT >> params.log
-echo WGWKIT=$WGWKIT >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
@@ -98,7 +94,6 @@ install_iris_service() {
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
-
 USERHOME=/home/$ADMINUSER
 
 # install useful packages (only apache2 is required)
@@ -108,12 +103,13 @@ DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
 
 # setup secure WGW
 wget ${TEMPLATEROOTURI}/wgw/hs-ssl.conf
+cp hs-ssl.conf /etc/apache2/sites-available/
 wget ${TEMPLATEROOTURI}/wgw/create_cert_keys.sh
 chmod +x create_cert_keys.sh
 mkdir -p webgateway/build/ssl/web/
 mkdir -p webgateway/build/ssl/browsers/client01/
+git clone https://github.com/IRISMeister/apache-ssl.git
 ./create_cert_keys.sh
-
 mkdir -p /etc/myssl/certs/
 mkdir -p /etc/myssl/private/
 mkdir -p /etc/apache2/ssl.crt/
@@ -121,16 +117,18 @@ cp webgateway/build/ssl/web/server.crt /etc/myssl/certs/server.crt
 cp webgateway/build/ssl/web/server.key /etc/myssl/private/server.key
 cp webgateway/build/ssl/web/caint.crt /etc/apache2/ssl.crt/server-ca.crt
 cp webgateway/build/ssl/browsers/client01/caint.crt /etc/apache2/ssl.crt/ca-bundle.crt
+a2enmod socache_shmcb ssl -q
+a2ensite hs-ssl -q
+systemctl restart apache2
 
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
-#kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64
-#kit=IRISHealth-2023.1.3.517.0-lnxubuntu2204x64
+kit=$IRISKIT 
+#kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
 password=sys
 ssport=1972
-webport=52773
+webport=80
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
 ISC_PACKAGE_INSTANCENAME=iris

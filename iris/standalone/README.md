@@ -17,7 +17,7 @@ IRISサーバ用のVMにパブリックIPがアサインされるため直接接
 ### IRIS管理ポータル  
 下記のURLでアクセスします。
 ```
-http://[domainName].japaneast.cloudapp.azure.com:52773/csp/sys/UtilHome.csp 
+https://[domainName].japaneast.cloudapp.azure.com/csp/sys/UtilHome.csp 
 例)
-http://my-irishost-1.japaneast.cloudapp.azure.com:52773/csp/sys/UtilHome.csp
+https://my-irishost-1.japaneast.cloudapp.azure.com/csp/sys/UtilHome.csp
 ```

@@ -37,13 +37,6 @@
                 "description": "Kit name of IRIS."
             }
         },
-        "WGWKitName": {
-            "type": "string",
-            "defaultValue": "WebGateway-2024.1.2.398.0-lnxubuntu2204x64",
-            "metadata": {
-                "description": "Kit name of WGW."
-            }
-        },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -216,7 +209,7 @@
                     "description": "Allow HTTP",
                     "protocol": "Tcp",
                     "sourcePortRange": "*",
-                    "destinationPortRange": "52773",
+                    "destinationPortRange": "443",
                     "sourceAddressPrefix": "Internet",
                     "destinationAddressPrefix": "*",
                     "access": "Allow",
@@ -333,7 +326,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote'),' -W ',variables('singleQuote'),parameters('WGWKitName'),variables('singleQuote') )]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote') )]"
                 }
             }
         }

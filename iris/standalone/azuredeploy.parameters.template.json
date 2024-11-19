@@ -22,9 +22,6 @@
     },
     "IRISKitName": {
       "value": "IRIS-2024.1.2.398.0-lnxubuntu2204x64"
-    },
-    "WGWKitName": {
-      "value": "WebGateway-2024.1.2.398.0-lnxubuntu2204x64"
     }
   }
 }

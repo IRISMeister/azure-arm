@@ -73,6 +73,13 @@
         "description": "Virtual network name"
       }
     },
+    "IRISKitName": {
+        "type": "string",
+        "defaultValue": "IRIS-2024.1.2.398.0-lnxubuntu2204x64",
+        "metadata": {
+            "description": "Kit name of IRIS."
+        }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -110,8 +117,7 @@
         "wijSize": 256,
         "j1Size": 256,
         "j2Size": 256,
-        "vmCount": 1,
-        "slaveCount": 1
+        "vmCount": 1
       },
       "Medium": {
         "vmSize": "Standard_A4_v2",
@@ -119,8 +125,7 @@
         "wijSize": 512,
         "j1Size": 512,
         "j2Size": 512,
-        "vmCount": 1,
-        "slaveCount": 2
+        "vmCount": 1
       },
       "Large": {
         "vmSize": "Standard_A8_v2",
@@ -128,8 +133,7 @@
         "wijSize": 512,
         "j1Size": 512,
         "j2Size": 512,
-        "vmCount": 1,
-        "slaveCount": 4
+        "vmCount": 1
       }
     },
     "arbiterTemplateUrl": "[uri(parameters('_artifactsLocation'), concat('arbiter-resources.json', parameters('_artifactsLocationSasToken')))]",
@@ -261,6 +265,9 @@
           "privateIPAddress" : {
             "value": "10.0.1.11"
           },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
+          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
@@ -316,7 +323,7 @@
               "wijSize": "[variables('deploymentSize')[parameters('tshirtSize')].wijSize]",
               "j1Size": "[variables('deploymentSize')[parameters('tshirtSize')].j1Size]",
               "j2Size": "[variables('deploymentSize')[parameters('tshirtSize')].j2Size]",
-              "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].slaveCount]",
+              "vmCount": "[variables('deploymentSize')[parameters('tshirtSize')].vmCount]",
               "availabilitySet": "[variables('availabilitySetSettings').name]",
               "zone": "3"
             }
@@ -332,6 +339,9 @@
           },
           "privateIPAddress" : {
             "value": "10.0.1.12"
+          },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
           },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"

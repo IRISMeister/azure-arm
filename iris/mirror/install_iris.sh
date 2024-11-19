@@ -42,7 +42,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A: optname; do
+while getopts :m:s:a:t:L:T:u:A:I: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -69,6 +69,9 @@ while getopts :m:s:a:t:L:T:u:A: optname; do
     A) #admin username
       ADMINUSER=${OPTARG}
       ;;
+    I) #IRIS kit name
+      IRISKIT=${OPTARG}
+      ;;
     h)  #show help
       help
       exit 2
@@ -83,15 +86,30 @@ done
 
 timedatectl set-timezone Asia/Tokyo
 
-echo "NOW=$now MASTERIP=$MASTERIP SUBNETADDRESS=$SUBNETADDRESS ARBITERIP=$ARBITERIP NODETYPE=$NODETYPE" >> params.log
-echo "SECRETURL=$SECRETURL SECRETSASTOKEN=$SECRETSASTOKEN TEMPLATEURI=$TEMPLATEURI ADMINUSER=$ADMINUSER" >> params.log
+echo NOW=$now >> params.log
+echo MASTERIP=$MASTERIP  >> params.log
+echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
+echo SECRETURL=$SECRETURL  >> params.log
+echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
+echo TEMPLATEURI=$TEMPLATEURI  >> params.log
+echo ADMINUSER=$ADMINUSER >> params.log
+echo IRISKIT=$IRISKIT >> params.log
+echo "ARBITERIP=$ARBITERIP" >> params.log
+echo "NODETYPE=$NODETYPE" >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 TEMPLATECMNURI=${TEMPLATEURI%/*/*}
+TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 USERHOME=/home/$ADMINUSER
+
+# install useful packages (only apache2 is required)
+DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
+ && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
+ && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+
 export MirrorDBName='MYDB'
 export MirrorArbiterIP=$ARBITERIP
 
@@ -134,6 +152,26 @@ else
   wget ${TEMPLATEBASEURI}/Installer.cls
 fi
 
+# setup secure WGW
+wget ${TEMPLATEROOTURI}/wgw/hs-ssl.conf
+cp hs-ssl.conf /etc/apache2/sites-available/
+wget ${TEMPLATEROOTURI}/wgw/create_cert_keys.sh
+chmod +x create_cert_keys.sh
+mkdir -p webgateway/build/ssl/web/
+mkdir -p webgateway/build/ssl/browsers/client01/
+git clone https://github.com/IRISMeister/apache-ssl.git
+./create_cert_keys.sh
+mkdir -p /etc/myssl/certs/
+mkdir -p /etc/myssl/private/
+mkdir -p /etc/apache2/ssl.crt/
+cp webgateway/build/ssl/web/server.crt /etc/myssl/certs/server.crt
+cp webgateway/build/ssl/web/server.key /etc/myssl/private/server.key
+cp webgateway/build/ssl/web/caint.crt /etc/apache2/ssl.crt/server-ca.crt
+cp webgateway/build/ssl/browsers/client01/caint.crt /etc/apache2/ssl.crt/ca-bundle.crt
+a2enmod socache_shmcb ssl -q
+a2ensite hs-ssl -q
+systemctl restart apache2
+
 if [ "$NODETYPE" == "MASTER" ];
 then
   echo "Initializing as PRIMARY mirror member"
@@ -150,17 +188,25 @@ then
 fi
 
 # ++ edit here for optimal settings ++
-kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64 # vanilla IRIS
-#kit=IRISHealth-2023.1.3.517.0-lnxubuntu2204x64
+kit=$IRISKIT 
+#kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
 password=sys
 ssport=1972
-webport=52773
+webport=80
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
 ISC_PACKAGE_INSTANCENAME=iris
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
+echo kit=$kit >> params.log
+echo password=$password >> params.log
+echo webport=$webport >> params.log
+echo kittemp=$kittemp >> params.log
+echo ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR >> params.log
+echo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME >> params.log
+echo ISC_PACKAGE_MGRUSER=$ISC_PACKAGE_MGRUSER >> params.log
+echo ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER >> params.log
 
 # download iris binary kit
 wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
@@ -210,9 +256,9 @@ ISC_PACKAGE_USER_PASSWORD=$password \
 ISC_PACKAGE_CSPSYSTEM_PASSWORD=$password \
 ISC_PACKAGE_CLIENT_COMPONENTS= \
 ISC_PACKAGE_SUPERSERVER_PORT=$ssport \
-ISC_PACKAGE_WEBSERVER_PORT=$webport \
+ISC_PACKAGE_WEB_CONFIGURE=Y \
 ISC_INSTALLER_MANIFEST=$kittemp/$kit/Installer.cls \
-ISC_INSTALLER_LOGFILE=installer_log \
+ISC_INSTALLER_LOGFILE=/var/tmp/iris_installer_log \
 ISC_INSTALLER_LOGLEVEL=3 \
 ./irisinstall_silent
 popd
@@ -238,7 +284,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
-globals=0,0,128,0,0,0
+globals=0,0,8192,0,0,0
 gmheap=75136
 locksiz=33554432
 routines=128
