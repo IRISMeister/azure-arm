@@ -141,8 +141,9 @@ $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=
 - それ以外  
 Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
 ```bash
-$ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com -A
+$ ssh -i [秘密鍵] [adminUsername]@[domainName]-1.japaneast.cloudapp.azure.com -A
 $ ssh VM名
+
 例)
 $ eval `ssh-agent`
 $ ps
@@ -176,7 +177,7 @@ VM名は以下の通りです。
 |mirror|msvm0|ミラープライマリメンバ|
 |mirror|slvm0|ミラーバックアップメンバ|
 |shard|clientvm|汎用クライアントVM|
-|shard|data-mastervm0|データノード #1(マスタ)|
+|shard|data-mastervm0|データノード #1(兼マスタノード)|
 |shard|datavm0|データノード #2|
 |shard|datavm1|データノード #3|
 

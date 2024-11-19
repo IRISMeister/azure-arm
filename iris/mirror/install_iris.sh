@@ -94,8 +94,8 @@ echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
 echo TEMPLATEURI=$TEMPLATEURI  >> params.log
 echo ADMINUSER=$ADMINUSER >> params.log
 echo IRISKIT=$IRISKIT >> params.log
-echo "ARBITERIP=$ARBITERIP" >> params.log
-echo "NODETYPE=$NODETYPE" >> params.log
+echo ARBITERIP=$ARBITERIP >> params.log
+echo NODETYPE=$NODETYPE >> params.log
 
 install_iris_service() {
 #!/bin/bash -e
@@ -116,7 +116,8 @@ export MirrorArbiterIP=$ARBITERIP
 if [ "$NODETYPE" == "ARBITER" ];
 then
   echo "Initializing as Arbiter"
-  kit=ISCAgent-2023.1.3.517.0-lnxubuntu2204x64
+  kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
+  #kit=ISCAgent-2023.1.3.517.0-lnxubuntu2204x64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz

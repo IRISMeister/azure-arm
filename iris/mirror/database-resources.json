@@ -158,7 +158,8 @@
       "apiVersion": "2019-12-01",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyindex()))]"
+        "[resourceId('Microsoft.Compute/virtualMachines', concat(variables('vmName'), copyindex()))]",
+        "[concat('Microsoft.Network/natGateways/', 'ngw')]"
       ],
       "copy": {
         "name": "scriptCopyLoop",

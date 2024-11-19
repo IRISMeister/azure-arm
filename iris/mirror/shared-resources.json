@@ -120,7 +120,7 @@
           {
             "properties": {
               "protocol": "Http",
-              "port": 52773,
+              "port": 80,
               "requestPath": "/csp/bin/mirror_status.cxw",
               "intervalInSeconds": 15,
               "numberOfProbes": 2
