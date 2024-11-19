@@ -114,6 +114,14 @@ ISC_PACKAGE_INSTANCENAME=iris
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
+echo kit=$kit >> params.log
+echo password=$password >> params.log
+echo webport=$webport >> params.log
+echo kittemp=$kittemp >> params.log
+echo ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR >> params.log
+echo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME >> params.log
+echo ISC_PACKAGE_MGRUSER=$ISC_PACKAGE_MGRUSER >> params.log
+echo ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER >> params.log
 
 # download iris binary kit
 wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
