@@ -112,7 +112,7 @@
     "sharedTemplateUrl": "[uri(parameters('_artifactsLocation'), concat('shared-resources.json', parameters('_artifactsLocationSasToken')))]",
     "deploymentSize": {
       "Small": {
-        "vmSize": "Standard_A2_v2",
+        "vmSize": "Standard_D2s_v3",
         "dbSize": 256,
         "wijSize": 256,
         "j1Size": 256,
@@ -120,7 +120,7 @@
         "vmCount": 1
       },
       "Medium": {
-        "vmSize": "Standard_A4_v2",
+        "vmSize": "Standard_D4s_v3",
         "dbSize": 512,
         "wijSize": 512,
         "j1Size": 512,
@@ -128,7 +128,7 @@
         "vmCount": 1
       },
       "Large": {
-        "vmSize": "Standard_A8_v2",
+        "vmSize": "Standard_D8s_v3",
         "dbSize": 512,
         "wijSize": 512,
         "j1Size": 512,

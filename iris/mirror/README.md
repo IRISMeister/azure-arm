@@ -42,21 +42,21 @@ IRISサーバはプライベートネットワーク上のVMにデプロイさ�
 
 ```bash
 端末1
-ssh -i [秘密鍵] -L 8888:msvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+ssh -i [秘密鍵] -L 8888:msvm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 [adminUsername]@[domainName]-1.japaneast.cloudapp.azure.com
 端末2
-ssh -i [秘密鍵] -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+ssh -i [秘密鍵] -L 8889:slvm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 [adminUsername]@[domainName]-1.japaneast.cloudapp.azure.com
 ```
 
 例) 
 ```bash
-端末1
-ssh -i my-azure-keypair.pem -L 8888:msvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+端末1 (ミラーのPrimaryに接続)
+ssh -i my-azure-keypair.pem -L 8888:msvm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
-端末2
-ssh -i my-azure-keypair.pem -L 8889:slvm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+端末2 (ミラーのBackupに接続)
+ssh -i my-azure-keypair.pem -L 8889:slvm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
 ```
