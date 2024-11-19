@@ -97,7 +97,30 @@ install_iris_service() {
 
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 TEMPLATECMNURI=${TEMPLATEURI%/*/*}
+TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
+
 USERHOME=/home/$ADMINUSER
+
+# install useful packages (only apache2 is required)
+DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
+ && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
+ && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+
+# setup secure WGW
+wget ${TEMPLATEROOTURI}/wgw/hs-ssl.conf
+wget ${TEMPLATEROOTURI}/wgw/create_cert_keys.sh
+chmod +x create_cert_keys.sh
+mkdir -p webgateway/build/ssl/web/
+mkdir -p webgateway/build/ssl/browsers/client01/
+./create_cert_keys.sh
+
+mkdir -p /etc/myssl/certs/
+mkdir -p /etc/myssl/private/
+mkdir -p /etc/apache2/ssl.crt/
+cp webgateway/build/ssl/web/server.crt /etc/myssl/certs/server.crt
+cp webgateway/build/ssl/web/server.key /etc/myssl/private/server.key
+cp webgateway/build/ssl/web/caint.crt /etc/apache2/ssl.crt/server-ca.crt
+cp webgateway/build/ssl/browsers/client01/caint.crt /etc/apache2/ssl.crt/ca-bundle.crt
 
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
@@ -171,7 +194,7 @@ ISC_PACKAGE_USER_PASSWORD=$password \
 ISC_PACKAGE_CSPSYSTEM_PASSWORD=$password \
 ISC_PACKAGE_CLIENT_COMPONENTS= \
 ISC_PACKAGE_SUPERSERVER_PORT=$ssport \
-ISC_PACKAGE_WEBSERVER_PORT=$webport \
+ISC_PACKAGE_WEB_CONFIGURE=Y \
 ISC_INSTALLER_MANIFEST=$kittemp/$kit/Installer.cls \
 ISC_INSTALLER_LOGFILE=/var/tmp/iris_installer_log \
 ISC_INSTALLER_LOGLEVEL=3 \
