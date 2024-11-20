@@ -106,12 +106,11 @@ TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 USERHOME=/home/$ADMINUSER
 
 # somehow have to wait until NAT G/W is ready to use.... 
-# ping -w 10 portal.azure.com ; ping_status=$?
 for ((i=0; i < 10; i++)); do
 	  echo "${i} th try..."
-    ping -w 3 archive.ubuntu.com ; ping_status=$?
-    echo "ping_status is ${ping_status}"
-	if [ ${ping_status} = "0" ]; then
+    apt -qq update ; apt_status=$?
+    echo "ping_status is ${apt_status}"
+	if [ ${apt_status} = "0" ]; then
 		break
 	fi
 	sleep 10
@@ -299,7 +298,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
 globals=0,0,256,0,0,0
-gmheap=75136
+gmheap=163840
 locksiz=33554432
 routines=128
 wijdir=/iris/wij/

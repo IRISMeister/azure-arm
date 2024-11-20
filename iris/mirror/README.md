@@ -51,7 +51,7 @@ ssh -i [秘密鍵] -L 8889:slvm0:80 -o StrictHostKeyChecking=no -o UserKnownHost
 
 例) 
 ```bash
-端末1 (ミラーのPrimaryに接続)
+端末1 (ミラーのPrimaryに接続) my-irishost-1はjumpboxのDNSホスト名
 ssh -i my-azure-keypair.pem -L 8888:msvm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
 irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$

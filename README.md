@@ -138,8 +138,8 @@ $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 例)
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
-- それ以外  
-Public IPが公開されているVM=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
+- それ以外(mirror, shardなど)  
+Public IPが公開されているVM(jumpbox)=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName]-1.japaneast.cloudapp.azure.com -A
 $ ssh VM名
