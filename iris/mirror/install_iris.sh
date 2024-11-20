@@ -105,6 +105,19 @@ TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 USERHOME=/home/$ADMINUSER
 
+# somehow have to wait until NAT G/W is ready to use.... 
+# ping -w 10 portal.azure.com ; ping_status=$?
+for ((i=0; i < 10; i++)); do
+	  echo "${i} th try..."
+    ping -w 3 archive.ubuntu.com ; ping_status=$?
+    echo "ping_status is ${ping_status}"
+	if [ ${ping_status} = "0" ]; then
+		break
+	fi
+	sleep 10
+done
+
+
 # install useful packages (only apache2 is required)
 DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
  && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
