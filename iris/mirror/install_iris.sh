@@ -310,14 +310,11 @@ EOS
 #locksiz=33554432
 #routines=128
 
-
+# endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
+sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 # merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
-sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 sleep 2
-# add restart to prevent endeless SS error (Superserver failed to start, Port: "Port: 1972) ....
-echo "executing iris restart" 
-iris restart $ISC_PACKAGE_INSTANCENAME quietly
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
