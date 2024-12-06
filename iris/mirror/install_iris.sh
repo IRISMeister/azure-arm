@@ -298,9 +298,6 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
 globals=0,0,256,0,0,0
-gmheap=163840
-locksiz=33554432
-routines=128
 wijdir=/iris/wij/
 wduseasyncio=1
 [Journal]
@@ -308,13 +305,19 @@ AlternateDirectory=/iris/journal2/
 CurrentDirectory=/iris/journal1/
 EOS
 
+#excluded
+#gmheap=163840
+#locksiz=33554432
+#routines=128
+
+
 # merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 sleep 2
 # add restart to prevent SS error....
-echo "executing iris restart" 
-iris restart $ISC_PACKAGE_INSTANCENAME quietly
+#echo "executing iris restart" 
+#iris restart $ISC_PACKAGE_INSTANCENAME quietly
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
