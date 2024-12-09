@@ -310,6 +310,8 @@ EOS
 #locksiz=33554432
 #routines=128
 
+exit 
+
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 # merge cpf
