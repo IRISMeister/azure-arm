@@ -8,6 +8,10 @@ find_user_disks() {
     echo $result
 }
 
+if [ -f .mount-disks-done ]; then
+    exit
+fi
+
 # should find 3 disks
 DISKS=$(find_user_disks)
 
@@ -37,4 +41,6 @@ read UUID FS_TYPE < <(blkid -u filesystem /dev/${ARRAY[2]} |awk -F "[= ]" '{prin
 LINE="UUID=${UUID}\t${IRISROOT}/db\t${FS_TYPE}\t${MOUNT_OPTIONS}\t0 2"; echo -e "${LINE}" >> /etc/fstab
 
 mount -a
+
+touch .mount-disks-done
 

@@ -22,81 +22,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# You must be root to run this script
-if [ "${UID}" -ne 0 ];
-then
-    echo "Script executed without root permissions"
-    echo "You must be root to run this program." >&2
-    exit 3
-fi
-
-# Get today's date into YYYYMMDD format
-now=$(date +"%Y%m%d")
-
-# Get passed in parameters $1, $2, $3, $4, and others...
-MASTERIP=""
-SUBNETADDRESS=""
-ARBITERIP=""
-NODETYPE=""
-SECRETURL=""
-SECRETSASTOKEN=""
-
-#Loop through options passed
-while getopts :m:s:a:t:L:T:u:A:I: optname; do
-    echo "Option $optname set with value ${OPTARG}"
-  case $optname in
-    m)
-      MASTERIP=${OPTARG}
-      ;;
-  	s) #Data storage subnet space
-      SUBNETADDRESS=${OPTARG}
-      ;;
-    a) #arbiter ip address
-      ARBITERIP=${OPTARG}
-      ;;
-    t) #Type of node (MASTER/SLAVE)
-      NODETYPE=${OPTARG}
-      ;;
-    L) #secret url
-      SECRETURL=${OPTARG}
-      ;;
-    T) #secret sas token
-      SECRETSASTOKEN=${OPTARG}
-      ;;
-    u) #template uri
-      TEMPLATEURI=${OPTARG}
-      ;;
-    A) #admin username
-      ADMINUSER=${OPTARG}
-      ;;
-    I) #IRIS kit name
-      IRISKIT=${OPTARG}
-      ;;
-    h)  #show help
-      help
-      exit 2
-      ;;
-    \?) #unrecognized option - show help
-      echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
-      help
-      exit 2
-      ;;
-  esac
-done
-
-timedatectl set-timezone Asia/Tokyo
-
-echo NOW=$now >> params.log
-echo MASTERIP=$MASTERIP  >> params.log
-echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
-echo SECRETURL=$SECRETURL  >> params.log
-echo SECRETSASTOKEN=$SECRETSASTOKEN  >> params.log
-echo TEMPLATEURI=$TEMPLATEURI  >> params.log
-echo ADMINUSER=$ADMINUSER >> params.log
-echo IRISKIT=$IRISKIT >> params.log
-echo ARBITERIP=$ARBITERIP >> params.log
-echo NODETYPE=$NODETYPE >> params.log
-
 install_iris_service() {
 #!/bin/bash -e
 
@@ -310,11 +235,12 @@ EOS
 #locksiz=33554432
 #routines=128
 
+# merge cpf
+ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
+sleep 10
+
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
-# merge cpf
-ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris restart $ISC_PACKAGE_INSTANCENAME quietly
-sleep 10
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
@@ -332,6 +258,84 @@ sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMA
 }
 
 # MAIN ROUTINE
+if [ ! -f params.log ]; then
+# You must be root to run this script
+if [ "${UID}" -ne 0 ];
+then
+    echo "Script executed without root permissions"
+    echo "You must be root to run this program." >&2
+    exit 3
+fi
+
+# Get today's date into YYYYMMDD format
+now=$(date +"%Y%m%d")
+
+# Get passed in parameters $1, $2, $3, $4, and others...
+MASTERIP=""
+SUBNETADDRESS=""
+ARBITERIP=""
+NODETYPE=""
+SECRETURL=""
+SECRETSASTOKEN=""
+
+#Loop through options passed
+while getopts :m:s:a:t:L:T:u:A:I: optname; do
+    echo "Option $optname set with value ${OPTARG}"
+  case $optname in
+    m)
+      MASTERIP=${OPTARG}
+      ;;
+  	s) #Data storage subnet space
+      SUBNETADDRESS=${OPTARG}
+      ;;
+    a) #arbiter ip address
+      ARBITERIP=${OPTARG}
+      ;;
+    t) #Type of node (MASTER/SLAVE)
+      NODETYPE=${OPTARG}
+      ;;
+    L) #secret url
+      SECRETURL=${OPTARG}
+      ;;
+    T) #secret sas token
+      SECRETSASTOKEN=${OPTARG}
+      ;;
+    u) #template uri
+      TEMPLATEURI=${OPTARG}
+      ;;
+    A) #admin username
+      ADMINUSER=${OPTARG}
+      ;;
+    I) #IRIS kit name
+      IRISKIT=${OPTARG}
+      ;;
+    h)  #show help
+      help
+      exit 2
+      ;;
+    \?) #unrecognized option - show help
+      echo -e \\n"Option -${BOLD}$OPTARG${NORM} not allowed."
+      help
+      exit 2
+      ;;
+  esac
+done
+
+timedatectl set-timezone Asia/Tokyo
+
+echo NOW=$now >> params.log
+echo MASTERIP=$MASTERIP  >> params.log
+echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
+echo SECRETURL=$SECRETURL  >> params.log
+echo SECRETSASTOKEN="$SECRETSASTOKEN"  >> params.log
+echo TEMPLATEURI=$TEMPLATEURI  >> params.log
+echo ADMINUSER=$ADMINUSER >> params.log
+echo IRISKIT=$IRISKIT >> params.log
+echo ARBITERIP=$ARBITERIP >> params.log
+echo NODETYPE=$NODETYPE >> params.log
+
+fi
+
 echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
