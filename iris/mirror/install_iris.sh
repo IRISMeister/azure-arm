@@ -251,6 +251,8 @@ then
   sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
 fi
 
+exit 
+
 sleep 5
 echo "executing $IRIS_COMMAND_CREATE_DB"
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
