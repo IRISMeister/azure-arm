@@ -228,3 +228,18 @@ IRIS-2023.1.3.517.0-lnxubuntu2204x64.tar.gz  install_iris.sh  iris.service  stde
 Installer.cls                            iris.key         params.log    stdout
 root@MyubuntuVM:/var/lib/waagent/custom-script/download/0#
 ```
+
+### install箇所の再実行
+install_iris.sh等の書き換え・デバッグが可能。
+  
+sudo su -
+cd /var/lib/waagent/custom-script/download/0
+iris stop iris
+iris delete iris
+rm -fR /usr/irissys
+rm -fR /iris/db/*
+rm -fR /iris/wij/*
+rm -fR /iris/journal1/*
+rm -fR /iris/journal2/*
+source params.log
+source install_iris.sh
