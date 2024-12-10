@@ -242,6 +242,8 @@ sleep 10
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
+exit 
+
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
@@ -250,8 +252,6 @@ if [ "$NODETYPE" == "SLAVE" ]
 then
   sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
 fi
-
-exit 
 
 sleep 5
 echo "executing $IRIS_COMMAND_CREATE_DB"
