@@ -239,10 +239,13 @@ EOS
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 sleep 10
 
+exit 
+
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
-exit 
+# ここでもSSエラー発生
+#exit 
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
