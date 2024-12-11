@@ -245,6 +245,7 @@ EOS
 
 # merge cpf
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
+iris restart $ISC_PACKAGE_INSTANCENAME quietly
 sleep 10
 
 # ここならOK
