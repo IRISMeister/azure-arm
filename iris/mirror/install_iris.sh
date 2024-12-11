@@ -50,6 +50,9 @@ DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
 export MirrorDBName='MYDB'
 export MirrorArbiterIP=$ARBITERIP
 
+echo MirrorDBName=$MirrorDBName >> params.log
+echo MirrorArbiterIP=$MirrorArbiterIP >> params.log
+
 if [ "$NODETYPE" == "ARBITER" ];
 then
   echo "Initializing as Arbiter"
@@ -124,6 +127,8 @@ then
   IRIS_COMMAND_INIT="##class(Silent.Installer).JoinAsFailover(\"${MASTERIP}\")"
   IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
 fi
+echo IRIS_COMMAND_INIT=$IRIS_COMMAND_INIT >> params.log
+echo IRIS_COMMAND_CREATE_DB=$IRIS_COMMAND_CREATE_DB >> params.log
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
@@ -242,13 +247,14 @@ EOS
 ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 sleep 10
 
-exit 
+# ここならOK
+#exit 
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
 # ここでもSSエラー発生
-#exit 
+exit 
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
@@ -335,7 +341,7 @@ echo NOW=$now >> params.log
 echo MASTERIP=$MASTERIP  >> params.log
 echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
 echo SECRETURL=$SECRETURL  >> params.log
-echo SECRETSASTOKEN="$SECRETSASTOKEN"  >> params.log
+echo SECRETSASTOKEN=\"$SECRETSASTOKEN\"  >> params.log
 echo TEMPLATEURI=$TEMPLATEURI  >> params.log
 echo ADMINUSER=$ADMINUSER >> params.log
 echo IRISKIT=$IRISKIT >> params.log
