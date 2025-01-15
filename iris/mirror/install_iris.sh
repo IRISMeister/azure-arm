@@ -247,9 +247,12 @@ EOS
 # merge cpf
 #ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 #iris restart $ISC_PACKAGE_INSTANCENAME quietly
+echo "calling systemctl start iris" 
 sudo systemctl start iris
-iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
+echo "merging CPF" 
+ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 # just in case...
+echo "calling systemctl restart iris" 
 sudo systemctl restart iris
 sleep 10
 
@@ -269,10 +272,11 @@ sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMA
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 if [ "$NODETYPE" == "SLAVE" ]
 then
-  sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
+  #sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
+  sudo systemctl restart iris
+  sleep 10
 fi
 
-sleep 5
 echo "executing $IRIS_COMMAND_CREATE_DB"
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
 
