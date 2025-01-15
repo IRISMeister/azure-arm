@@ -9,4 +9,4 @@ ExecStart=/usr/irissys/bin/iris start IRIS
 ExecStop=/usr/irissys/bin/iris stop IRIS quietly
 Restart=on-abort
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target

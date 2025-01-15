@@ -244,8 +244,10 @@ EOS
 #routines=128
 
 # merge cpf
-ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
-iris restart $ISC_PACKAGE_INSTANCENAME quietly
+#ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
+#iris restart $ISC_PACKAGE_INSTANCENAME quietly
+sudo systemctl start iris
+iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 sleep 10
 
 # ここならOK
