@@ -250,6 +250,7 @@ EOS
 #iris restart $ISC_PACKAGE_INSTANCENAME quietly
 sudo systemctl start iris
 iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
+sudo systemctl restart iris
 sleep 10
 
 # ここならOK
