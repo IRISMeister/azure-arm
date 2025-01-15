@@ -44,9 +44,10 @@ done
 
 # install useful packages (only apache2 is required)
 DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
- && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
+ && apt -y install sudo apache2 \
  && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
-
+# && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
+ 
 sudo systemctl stop apparmor
 DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
 
