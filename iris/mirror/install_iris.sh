@@ -251,7 +251,7 @@ sudo systemctl start iris
 iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 # just in case...
 sudo systemctl restart iris
-sleep 30
+sleep 10
 
 # ここならOK
 #exit 
