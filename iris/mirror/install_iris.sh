@@ -234,7 +234,6 @@ gmheap=163840
 locksiz=33554432
 routines=128
 wijdir=/iris/wij/
-wduseasyncio=1
 [Journal]
 AlternateDirectory=/iris/journal2/
 CurrentDirectory=/iris/journal1/
@@ -250,6 +249,7 @@ EOS
 #iris restart $ISC_PACKAGE_INSTANCENAME quietly
 sudo systemctl start iris
 iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
+# just in case...
 sudo systemctl restart iris
 sleep 10
 

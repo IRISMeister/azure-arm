@@ -72,14 +72,15 @@ ClassMethod EnableMirroringService() As %Status
 ClassMethod CreateMirrorSet(ArbiterIP As %String) As %Status
 {
   set mirrorName="MIRRORSET"
-  set hostName=$system.INetInfo.HostNameToAddr($system.INetInfo.LocalHostName())
+  ;set hostName=$system.INetInfo.HostNameToAddr($system.INetInfo.LocalHostName()) // Windows on AWS need this
+  set hostName=$system.INetInfo.LocalHostName()
   set systemName="MIRRORNODE01"
   // Create mirror:
   set mirror("UseSSL") = 0
   if (ArbiterIP'="none") {
     set mirror("ArbiterNode") = ArbiterIP_"|2188"
-    set mirror("ECPAddress") = hostName  // Windows on AWS need this
   }
+  set mirror("ECPAddress") = hostName  
   set sc = ##class(SYS.Mirror).CreateNewMirrorSet(mirrorName, systemName, .mirror)
   write !,"Creating mirror "_mirrorName_"..."
   if 'sc do $system.OBJ.DisplayError(sc)  
@@ -89,10 +90,11 @@ ClassMethod CreateMirrorSet(ArbiterIP As %String) As %Status
 ClassMethod JoinAsFailover(PrimaryNodeIP As %String) As %Status
 {
   set mirrorName="MIRRORSET"
-  set hostName=$system.INetInfo.HostNameToAddr($system.INetInfo.LocalHostName())
+  ;set hostName=$system.INetInfo.HostNameToAddr($system.INetInfo.LocalHostName()) // Windows on AWS need this
+  set hostName=$system.INetInfo.LocalHostName()
   set systemName="MIRRORNODE02"
   // Join as failover:
-  set mirror("ECPAddress") = hostName  // Windows on AWS need this
+  set mirror("ECPAddress") = hostName  
   set sc=##class(SYS.Mirror).JoinMirrorAsFailoverMember(mirrorName,systemName,"IRIS",PrimaryNodeIP,,.mirror)
   write !,"Jonining mirror "_mirrorName_"...",!
   if 'sc do $system.OBJ.DisplayError(sc)
