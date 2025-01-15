@@ -47,6 +47,9 @@ DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
  && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
  && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
+sudo systemctl stop apparmor
+DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
+
 export MirrorDBName='MYDB'
 export MirrorArbiterIP=$ARBITERIP
 
@@ -73,19 +76,19 @@ END
   systemctl enable ISCAgent.service
   systemctl start ISCAgent.service
 
-  # get a jdbc driver for loadbalancer testing purpose
-  echo "Installing an ivp java program on Arbiter"
+  ## get a jdbc driver for loadbalancer testing purpose
+  #echo "Installing an ivp java program on Arbiter"
 
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update -y
-  apt-get install -y openjdk-8-jdk-headless
-  # iris jdbc driver and others
-  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  mv *.jar $USERHOME
-  wget ${TEMPLATEBASEURI}/JDBCSample.java
-  mv *.java $USERHOME
+  #export DEBIAN_FRONTEND=noninteractive
+  #apt-get update -y
+  #apt-get install -y openjdk-8-jdk-headless
+  ## iris jdbc driver and others
+  #wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
+  #mv *.jar $USERHOME
+  #wget ${TEMPLATEBASEURI}/JDBCSample.java
+  #mv *.java $USERHOME
 
-  chown irismeister:irismeister $USERHOME/*
+  #chown irismeister:irismeister $USERHOME/*
 
   exit 0
 else
