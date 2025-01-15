@@ -275,6 +275,8 @@ then
   #sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
   sudo systemctl restart iris
   sleep 10
+  # 一時的に
+  exit
 fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
