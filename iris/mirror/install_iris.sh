@@ -138,7 +138,9 @@ ssport=1972
 webport=80
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
-ISC_PACKAGE_INSTANCENAME=iris
+#ISC_PACKAGE_INSTANCENAME=iris
+# ./irisinstall_silent changes it to uppercase? That causes problems...
+ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
