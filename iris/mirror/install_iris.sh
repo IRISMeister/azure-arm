@@ -254,12 +254,13 @@ sudo systemctl restart iris
 sleep 10
 
 # ここならOK
-#exit 
+exit 
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
+echo "executing EnableMirroringService()" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
-# ここでもSSエラー発生
+# ここでSSエラー発生
 exit 
 
 echo "executing $IRIS_COMMAND_INIT" 
