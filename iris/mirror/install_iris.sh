@@ -251,17 +251,17 @@ sudo systemctl start iris
 iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 # just in case...
 sudo systemctl restart iris
-sleep 10
+sleep 30
 
 # ここならOK
-exit 
+#exit 
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
 # ここでSSエラー発生
-exit 
+#exit 
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
