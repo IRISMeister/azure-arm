@@ -16,11 +16,9 @@ chown $apacheUser CSP.log
 chmod 600 CSPRT.ini
 chown $apacheUser CSPRT.ini
 
-configAuth=hs
-configRsc1=viewer
 port=${SERVER_PORT-1972}
 username=${USERNAME-CSPSystem}
-password=${PASSWORD-SYS}
+password=${PASSWORD-sys}
 
 # [SYSTEM]
 ./cvtcfg setparameter "CSP.ini" "[SYSTEM]" "System_Manager" "*.*.*.*"

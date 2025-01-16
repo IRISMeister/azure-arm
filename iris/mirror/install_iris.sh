@@ -37,7 +37,7 @@ wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}
 tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 
 HTTPD_PREFIX=/etc/apache2
-ISC_PACKAGE_PLATFORM=lnxubuntu2004x64 # need this?
+#ISC_PACKAGE_PLATFORM=lnxubuntu2004x64 # need this?
 ISC_PACKAGE_INITIAL_SECURITY=Normal
 ISC_PACKAGE_CSPSYSTEM_PASSWORD=sys
 CSPGATEWAYDIR=/opt/webgateway
@@ -100,27 +100,15 @@ for ((i=0; i < 10; i++)); do
 	sleep 10
 done
 
-
-# install useful packages (only apache2 is required)
-DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
-echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
-
-# fonts-ipafont default-jre
-
 sudo systemctl stop apparmor
 DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
 
-export MirrorDBName='MYDB'
-export MirrorArbiterIP=$ARBITERIP
-
-echo MirrorDBName=$MirrorDBName >> params.log
-echo MirrorArbiterIP=$MirrorArbiterIP >> params.log
-
 if [ "$NODETYPE" == "ARBITER" ];
 then
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping
+
   echo "Initializing as Arbiter"
   kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
-  #kit=ISCAgent-2023.1.3.517.0-lnxubuntu2204x64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
@@ -128,10 +116,6 @@ then
   tar -xvf $kit.tar.gz
   cd $kit
   ISC_PACKAGE_MODE="unattended" ./agentinstall
-#  ./agentinstall << END
-#1
-#yes
-#END
   popd
   systemctl daemon-reload
   systemctl enable ISCAgent.service
@@ -151,11 +135,22 @@ then
 
   #chown irismeister:irismeister $ADMINHOME/*
 
+  # nothing to do for arbiter
   exit 0
 else
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
+  # fonts-ipafont default-jre
+  echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+
   wget ${TEMPLATECMNURI}/iris.service
   wget ${TEMPLATEBASEURI}/Installer.cls
 fi
+
+export MirrorDBName='MYDB'
+export MirrorArbiterIP=$ARBITERIP
+
+echo MirrorDBName=$MirrorDBName >> params.log
+echo MirrorArbiterIP=$MirrorArbiterIP >> params.log
 
 if [ "$NODETYPE" == "MASTER" ];
 then
@@ -393,7 +388,7 @@ echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
 echo "calling install_wgw_service"
-#install_wgw_service
+install_wgw_service
 echo "ending install_wgw_service"
 
 exit 0
