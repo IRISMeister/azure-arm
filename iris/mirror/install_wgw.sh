@@ -32,8 +32,8 @@ ADMINHOME=/home/$ADMINUSER
 
 
 # setup WGW
-platform=lnxubuntu2004x64
-wgwversion=2024.1.0.267.2
+platform=lnxubuntu2204x64
+wgwversion=2024.1.2.398.0
 wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}" -O WebGateway-${wgwversion}-${platform}.tar.gz
 tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz -C WebGateway-${wgwversion}-${platform}
 
