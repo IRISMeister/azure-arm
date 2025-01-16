@@ -28,7 +28,7 @@ install_iris_service() {
 TEMPLATEBASEURI=${TEMPLATEURI%/*}
 TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
-USERHOME=/home/$ADMINUSER
+ADMINHOME=/home/$ADMINUSER
 
 # somehow have to wait until NAT G/W is ready to use.... 
 for ((i=0; i < 10; i++)); do
@@ -85,11 +85,11 @@ END
   #apt-get install -y openjdk-8-jdk-headless
   ## iris jdbc driver and others
   #wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  #mv *.jar $USERHOME
+  #mv *.jar $ADMINHOME
   #wget ${TEMPLATEBASEURI}/JDBCSample.java
-  #mv *.java $USERHOME
+  #mv *.java $ADMINHOME
 
-  #chown irismeister:irismeister $USERHOME/*
+  #chown irismeister:irismeister $ADMINHOME/*
 
   exit 0
 else
