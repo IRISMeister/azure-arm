@@ -138,8 +138,8 @@ $ ssh -i [秘密鍵] [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 例)
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
-- それ以外(mirror, shardなど)  
-Public IPが公開されているVM(jumpbox)=踏み台ホストです。各VMには、SSH Agent転送を使用してログインすると便利です。
+- ミラー構成、シャード構成  
+Public IPが公開されているVM(jumpbox)は踏み台ホストのみです。各VMには、SSH Agent転送を使用してログインすると便利です。
 ```bash
 $ ssh -i [秘密鍵] [adminUsername]@[domainName]-1.japaneast.cloudapp.azure.com -A
 $ ssh VM名
@@ -156,20 +156,24 @@ $ ssh-add my-azure-keypair.pem
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
 irismeister@jumpboxvm:~$ ssh msvm0
 irismeister@msvm0:~$ iris list
-Configuration 'IRIS'   (default)
-        directory:    /usr/irissys
-        versionid:    2021.1.0.215.0
-        datadir:      /usr/irissys
-        conf file:    iris.cpf  (SuperServer port = 1972, WebServer = 52773)
-        status:       running, since Wed Aug  4 07:12:45 2021
-        mirroring: Member Type = Failover; Status = Primary
-        state:        ok
-        product:      InterSystems IRISHealth
 irismeister@msvm0:~$ [Do Your Staff]
 irismeister@msvm0:~$ logout
 irismeister@jumpboxvm:~$ logout
 $ eval `ssh-agent -k`
 ```
+
+Teratermを使いたい場合
+```
+puttygenでpemをppkに変換。
+agent起動
+"C:\Program Files\PuTTY\pageant.exe" "C:\Users\iwamoto.ISCINTERNAL\iwamoto-azure-keypair20211018.ppk"
+teraterm
+host: my-irishost-1.japaneast.cloudapp.azure.com
+user name: irismeister
+Forward agent: true
+Use pagent to login : true
+```
+
 VM名は以下の通りです。
 | デプロイタイプ | VM名 | 用途 |
 | ------------ | ------ | ---- |

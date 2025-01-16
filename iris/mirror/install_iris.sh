@@ -31,13 +31,15 @@ TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 ADMINHOME=/home/$ADMINUSER
 
 # setup WGW
-platform=lnxubuntu2204x64
-wgwversion=2024.1.2.398.0
+#platform=lnxubuntu2204x64
+#wgwversion=2024.1.2.398.0
+ARR=(${IRISKIT//-/ })
+wgwversion=${ARR[1]}
+platform=${ARR[2]}
 wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}" -O WebGateway-${wgwversion}-${platform}.tar.gz
 tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 
 HTTPD_PREFIX=/etc/apache2
-#ISC_PACKAGE_PLATFORM=lnxubuntu2004x64 # need this?
 ISC_PACKAGE_INITIAL_SECURITY=Normal
 ISC_PACKAGE_CSPSYSTEM_PASSWORD=sys
 CSPGATEWAYDIR=/opt/webgateway
@@ -108,7 +110,11 @@ then
   DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping
 
   echo "Initializing as Arbiter"
-  kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
+  ARR=(${IRISKIT//-/ })
+  version=${ARR[1]}
+  platform=${ARR[2]}
+  #kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
+  kit=ISCAgent-${version}-${platform}
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
@@ -165,8 +171,8 @@ then
   IRIS_COMMAND_INIT="##class(Silent.Installer).JoinAsFailover(\"${MASTERIP}\")"
   IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
 fi
-echo IRIS_COMMAND_INIT='$IRIS_COMMAND_INIT' >> params.log
-echo IRIS_COMMAND_CREATE_DB='$IRIS_COMMAND_CREATE_DB' >> params.log
+echo IRIS_COMMAND_INIT=\'$IRIS_COMMAND_INIT\' >> params.log
+echo IRIS_COMMAND_CREATE_DB=\'$IRIS_COMMAND_CREATE_DB\' >> params.log
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
@@ -285,7 +291,6 @@ sudo systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
-# endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
 sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
