@@ -242,18 +242,14 @@ AlternateDirectory=/iris/journal2/
 CurrentDirectory=/iris/journal1/
 EOS
 
-#excluded
-#gmheap=163840
-#locksiz=33554432
-#routines=128
-
 # merge cpf
 #ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
 #iris restart $ISC_PACKAGE_INSTANCENAME quietly
+
 echo "calling systemctl start iris" 
 sudo systemctl start iris
-echo "merging CPF" 
-ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
+#echo "merging CPF" 
+#ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
