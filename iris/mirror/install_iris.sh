@@ -40,7 +40,7 @@ tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 HTTPD_PREFIX=/etc/apache2
 ISC_PACKAGE_PLATFORM=lnxubuntu2004x64
 ISC_PACKAGE_INITIAL_SECURITY=Normal
-ISC_PACKAGE_CSPSYSTEM_PASSWORD=SYS
+ISC_PACKAGE_CSPSYSTEM_PASSWORD=sys
 CSPGATEWAYDIR=/opt/webgateway
 pushd WebGateway-${wgwversion}-${platform}/install
 ./GatewayInstall quiet
@@ -104,10 +104,10 @@ done
 
 # install useful packages (only apache2 is required)
 DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
- && apt -y install sudo apache2 \
+ && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja \ 
  && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
-# && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja fonts-ipafont default-jre \
- 
+ # fonts-ipafont default-jre
+
 sudo systemctl stop apparmor
 DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
 
@@ -157,15 +157,11 @@ else
   wget ${TEMPLATEBASEURI}/Installer.cls
 fi
 
-# setup WGW
-# call install_wgw.sh somehow
-
 if [ "$NODETYPE" == "MASTER" ];
 then
   echo "Initializing as PRIMARY mirror member"
   IRIS_COMMAND_INIT="##class(Silent.Installer).CreateMirrorSet(\"${MirrorArbiterIP}\")"
   IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
-
 fi
 
 if [ "$NODETYPE" == "SLAVE" ];
@@ -174,8 +170,8 @@ then
   IRIS_COMMAND_INIT="##class(Silent.Installer).JoinAsFailover(\"${MASTERIP}\")"
   IRIS_COMMAND_CREATE_DB="##class(Silent.Installer).CreateMirroredDB(\"${MirrorDBName}\")"
 fi
-echo IRIS_COMMAND_INIT=$IRIS_COMMAND_INIT >> params.log
-echo IRIS_COMMAND_CREATE_DB=$IRIS_COMMAND_CREATE_DB >> params.log
+echo IRIS_COMMAND_INIT='$IRIS_COMMAND_INIT' >> params.log
+echo IRIS_COMMAND_CREATE_DB='$IRIS_COMMAND_CREATE_DB' >> params.log
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
@@ -291,20 +287,12 @@ EOS
 
 echo "calling systemctl start iris" 
 sudo systemctl start iris
-#echo "merging CPF" 
-#ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
+echo "merging CPF" 
+ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
 sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
-# just in case...
-#echo "calling systemctl restart iris" 
-#sudo systemctl restart iris
-
-if [ "$NODETYPE" == "SLAVE" ]
-then
-  exit
-fi
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
@@ -314,7 +302,7 @@ if [ "$NODETYPE" == "SLAVE" ]
 then
   #sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
   sudo systemctl restart iris
-  sleep 10
+  sleep 5
 fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
@@ -404,8 +392,8 @@ fi
 echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
-#echo "calling install_wgw_service"
-#install_wgw_service
-#echo "ending install_wgw_service"
+echo "calling install_wgw_service"
+install_wgw_service
+echo "ending install_wgw_service"
 
 exit 0
