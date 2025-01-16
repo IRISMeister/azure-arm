@@ -30,7 +30,6 @@ TEMPLATECMNURI=${TEMPLATEURI%/*/*}
 TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 ADMINHOME=/home/$ADMINUSER
 
-
 # setup WGW
 platform=lnxubuntu2204x64
 wgwversion=2024.1.2.398.0
@@ -38,7 +37,7 @@ wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}
 tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 
 HTTPD_PREFIX=/etc/apache2
-ISC_PACKAGE_PLATFORM=lnxubuntu2004x64
+ISC_PACKAGE_PLATFORM=lnxubuntu2004x64 # need this?
 ISC_PACKAGE_INITIAL_SECURITY=Normal
 ISC_PACKAGE_CSPSYSTEM_PASSWORD=sys
 CSPGATEWAYDIR=/opt/webgateway
@@ -103,9 +102,9 @@ done
 
 
 # install useful packages (only apache2 is required)
-DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
- && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja \ 
- && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
+echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+
 # fonts-ipafont default-jre
 
 sudo systemctl stop apparmor
@@ -128,10 +127,11 @@ then
 
   tar -xvf $kit.tar.gz
   cd $kit
-  ./agentinstall << END
-1
-yes
-END
+  ISC_PACKAGE_MODE="unattended" ./agentinstall
+#  ./agentinstall << END
+#1
+#yes
+#END
   popd
   systemctl daemon-reload
   systemctl enable ISCAgent.service
@@ -393,7 +393,7 @@ echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
 echo "calling install_wgw_service"
-install_wgw_service
+#install_wgw_service
 echo "ending install_wgw_service"
 
 exit 0
