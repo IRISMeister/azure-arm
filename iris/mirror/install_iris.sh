@@ -106,7 +106,7 @@ done
 DEBIAN_FRONTEND=noninteractive sudo apt -y update  \
  && apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja \ 
  && echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
- # fonts-ipafont default-jre
+# fonts-ipafont default-jre
 
 sudo systemctl stop apparmor
 DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
