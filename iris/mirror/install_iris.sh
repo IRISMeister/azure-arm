@@ -261,6 +261,7 @@ sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Sil
 # just in case...
 echo "calling systemctl restart iris" 
 sudo systemctl restart iris
+exit
 
 # ここでSSエラー発生
 #exit 
@@ -271,7 +272,6 @@ fi
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
-sleep 10
 
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 if [ "$NODETYPE" == "SLAVE" ]
