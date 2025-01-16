@@ -121,7 +121,11 @@ then
 
   tar -xvf $kit.tar.gz
   cd $kit
-  ISC_PACKAGE_MODE="unattended" ./agentinstall
+  #ISC_PACKAGE_MODE="unattended" ./agentinstall
+  ./agentinstall << END
+1
+yes
+END
   popd
   systemctl daemon-reload
   systemctl enable ISCAgent.service
