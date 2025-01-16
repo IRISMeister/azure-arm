@@ -22,6 +22,66 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+install_wgw_service() {
+#!/bin/bash -e
+
+TEMPLATEBASEURI=${TEMPLATEURI%/*}
+TEMPLATECMNURI=${TEMPLATEURI%/*/*}
+TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
+ADMINHOME=/home/$ADMINUSER
+
+
+# setup WGW
+platform=lnxubuntu2204x64
+wgwversion=2024.1.2.398.0
+wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}" -O WebGateway-${wgwversion}-${platform}.tar.gz
+tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
+
+HTTPD_PREFIX=/etc/apache2
+ISC_PACKAGE_PLATFORM=lnxubuntu2004x64
+ISC_PACKAGE_INITIAL_SECURITY=Normal
+ISC_PACKAGE_CSPSYSTEM_PASSWORD=SYS
+CSPGATEWAYDIR=/opt/webgateway
+pushd WebGateway-${wgwversion}-${platform}/install
+./GatewayInstall quiet
+cp ../${platform}/bin/shared/cvtcfg /opt/webgateway/bin
+popd
+
+wget ${TEMPLATEROOTURI}/wgw/hs-ssl.conf
+cp hs-ssl.conf /etc/apache2/sites-available/
+wget ${TEMPLATEROOTURI}/wgw/webgateway.conf
+cp webgateway.conf /opt/webgateway/apache/
+
+wget ${TEMPLATEROOTURI}/wgw/create-cspini.sh
+cp create-cspini.sh /opt/webgateway/bin
+chmod +x /opt/webgateway/bin/create-cspini.sh
+/opt/webgateway/bin/create-cspini.sh
+
+wget ${TEMPLATEROOTURI}/wgw/create_cert_keys.sh
+chmod +x create_cert_keys.sh
+mkdir -p webgateway/build/ssl/web/
+mkdir -p webgateway/build/ssl/browsers/client01/
+git clone https://github.com/IRISMeister/apache-ssl.git
+./create_cert_keys.sh
+mkdir -p /etc/myssl/certs/
+mkdir -p /etc/myssl/private/
+mkdir -p /etc/apache2/ssl.crt/
+cp webgateway/build/ssl/web/server.crt /etc/myssl/certs/server.crt
+cp webgateway/build/ssl/web/server.key /etc/myssl/private/server.key
+cp webgateway/build/ssl/web/caint.crt /etc/apache2/ssl.crt/server-ca.crt
+cp webgateway/build/ssl/browsers/client01/caint.crt /etc/apache2/ssl.crt/ca-bundle.crt
+
+#echo ServerName hs.example.org >> ${HTTPD_PREFIX}/apache2.conf
+echo LoadModule csp_module_sa /opt/webgateway/bin/CSPa24.so >> ${HTTPD_PREFIX}/apache2.conf 
+echo CSPFileTypes csp cls zen cxw >> ${HTTPD_PREFIX}/apache2.conf 
+echo Include /opt/webgateway/apache/webgateway.conf >> ${HTTPD_PREFIX}/apache2.conf
+
+a2enmod socache_shmcb ssl -q
+a2ensite hs-ssl -q
+systemctl restart apache2
+
+}
+
 install_iris_service() {
 #!/bin/bash -e
 
@@ -236,21 +296,18 @@ sudo systemctl start iris
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
-###sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
+sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 # just in case...
-echo "calling systemctl restart iris" 
-sudo systemctl restart iris
-exit
+#echo "calling systemctl restart iris" 
+#sudo systemctl restart iris
 
-# ここでSSエラー発生
-#exit 
 if [ "$NODETYPE" == "SLAVE" ]
 then
   exit
 fi
 
 echo "executing $IRIS_COMMAND_INIT" 
-sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
+sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 if [ "$NODETYPE" == "SLAVE" ]
@@ -261,7 +318,7 @@ then
 fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
-sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
+sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
 
 }
 
@@ -347,5 +404,8 @@ fi
 echo "calling install_iris_service"
 install_iris_service
 echo "ending install_iris_service"
+#echo "calling install_wgw_service"
+#install_wgw_service
+#echo "ending install_wgw_service"
 
 exit 0

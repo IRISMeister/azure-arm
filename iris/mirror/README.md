@@ -61,7 +61,7 @@ irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 irismeister@jumpboxvm:~$
 ```
 プライマリメンバ  
-http://localhost:8888/csp/sys/UtilHome.csp  
+http://localhost:8888/csp/sys/UtilHome.csp  , http://localhost:8888/csp/bin/Systems/Module.cxw
 バックアップメンバ  
 http://localhost:8889/csp/sys/UtilHome.csp
 
