@@ -234,8 +234,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
 globals=0,0,8192,0,0,0
-gmheap=163840
-locksiz=33554432
+gmheap=614400
 routines=128
 wijdir=/iris/wij/
 [Journal]
@@ -255,17 +254,13 @@ echo "calling systemctl start iris"
 sudo systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
-# just in case...
-echo "calling systemctl restart iris" 
-sudo systemctl restart iris
-sleep 10
-
-# ここならOK
-#exit 
 
 # endeless SS error (Superserver failed to start, Port: "Port: 1972) 発生....回避策模索中
 echo "executing EnableMirroringService()" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
+# just in case...
+echo "calling systemctl restart iris" 
+sudo systemctl restart iris
 
 # ここでSSエラー発生
 #exit 
@@ -276,7 +271,7 @@ fi
 
 echo "executing $IRIS_COMMAND_INIT" 
 sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
-sleep 10
+exit
 
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 if [ "$NODETYPE" == "SLAVE" ]
