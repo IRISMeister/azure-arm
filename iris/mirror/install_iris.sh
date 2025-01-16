@@ -113,19 +113,16 @@ then
   ARR=(${IRISKIT//-/ })
   version=${ARR[1]}
   platform=${ARR[2]}
-  #kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
   kit=ISCAgent-${version}-${platform}
+  # IRISKIT variable is not passed....
+  kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
 
   tar -xvf $kit.tar.gz
   cd $kit
-  #ISC_PACKAGE_MODE="unattended" ./agentinstall
-  ./agentinstall << END
-1
-yes
-END
+  ISC_PACKAGE_MODE="unattended" ./agentinstall
   popd
   systemctl daemon-reload
   systemctl enable ISCAgent.service
