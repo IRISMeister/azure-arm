@@ -73,6 +73,13 @@
         "description": "Virtual network name"
       }
     },
+    "IRISKitName": {
+        "type": "string",
+        "defaultValue": "IRIS-2024.1.2.398.0-lnxubuntu2204x64",
+        "metadata": {
+            "description": "Kit name of IRIS."
+        }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -258,6 +265,9 @@
           "privateIPAddress" : {
             "value": ""
           },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
+          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
@@ -327,6 +337,9 @@
           "privateIPAddress" : {
             "value": ""
           },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
+          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
@@ -393,6 +406,9 @@
           },
           "dbType": {
             "value": "CLIENT"
+          },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
           },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
