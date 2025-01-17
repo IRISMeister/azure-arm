@@ -143,7 +143,7 @@ then
 
   #chown irismeister:irismeister $ADMINHOME/*
 
-  # nothing to do for arbiter
+  # nothing furthor to do for arbiter
   exit 0
 else
   DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
@@ -181,7 +181,6 @@ kit=$IRISKIT
 #kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
 password=sys
 ssport=1972
-webport=80
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
 #ISC_PACKAGE_INSTANCENAME=iris
@@ -192,7 +191,6 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 echo kit=$kit >> params.log
 echo password=$password >> params.log
-echo webport=$webport >> params.log
 echo kittemp=$kittemp >> params.log
 echo ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR >> params.log
 echo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME >> params.log
@@ -375,7 +373,7 @@ done
 timedatectl set-timezone Asia/Tokyo
 echo "# id=$(id)" >> params.log
 echo NOW=$now >> params.log
-echo MASTERIP=$MASTERIP  >> params.log
+echo MASTERIP=$MASTERIP >> params.log
 echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
 echo SECRETURL=$SECRETURL  >> params.log
 echo SECRETSASTOKEN=\"$SECRETSASTOKEN\"  >> params.log
