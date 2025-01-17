@@ -113,39 +113,19 @@ then
   apt-get install -y openjdk-8-jdk-headless
 
   echo "Initializing as Client"
-  # occasionally apt-get update fails
-  # Some packages could not be installed. This may mean that you have
-  # requested an impossible situation or if you are using the unstable
-  # distribution that some required packages have not yet been created
-  # or been moved out of Incoming.
-  sleep 10
   
   # iris jdbc driver and others
-  wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  wget "${SECRETURL}/intersystems-xep-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-xep-3.2.0.jar
-  wget "${SECRETURL}/intersystems-utils-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-utils-3.2.0.jar
-  mv *.jar $USERHOME
-
-  # sample open data
-  wget https://s3.amazonaws.com/nyc-tlc/trip+data/green_tripdata_2016-01.csv -O - | sed  '/^.$/d' > ./green_tripdata_2016-01.csv
-  mv *.csv $USERHOME
-
-  wget ${TEMPLATEBASEURI}/loader/envs.sh
-  wget ${TEMPLATEBASEURI}/loader/green.sh
-  wget ${TEMPLATEBASEURI}/loader/green.conf
+  wget https://github.com/intersystems-community/iris-driver-distribution/blob/main/JDBC/JDK18/intersystems-jdbc-3.9.0.jar  
   wget ${TEMPLATEBASEURI}/JDBCSample.java
-  chmod +x *.sh
-  mv envs.sh $USERHOME
-  mv green.sh $USERHOME
-  mv *.conf $USERHOME
-  mv *.java $USERHOME
+  mv *.jar $ADMINHOME
+  mv *.java $ADMINHOME
 
-  chown irismeister:irismeister $USERHOME/*
+  chown $ADMINUSER:$ADMINUSER $ADMINHOME/*
 
   # nothing furthor to do for client
   exit 0
 else
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jdk-headless
   # fonts-ipafont default-jre
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
@@ -289,15 +269,20 @@ iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT"
 echo "calling systemctl restart iris" 
 systemctl restart iris
 
-# Create table(s), if any
-# may be later.
+# prep to create table(s), if any
 if [ "$NODETYPE" == "MASTER-DATA" ];
 then
-  wget ${TEMPLATEBASEURI}/sql/01_createtable.sql -O /home/irisowner/01_createtable.sql
+  wget ${TEMPLATEBASEURI}/sql/01_createtable.sql
   wget ${TEMPLATEBASEURI}/sql/import.cos
 
-  chown irisowner:irisowner /home/irisowner/01_createtable.sql
-  #export sqls=$(pwd); sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
+  wget ${TEMPLATEBASEURI}/loader/getfile.sh
+  chmod +x ./getfile.sh
+  mkdir data
+  wget ${TEMPLATEBASEURI}/loader/conv.py
+  ./getfile.sh &
+
+  # do this, later(after all data member has joined).
+  #iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
 fi
 
 }

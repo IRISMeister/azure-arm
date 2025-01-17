@@ -40,23 +40,19 @@ IRISサーバはプライベートネットワーク上のVMにデプロイさ�
 プライベートネットワーク上のVMアクセス用にJumpBoxがデプロイされるので、SSHポートフォワーディングを使用して管理ポータルにアクセスします。bash端末(Windows上のGit bashなどでも可)を3個開き、下記を実行しください。
 
 ```bash
-ssh -i [秘密鍵] -L [local-port]:[VM名]]:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-[adminUsername]@[domainName].japaneast.cloudapp.azure.com
+ssh -i [秘密鍵] -L [local-port]:[VM名]]:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null [adminUsername]@[domainName].japaneast.cloudapp.azure.com
 
 例) 
 ```bash
 端末1
-ssh -i my-azure-keypair.pem -L 8888:data-mastervm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+ssh -i my-azure-keypair.pem -L 8888:data-mastervm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 端末2
-ssh -i my-azure-keypair.pem -L 8889:datavm0:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+ssh -i my-azure-keypair.pem -L 8889:datavm0:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 端末3
-ssh -i my-azure-keypair.pem -L 8890:datavm1:52773 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-irismeister@my-irishost-1.japaneast.cloudapp.azure.com
+ssh -i my-azure-keypair.pem -L 8890:datavm1:80 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com
 ```
 データノード#1(MASTER)  
-http://localhost:8888/csp/sys/UtilHome.csp  
+http://localhost:8888/csp/sys/UtilHome.csp  , http://localhost:8888/csp/bin/Systems/Module.cxw
 データノード#2  
 http://localhost:8889/csp/sys/UtilHome.csp  
 データノード#3  
@@ -70,7 +66,11 @@ http://localhost:8890/csp/sys/UtilHome.csp
 ```bash
 $ ssh -i my-azure-keypair.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null irismeister@my-irishost-1.japaneast.cloudapp.azure.com -A
 irismeister@jumpboxvm:~$ ssh clientvm
-irismeister@clientvm:~$ ./green.sh
+irismeister@clientvm:~$ sudo su -
+root@clientvm:~# cd /var/lib/waagent/custom-script/download/0
+root@clientvm:/var/lib/waagent/custom-script/download/0#
+
+ ./green.sh
 Writing log into: fromCSV.log
 Time elapsed:       0s. Read:  0.0000%; Written:  0.0000%
 Starting Reading Threads: 2
