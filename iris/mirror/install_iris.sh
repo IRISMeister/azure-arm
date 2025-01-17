@@ -31,11 +31,12 @@ TEMPLATEROOTURI=${TEMPLATEURI%/*/*/*}
 ADMINHOME=/home/$ADMINUSER
 
 # setup WGW
-#platform=lnxubuntu2204x64
-#wgwversion=2024.1.2.398.0
+# construct WGW kit name from IRISKIT name
 ARR=(${IRISKIT//-/ })
 wgwversion=${ARR[1]}
 platform=${ARR[2]}
+#platform=lnxubuntu2204x64
+#wgwversion=2024.1.2.398.0
 wget "${SECRETURL}/WebGateway-${wgwversion}-${platform}.tar.gz?${SECRETSASTOKEN}" -O WebGateway-${wgwversion}-${platform}.tar.gz
 tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 
@@ -48,8 +49,8 @@ pushd WebGateway-${wgwversion}-${platform}/install
 cp ../${platform}/bin/shared/cvtcfg /opt/webgateway/bin
 popd
 
-wget ${TEMPLATEROOTURI}/wgw/hs-ssl.conf
-cp hs-ssl.conf /etc/apache2/sites-available/
+wget ${TEMPLATEROOTURI}/wgw/iris-ssl.conf
+cp iris-ssl.conf /etc/apache2/sites-available/
 wget ${TEMPLATEROOTURI}/wgw/webgateway.conf
 cp webgateway.conf /opt/webgateway/apache/
 
@@ -72,13 +73,13 @@ cp webgateway/build/ssl/web/server.key /etc/myssl/private/server.key
 cp webgateway/build/ssl/web/caint.crt /etc/apache2/ssl.crt/server-ca.crt
 cp webgateway/build/ssl/browsers/client01/caint.crt /etc/apache2/ssl.crt/ca-bundle.crt
 
-#echo ServerName hs.example.org >> ${HTTPD_PREFIX}/apache2.conf
+#echo ServerName iris.example.org >> ${HTTPD_PREFIX}/apache2.conf
 echo LoadModule csp_module_sa /opt/webgateway/bin/CSPa24.so >> ${HTTPD_PREFIX}/apache2.conf 
 echo CSPFileTypes csp cls zen cxw >> ${HTTPD_PREFIX}/apache2.conf 
 echo Include /opt/webgateway/apache/webgateway.conf >> ${HTTPD_PREFIX}/apache2.conf
 
 a2enmod socache_shmcb ssl -q
-a2ensite hs-ssl -q
+a2ensite iris-ssl -q
 systemctl restart apache2
 
 }
@@ -94,7 +95,7 @@ ADMINHOME=/home/$ADMINUSER
 # somehow have to wait until NAT G/W is ready to use.... 
 for ((i=0; i < 10; i++)); do
 	  echo "${i} th try..."
-    apt -qq update ; apt_status=$?
+    DEBIAN_FRONTEND=noninteractive apt -qq update ; apt_status=$?
     echo "ping_status is ${apt_status}"
 	if [ ${apt_status} = "0" ]; then
 		break
@@ -115,7 +116,7 @@ then
   platform=${ARR[2]}
   kit=ISCAgent-${version}-${platform}
   # IRISKIT variable is not passed....
-  kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
+  #kit=ISCAgent-2024.1.2.398.0-lnxubuntu2204x64
   mkdir /tmp/irisdistr
   pushd /tmp/irisdistr
   wget "${SECRETURL}/$kit.tar.gz?$SECRETSASTOKEN" -O $kit.tar.gz
@@ -284,9 +285,6 @@ CurrentDirectory=/iris/journal1/
 EOS
 
 # merge cpf
-#ISC_CPF_MERGE_FILE=$USERHOME/merge.cpf iris start $ISC_PACKAGE_INSTANCENAME quietly
-#iris restart $ISC_PACKAGE_INSTANCENAME quietly
-
 echo "calling systemctl start iris" 
 sudo systemctl start iris
 echo "merging CPF" 
@@ -301,9 +299,8 @@ sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_IN
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 if [ "$NODETYPE" == "SLAVE" ]
 then
-  #sudo iris restart $ISC_PACKAGE_INSTANCENAME quietly
-  sudo systemctl restart iris
-  sleep 5
+  #sudo systemctl restart iris
+  #sleep 5
 fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
@@ -376,7 +373,7 @@ while getopts :m:s:a:t:L:T:u:A:I: optname; do
 done
 
 timedatectl set-timezone Asia/Tokyo
-
+echo "# id=$(id)" >> params.log
 echo NOW=$now >> params.log
 echo MASTERIP=$MASTERIP  >> params.log
 echo SUBNETADDRESS=$SUBNETADDRESS >> params.log

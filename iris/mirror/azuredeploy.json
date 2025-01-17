@@ -412,6 +412,9 @@
           "dbType": {
             "value": "ARBITER"
           },
+          "IRISKitName" : {
+            "value": "[parameters('IRISKitName')]"
+          },
           "_artifactsLocation": {
             "value": "[parameters('_artifactsLocation')]"
           },
