@@ -297,11 +297,11 @@ echo "executing $IRIS_COMMAND_INIT"
 sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
-if [ "$NODETYPE" == "SLAVE" ]
-then
-  #sudo systemctl restart iris
-  #sleep 5
-fi
+#if [ "$NODETYPE" == "SLAVE" ]
+#then
+#  sudo systemctl restart iris
+#  sleep 5
+#fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
 sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
