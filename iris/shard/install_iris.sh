@@ -166,6 +166,7 @@ then
   echo "Initializing as data node"
   IRIS_COMMAND_INIT="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
 fi
+echo IRIS_COMMAND_INIT=\'$IRIS_COMMAND_INIT\' >> params.log
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
@@ -261,9 +262,6 @@ sudo systemctl enable iris
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
-[Startup]
-EnableSharding=1
-
 [config]
 globals=0,0,256,0,0,0
 gmheap=614400
@@ -283,11 +281,13 @@ systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
-echo "calling systemctl restart iris" 
-systemctl restart iris
+#echo "calling systemctl restart iris" 
+#systemctl restart iris
 
 echo "executing $IRIS_COMMAND_INIT" 
 iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
+echo "calling systemctl restart iris" 
+systemctl restart iris
 
 # Create table(s), if any
 if [ "$NODETYPE" == "MASTER-DATA" ];
