@@ -154,14 +154,14 @@ else
 fi
 
 # The vm name (hence hostname) for this node is data-mastervm0
-if [ "$NODETYPE" == "DATA-0" ];
+if [ "$NODETYPE" == "MASTER-DATA" ];
 then
   echo "Initializing as the first data node (hence DM)"
   IRIS_COMMAND_INIT="##class(Silent.Installer).InitializeCluster()"
 fi
 
 # The vm name (hence hostname) for this/these node is/are datavm0,datavm1...
-if [ "$NODETYPE" == "DATA-1" ];
+if [ "$NODETYPE" == "SLAVE-DATA" ];
 then
   echo "Initializing as data node"
   IRIS_COMMAND_INIT="##class(Silent.Installer).JoinCluster(\"${MASTERIP}\")"
@@ -265,7 +265,7 @@ cat << 'EOS' > $USERHOME/merge.cpf
 EnableSharding=1
 
 [config]
-globals=0,0,1024,0,0,0
+globals=0,0,256,0,0,0
 gmheap=614400
 MaxServerConn=64
 MaxServers=64
@@ -279,15 +279,18 @@ EOS
 
 # merge cpf
 echo "calling systemctl start iris" 
-sudo systemctl start iris
+systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
+echo "calling systemctl restart iris" 
+systemctl restart iris
+
 echo "executing $IRIS_COMMAND_INIT" 
-sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
+iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
 # Create table(s), if any
-if [ "$NODETYPE" == "DATA-0" ];
+if [ "$NODETYPE" == "MASTER-DATA" ];
 then
   wget ${TEMPLATEBASEURI}/sql/01_createtable.sql -O /home/irisowner/01_createtable.sql
   wget ${TEMPLATEBASEURI}/sql/import.cos
@@ -329,7 +332,7 @@ while getopts :m:s:a:t:L:T:u:A:I: optname; do
   	s) #Data storage subnet space
       SUBNETADDRESS=${OPTARG}
       ;;
-    t) #Type of node (DATA-0/DATA-1/...)
+    t) #Type of node (MASTER-DATA/SLAVE-DATA)
       NODETYPE=${OPTARG}
       ;;
     L) #secret url

@@ -260,7 +260,7 @@
             "value": "0"
           },
           "dbType": {
-            "value": "DATA-0"
+            "value": "MASTER-DATA"
           },
           "privateIPAddress" : {
             "value": ""
@@ -332,7 +332,7 @@
             "value": "[reference('data-node-master').outputs.masterip.value]"
           },
           "dbType": {
-            "value": "DATA-1"
+            "value": "SLAVE-DATA"
           },
           "privateIPAddress" : {
             "value": ""
