@@ -290,13 +290,14 @@ echo "calling systemctl restart iris"
 systemctl restart iris
 
 # Create table(s), if any
+# may be later.
 if [ "$NODETYPE" == "MASTER-DATA" ];
 then
   wget ${TEMPLATEBASEURI}/sql/01_createtable.sql -O /home/irisowner/01_createtable.sql
   wget ${TEMPLATEBASEURI}/sql/import.cos
 
   chown irisowner:irisowner /home/irisowner/01_createtable.sql
-  export sqls=$(pwd); sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
+  #export sqls=$(pwd); sudo -u irisowner -i iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
 fi
 
 }
