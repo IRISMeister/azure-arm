@@ -86,17 +86,15 @@ ClassMethod JoinCluster(PrimaryNodeIP As %String) As %Status
   set sc = $SYSTEM.Cluster.AttachAsDataNode("IRIS://"_PrimaryNodeIP_":1972")
   quit sc  
 }
-ClassMethod LoadCSV(table = "NYTaxi.RowRides") As %Status
+ClassMethod LoadCSV(table = "NYTaxi.RowRides",file="/var/tmp/data/100K.csv") As %Status
 {
   New $NAMESPACE
-  Set $NAMESPACE="IRISCLUSTER"
+  Set $NAMESPACE="IRISDM"
   Set opt={"from": {"file": {"columnseparator":",", "header": true,"charset": "UTF-8" }}}.%ToJSON()
-	Set sql="LOAD BULK DATA FROM FILE '/home/irismeister/100K.csv' INTO "_table_" (VendorID,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,RatecodeID,store_and_fwd_flag,PULocationID,DOLocationID,payment_type,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge) USING "_opt
+	Set sql="LOAD BULK DATA FROM FILE '"_file_"' INTO "_table_" (VendorID,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,RatecodeID,store_and_fwd_flag,PULocationID,DOLocationID,payment_type,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge) USING "_opt
   Set st=$ZH
   
-  set stmt = ##class(%SQL.Statement).%New(),stmt.%SelectMode = 1
-  Set tSC=stmt.%Prepare(sql)
-  set rs = stmt.%Execute()
+  Set rs=$SYSTEM.SQL.Execute(sql,1)
   if rs.%SQLCODE > 0 {
     zw rs
     Return '$$$OK

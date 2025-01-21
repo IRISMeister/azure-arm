@@ -240,7 +240,7 @@
           "commonSettings": {
             "value": {
               "adminUsername": "[parameters('adminUsername')]",
-              "namespace": "data-master"
+              "namespace": "ms"
             }
           },
           "machineSettings": {
@@ -312,7 +312,7 @@
           "commonSettings": {
             "value": {
               "adminUsername": "[parameters('adminUsername')]",
-              "namespace": "data"
+              "namespace": "sl"
             }
           },
           "machineSettings": {

@@ -14,6 +14,4 @@ python3 conv.py 100K.csv
 python3 conv.py 10M.csv
 python3 conv.py 2020_Yellow_Taxi_Trip_Data.csv
 
-ADMINHOME=/home/$ADMINUSER
-mv data/*.csv $ADMINHOME/
-chown $ADMINUSER:$ADMINUSER $ADMINHOME/*.csv
+touch _getfiles_done_

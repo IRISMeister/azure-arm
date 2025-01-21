@@ -277,9 +277,13 @@ then
 
   wget ${TEMPLATEBASEURI}/loader/getfile.sh
   chmod +x ./getfile.sh
-  mkdir data
+  mkdir /var/tmp/data
   wget ${TEMPLATEBASEURI}/loader/conv.py
   ./getfile.sh &
+
+  cp *.sql /home/irisowner/
+  chown irisowner:irisowner /home/irisowner/01_createtable.sql
+  iris session iris -UIRISDM < import.cos
 
   # do this, later(after all data member has joined).
   #iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos

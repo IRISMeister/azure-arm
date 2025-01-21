@@ -7,7 +7,7 @@ args = sys.argv
 file=args[1]
 
 ipath = file
-opath = 'data/'+file
+opath = '/var/tmp/data/'+file
 fi = open(ipath)
 fo = open(opath,'w')
 
