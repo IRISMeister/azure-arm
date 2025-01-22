@@ -111,10 +111,7 @@ echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
-  export DEBIAN_FRONTEND=noninteractive
-  apt-get update -y
-  apt-get install -y openjdk-8-jdk-headless
-
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo openjdk-8-jdk-headless
   echo "Initializing as Client"
   
   # iris jdbc driver and others
@@ -129,10 +126,8 @@ then
   exit 0
 else
   # Need java to use LOAD DATA sql command...
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jre-headless python3-pip
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo apache2 openjdk-8-jre-headless
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
-
-  pip install -U irissqlcli
 
   wget ${TEMPLATECMNURI}/iris.service
   wget ${TEMPLATEBASEURI}/Installer.cls
@@ -297,6 +292,10 @@ then
   iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
 
 fi
+
+# あれば便利かもしれないパッケージの導入
+DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping curl tcpdump language-pack-ja-base language-pack-ja python3-pip
+pip install -U irissqlcli
 
 }
 
