@@ -284,18 +284,25 @@ then
   chmod +x ./getfile.sh
   mkdir /var/tmp/data
   wget ${TEMPLATEBASEURI}/loader/conv.py
+
+  #pip install pyarrow fastparquet
+  echo "calling getfile.sh" 
   ./getfile.sh &
 
   cp *.sql /home/irisowner/
   chown irisowner:irisowner /home/irisowner/*.sql
   # do this, later(after all data member has joined).
-  iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
+  # iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
 
 fi
 
 # あれば便利かもしれないパッケージの導入
-DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping curl tcpdump language-pack-ja-base language-pack-ja python3-pip
-pip install -U irissqlcli
+export DEBIAN_FRONTEND=noninteractive 
+apt -y update 
+apt -y install sudo net-tools iproute2 iputils-ping curl tcpdump language-pack-ja-base language-pack-ja python3-pip
+#pip install -U irissqlcli
+
+echo "end of install_iris_service" 
 
 }
 

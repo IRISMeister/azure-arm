@@ -9,7 +9,9 @@ ls *.csv
 日付フォーマット変換後
 ls /var/tmp/data/
 
+
 # データのロード(msvm0で実行すること)
+iris session iris -UIRISDM < import.cos
 iris session iris -U%SYS "##class(Silent.Installer).LoadCSV()"
 あるいは
 iris session iris -U%SYS 
