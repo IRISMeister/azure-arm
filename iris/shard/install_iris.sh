@@ -104,7 +104,7 @@ for ((i=0; i < 10; i++)); do
 done
 
 # apt install時のrestartの抑止
-#echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
+echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
 
 #sudo systemctl stop apparmor
 #DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
@@ -129,12 +129,13 @@ then
   exit 0
 else
   # Need java to use LOAD DATA sql command...
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jre-headless 
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jre-headless python3-pip
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+
+  pip install -U irissqlcli
 
   wget ${TEMPLATECMNURI}/iris.service
   wget ${TEMPLATEBASEURI}/Installer.cls
-
 fi
 
 wget ${TEMPLATEROOTURI}/readme.txt -O $ADMINHOME/readme.txt
@@ -292,10 +293,9 @@ then
 
   cp *.sql /home/irisowner/
   chown irisowner:irisowner /home/irisowner/*.sql
-  iris session iris -UIRISDM < import.cos
-
   # do this, later(after all data member has joined).
-  #iris session $ISC_PACKAGE_INSTANCENAME -U IRISDM < import.cos
+  iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
+
 fi
 
 }
