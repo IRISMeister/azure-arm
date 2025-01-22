@@ -103,8 +103,11 @@ for ((i=0; i < 10; i++)); do
 	sleep 10
 done
 
-sudo systemctl stop apparmor
-DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
+# apt install時のrestartの抑止
+#echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
+
+#sudo systemctl stop apparmor
+#DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
@@ -125,13 +128,17 @@ then
   # nothing furthor to do for client
   exit 0
 else
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jdk-headless
-  # fonts-ipafont default-jre
+  # Need java to use LOAD DATA sql command...
+  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja openjdk-8-jre-headless 
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
   wget ${TEMPLATECMNURI}/iris.service
   wget ${TEMPLATEBASEURI}/Installer.cls
+
 fi
+
+wget ${TEMPLATEROOTURI}/readme.txt -O $ADMINHOME/readme.txt
+chown $ADMINUSER:$ADMINUSER $ADMINHOME/readme.txt
 
 # The vm name (hence hostname) for this node is data-mastervm0
 if [ "$NODETYPE" == "MASTER-DATA" ];
@@ -243,7 +250,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
-globals=0,0,256,0,0,0
+globals=0,0,2048,0,0,0
 gmheap=614400
 MaxServerConn=64
 MaxServers=64
@@ -272,7 +279,9 @@ systemctl restart iris
 # prep to create table(s), if any
 if [ "$NODETYPE" == "MASTER-DATA" ];
 then
-  wget ${TEMPLATEBASEURI}/sql/01_createtable.sql
+  wget ${TEMPLATEBASEURI}/sql/01.sql
+  wget ${TEMPLATEBASEURI}/sql/02.sql
+  wget ${TEMPLATEBASEURI}/sql/03.sql
   wget ${TEMPLATEBASEURI}/sql/import.cos
 
   wget ${TEMPLATEBASEURI}/loader/getfile.sh
@@ -282,7 +291,7 @@ then
   ./getfile.sh &
 
   cp *.sql /home/irisowner/
-  chown irisowner:irisowner /home/irisowner/01_createtable.sql
+  chown irisowner:irisowner /home/irisowner/*.sql
   iris session iris -UIRISDM < import.cos
 
   # do this, later(after all data member has joined).
