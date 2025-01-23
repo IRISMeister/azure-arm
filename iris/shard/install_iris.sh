@@ -104,14 +104,15 @@ for ((i=0; i < 10; i++)); do
 done
 
 # apt install時のrestartの抑止
-echo "\$nrconf{restart} = 'a';" | sudo tee /etc/needrestart/conf.d/50local.conf
+echo "\$nrconf{restart} = 'a';" | tee /etc/needrestart/conf.d/50local.conf
 
-#sudo systemctl stop apparmor
-#DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
+#systemctl stop apparmor
+#DEBIAN_FRONTEND=noninteractive apt remove -y apparmor
 
 if [ "$NODETYPE" == "CLIENT" ];
 then
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo openjdk-8-jdk-headless
+  export DEBIAN_FRONTEND=noninteractive 
+  apt -y update && apt -y install openjdk-8-jdk-headless
   echo "Initializing as Client"
   
   # iris jdbc driver and others
@@ -126,7 +127,8 @@ then
   exit 0
 else
   # Need java to use LOAD DATA sql command...
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo apache2 openjdk-8-jre-headless
+  export DEBIAN_FRONTEND=noninteractive 
+  apt -y update && apt -y install apache2 openjdk-8-jre-headless
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
   wget ${TEMPLATECMNURI}/iris.service
@@ -206,7 +208,7 @@ tar -xvf $kit.tar.gz -C $kittemp
 cp Installer.cls $kittemp/$kit/Installer.cls
 chmod 777 $kittemp/$kit/Installer.cls
 pushd $kittemp/$kit
-sudo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME \
+ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME \
 ISC_PACKAGE_IRISGROUP=$ISC_PACKAGE_IRISUSER \
 ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER \
 ISC_PACKAGE_MGRGROUP=$ISC_PACKAGE_MGRUSER \
@@ -237,10 +239,10 @@ fi
 
 cp iris.service /etc/systemd/system/iris.service
 chmod 644 /etc/systemd/system/iris.service
-sudo systemctl daemon-reload
-sudo systemctl enable ISCAgent.service
-sudo systemctl start ISCAgent.service
-sudo systemctl enable iris
+systemctl daemon-reload
+systemctl enable ISCAgent.service
+systemctl start ISCAgent.service
+systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file
@@ -289,8 +291,11 @@ then
   echo "calling getfile.sh" 
   ./getfile.sh &
 
-  cp *.sql /home/irisowner/
-  chown irisowner:irisowner /home/irisowner/*.sql
+  mv *.sql $USERHOME
+  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
+  mv *.cos $USERHOME/
+  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
+
   # do this, later(after all data member has joined).
   # iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
 
@@ -299,7 +304,8 @@ fi
 # あれば便利かもしれないパッケージの導入
 export DEBIAN_FRONTEND=noninteractive 
 apt -y update 
-apt -y install sudo net-tools iproute2 iputils-ping curl tcpdump language-pack-ja-base language-pack-ja python3-pip
+apt -y install net-tools iproute2 iputils-ping curl tcpdump sysstat language-pack-ja-base language-pack-ja 
+#apt -y install python3-pip
 #pip install -U irissqlcli
 
 echo "end of install_iris_service" 

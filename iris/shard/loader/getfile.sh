@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# 大元のデータは以下のURLから取得可能。ただしparquet形式。
-# https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
-
-#wget https://data.cityofnewyork.us/api/views/755u-8jsi/rows.csv?accessType=DOWNLOAD -O taxi_zones.csv
+# 1年分なので大きい。2.3GBほど。2400万件。
 wget https://data.cityofnewyork.us/api/views/kxp8-n2sj/rows.csv?accessType=DOWNLOAD -O 2020_Yellow_Taxi_Trip_Data.csv
 touch _getfiles_wget_done_
 

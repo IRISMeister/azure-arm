@@ -1,7 +1,13 @@
 import sys
 import pandas
 
-#df = pandas.read_parquet(args[1])
-df = pandas.read_parquet("\\temp\\yellow_tripdata_2010-01.parquet")
-# index=Falseで左端の行番号を非表示にできる
-df.to_csv("\\temp\\yellow_tripdata_2010.csv",index=False)
+# 大元のデータは以下のURLから取得可能。ただしparquet形式。
+# https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page
+# https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2020-01.parquet
+
+if __name__ == '__main__':
+    args = sys.argv
+    #df = pandas.read_parquet("\\temp\\yellow_tripdata_2020-01.parquet")
+    #df.to_csv("\\temp\\yellow_tripdata_2020-01.csv",index=False)
+    df = pandas.read_parquet(args[1])
+    df.to_csv(args[2],index=False)
