@@ -160,6 +160,7 @@ password=sys
 ssport=1972
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
+# ./irisinstall_silent changes it to uppercase? That causes problems...
 ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
@@ -265,9 +266,6 @@ echo "calling systemctl start iris"
 systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
-
-#echo "calling systemctl restart iris" 
-#systemctl restart iris
 
 echo "executing $IRIS_COMMAND_INIT" 
 iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 

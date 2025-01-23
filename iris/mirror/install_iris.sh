@@ -103,12 +103,16 @@ for ((i=0; i < 10; i++)); do
 	sleep 10
 done
 
-sudo systemctl stop apparmor
-DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
+# apt install時のrestartの抑止
+echo "\$nrconf{restart} = 'a';" | tee /etc/needrestart/conf.d/50local.conf
+
+#systemctl stop apparmor
+#DEBIAN_FRONTEND=noninteractive sudo apt remove -y apparmor
 
 if [ "$NODETYPE" == "ARBITER" ];
 then
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping
+  export DEBIAN_FRONTEND=noninteractive 
+  apt -y update && apt -y install net-tools iproute2 iputils-ping
 
   echo "Initializing as Arbiter"
   ARR=(${IRISKIT//-/ })
@@ -136,18 +140,19 @@ then
   #apt-get update -y
   #apt-get install -y openjdk-8-jdk-headless
   ## iris jdbc driver and others
-  #wget "${SECRETURL}/intersystems-jdbc-3.2.0.jar?${SECRETSASTOKEN}" -O intersystems-jdbc-3.2.0.jar
-  #mv *.jar $ADMINHOME
-  #wget ${TEMPLATEBASEURI}/JDBCSample.java
-  #mv *.java $ADMINHOME
+  wget https://github.com/intersystems-community/iris-driver-distribution/blob/main/JDBC/JDK18/intersystems-jdbc-3.9.0.jar  
+  wget ${TEMPLATEBASEURI}/JDBCSample.java
+  mv *.jar $ADMINHOME
+  mv *.java $ADMINHOME
 
-  #chown irismeister:irismeister $ADMINHOME/*
+  chown $ADMINUSER:$ADMINUSER $ADMINHOME/*
 
   # nothing furthor to do for arbiter
   exit 0
 else
-  DEBIAN_FRONTEND=noninteractive sudo apt -y update && sudo apt -y install sudo net-tools iproute2 iputils-ping apache2 curl tcpdump language-pack-ja-base language-pack-ja
-  # fonts-ipafont default-jre
+  # Need java to use LOAD DATA sql command...
+  export DEBIAN_FRONTEND=noninteractive
+  apt -y update && apt -y install apache2 openjdk-8-jre-headless
   echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
   wget ${TEMPLATECMNURI}/iris.service
@@ -183,7 +188,6 @@ password=sys
 ssport=1972
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
-#ISC_PACKAGE_INSTANCENAME=iris
 # ./irisinstall_silent changes it to uppercase? That causes problems...
 ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
@@ -233,7 +237,7 @@ tar -xvf $kit.tar.gz -C $kittemp
 cp Installer.cls $kittemp/$kit/Installer.cls
 chmod 777 $kittemp/$kit/Installer.cls
 pushd $kittemp/$kit
-sudo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME \
+ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME \
 ISC_PACKAGE_IRISGROUP=$ISC_PACKAGE_IRISUSER \
 ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER \
 ISC_PACKAGE_MGRGROUP=$ISC_PACKAGE_MGRUSER \
@@ -264,10 +268,10 @@ fi
 
 cp iris.service /etc/systemd/system/iris.service
 chmod 644 /etc/systemd/system/iris.service
-sudo systemctl daemon-reload
-sudo systemctl enable ISCAgent.service
-sudo systemctl start ISCAgent.service
-sudo systemctl enable iris
+systemctl daemon-reload
+systemctl enable ISCAgent.service
+systemctl start ISCAgent.service
+systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file. "globals" should be adjusted somehow...
@@ -284,15 +288,16 @@ EOS
 
 # merge cpf
 echo "calling systemctl start iris" 
-sudo systemctl start iris
+systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
 echo "executing EnableMirroringService()" 
-sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
+iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
+#sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).EnableMirroringService()"
 
 echo "executing $IRIS_COMMAND_INIT" 
-sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
+iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
 # Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
 #if [ "$NODETYPE" == "SLAVE" ]
@@ -302,7 +307,7 @@ sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_IN
 #fi
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
-sudo -u root -i iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
+iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
 
 }
 
