@@ -188,7 +188,6 @@ password=sys
 ssport=1972
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
-# ./irisinstall_silent changes it to uppercase? That causes problems...
 ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
@@ -308,6 +307,14 @@ iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT"
 
 echo "executing $IRIS_COMMAND_CREATE_DB"
 iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
+# あれば便利かもしれないパッケージの導入
+export DEBIAN_FRONTEND=noninteractive 
+apt -y update 
+apt -y install net-tools iproute2 iputils-ping curl tcpdump sysstat language-pack-ja-base language-pack-ja 
+#apt -y install python3-pip
+#pip install -U irissqlcli
+
+echo "end of install_iris_service" 
 
 }
 

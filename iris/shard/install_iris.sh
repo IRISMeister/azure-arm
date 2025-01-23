@@ -246,7 +246,7 @@ systemctl start ISCAgent.service
 systemctl enable iris
 
 USERHOME=/home/$ISC_PACKAGE_MGRUSER
-# create cpf merge file
+# create cpf merge file. "globals" should be adjusted somehow...
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
 globals=0,0,2048,0,0,0

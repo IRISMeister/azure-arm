@@ -1,0 +1,3 @@
+set rs=##class(%ResultSet).%New("%File:FileSet") d rs.Execute("/home/irisowner","*.sql")
+While(rs.Next()) { Do $SYSTEM.SQL.Schema.ImportDDL(rs.Name) } 
+h
