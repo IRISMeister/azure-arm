@@ -216,11 +216,20 @@ wget ${TEMPLATEBASEURI}/sql/01.sql
 wget ${TEMPLATEBASEURI}/sql/02.sql
 wget ${TEMPLATEBASEURI}/sql/import.cos
 
+wget ${TEMPLATEBASEURI}/loader/getfile2.sh
+chmod +x ./getfile2.sh
+mkdir /var/tmp/data
+wget ${TEMPLATEBASEURI}/loader/pq2csv.py
+
+#pip install pyarrow fastparquet
+echo "calling getfile2sh" 
+./getfile2.sh &
+
 mv *.sql $USERHOME
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
 mv *.cos $USERHOME/
 chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
-
+iris session $ISC_PACKAGE_INSTANCENAME -UMYAPP < import.cos
 
 # あれば便利かもしれないパッケージの導入
 export DEBIAN_FRONTEND=noninteractive 

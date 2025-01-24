@@ -160,7 +160,7 @@ password=sys
 ssport=1972
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
-# ./irisinstall_silent changes it to uppercase? That causes problems...
+# ./irisinstall_silent changes it to uppercase which is somewhat troubling...
 ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
