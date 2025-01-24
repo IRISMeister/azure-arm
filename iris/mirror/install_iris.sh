@@ -298,15 +298,11 @@ iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "##class(Silent.Installer).Enable
 echo "executing $IRIS_COMMAND_INIT" 
 iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_INIT" 
 
-# Without restart, FAILOVER member fails to retrieve (mirror) journal file...and retries forever...
-#if [ "$NODETYPE" == "SLAVE" ]
-#then
-#  sudo systemctl restart iris
-#  sleep 5
-#fi
-
 echo "executing $IRIS_COMMAND_CREATE_DB"
 iris session $ISC_PACKAGE_INSTANCENAME -U\%SYS "$IRIS_COMMAND_CREATE_DB"
+
+# テーブル作成、データ取得などを実行するならここで
+
 # あれば便利かもしれないパッケージの導入
 export DEBIAN_FRONTEND=noninteractive 
 apt -y update 

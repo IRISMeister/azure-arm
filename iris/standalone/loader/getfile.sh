@@ -1,19 +1,14 @@
 #!/bin/bash
 
-# 1年分なので大きい。2.3GBほど。2400万件。
-wget https://data.cityofnewyork.us/api/views/kxp8-n2sj/rows.csv?accessType=DOWNLOAD -O 2020_Yellow_Taxi_Trip_Data.csv
+# pip install pandas pyarrow fastparquet
+# 1月ごとのデータになっている。parquet形式。90MBほど。640万件。
+wget https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2020-01.parquet -O yellow_tripdata_2020-01.parquet
 touch _getfiles_wget_done_
 
-head 2020_Yellow_Taxi_Trip_Data.csv -n 101 > 100.csv
-head 2020_Yellow_Taxi_Trip_Data.csv -n 100001 > 100K.csv
-head 2020_Yellow_Taxi_Trip_Data.csv -n 10000001 > 10M.csv
+python3 pq2csv.py yellow_tripdata_2020-01.parquet yellow_tripdata_2020-01.csv
+touch _getfiles_pq2csv_done_
+
+head yellow_tripdata_2020-01.csv -n 101 > /var/tmp/data/100.csv
+head yellow_tripdata_2020-01.csv -n 100001 > /var/tmp/data/100K.csv
+head yellow_tripdata_2020-01.csv -n 1000001 > /var/tmp/data/1M.csv
 touch _getfiles_head_done_
-
-# need to convert date format into which IRIS can understand(I picked ODBC format for max. safety).
-# can't use panda because input files are kind of dirty. (missing values)
-python3 conv.py 100.csv
-python3 conv.py 100K.csv
-python3 conv.py 10M.csv
-python3 conv.py 2020_Yellow_Taxi_Trip_Data.csv
-
-touch _getfiles_conv_done_

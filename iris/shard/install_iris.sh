@@ -249,7 +249,7 @@ USERHOME=/home/$ISC_PACKAGE_MGRUSER
 # create cpf merge file. "globals" should be adjusted somehow...
 cat << 'EOS' > $USERHOME/merge.cpf
 [config]
-globals=0,0,2048,0,0,0
+globals=0,0,8192,0,0,0
 gmheap=614400
 MaxServerConn=64
 MaxServers=64
@@ -275,10 +275,15 @@ systemctl restart iris
 # prep to create table(s), if any
 if [ "$NODETYPE" == "MASTER-DATA" ];
 then
-  wget ${TEMPLATEBASEURI}/sql/01.sql
-  wget ${TEMPLATEBASEURI}/sql/02.sql
-  wget ${TEMPLATEBASEURI}/sql/03.sql
-  wget ${TEMPLATEBASEURI}/sql/import.cos
+  wget ${TEMPLATEBASEURI}/sql/01.sql -O $USERHOME/01.sql
+  wget ${TEMPLATEBASEURI}/sql/02.sql -O $USERHOME/02.sql
+  wget ${TEMPLATEBASEURI}/sql/03.sql -O $USERHOME/03.sql
+  wget ${TEMPLATEBASEURI}/sql/import.cos -O $USERHOME/import.cos
+  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
+  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
+
+  # will create shard tables. do this, later(after all data member has joined).
+  # iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
 
   wget ${TEMPLATEBASEURI}/loader/getfile.sh
   chmod +x ./getfile.sh
@@ -288,15 +293,6 @@ then
   #pip install pyarrow fastparquet
   echo "calling getfile.sh" 
   ./getfile.sh &
-
-  mv *.sql $USERHOME
-  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
-  mv *.cos $USERHOME/
-  chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
-
-  # do this, later(after all data member has joined).
-  # iris session $ISC_PACKAGE_INSTANCENAME -UIRISDM < import.cos
-
 fi
 
 # あれば便利かもしれないパッケージの導入

@@ -101,6 +101,10 @@ echo "\$nrconf{restart} = 'a';" | tee /etc/needrestart/conf.d/50local.conf
 
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
+
+wget ${TEMPLATEROOTURI}/readme.txt -O $ADMINHOME/readme.txt
+chown $ADMINUSER:$ADMINUSER $ADMINHOME/readme.txt
+
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
 #kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
@@ -212,24 +216,24 @@ systemctl start iris
 echo "merging CPF" 
 ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR iris merge $ISC_PACKAGE_INSTANCENAME $USERHOME/merge.cpf
 
-wget ${TEMPLATEBASEURI}/sql/01.sql
-wget ${TEMPLATEBASEURI}/sql/02.sql
-wget ${TEMPLATEBASEURI}/sql/import.cos
+wget ${TEMPLATEBASEURI}/sql/01.sql -O $USERHOME/01.sql
+wget ${TEMPLATEBASEURI}/sql/02.sql -O $USERHOME/02.sql
+wget ${TEMPLATEBASEURI}/sql/import.cos -O $USERHOME/import.cos
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
+chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
+iris session $ISC_PACKAGE_INSTANCENAME -UMYAPP < $USERHOME/import.cos
 
-wget ${TEMPLATEBASEURI}/loader/getfile2.sh
-chmod +x ./getfile2.sh
+wget ${TEMPLATEBASEURI}/loader/getfile.sh
+chmod +x ./getfile.sh
 mkdir /var/tmp/data
 wget ${TEMPLATEBASEURI}/loader/pq2csv.py
 
-#pip install pyarrow fastparquet
-echo "calling getfile2sh" 
-./getfile2.sh &
+apt -y install python3-pip
+# installing some packages which are needed to convert parquet file to CSV.
+pip install pandas pyarrow fastparquet
 
-mv *.sql $USERHOME
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.sql
-mv *.cos $USERHOME/
-chown $ISC_PACKAGE_MGRUSER:$ISC_PACKAGE_MGRUSER $USERHOME/*.cos
-iris session $ISC_PACKAGE_INSTANCENAME -UMYAPP < import.cos
+echo "calling getfile.sh" 
+./getfile.sh &
 
 # あれば便利かもしれないパッケージの導入
 export DEBIAN_FRONTEND=noninteractive 
