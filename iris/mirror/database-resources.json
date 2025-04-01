@@ -28,7 +28,7 @@
     },
     "IRISKitName": {
         "type": "string",
-        "defaultValue": "IRIS-2024.1.2.398.0-lnxubuntu2204x64",
+        "defaultValue": "IRIS-2025.1.0.223.0-lnxubuntu2204x64",
         "metadata": {
             "description": "Kit name of IRIS."
         }

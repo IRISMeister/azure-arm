@@ -183,7 +183,6 @@ echo IRIS_COMMAND_CREATE_DB=\'$IRIS_COMMAND_CREATE_DB\' >> params.log
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
-#kit=IRIS-2024.1.2.398.0-lnxubuntu2204x64
 password=sys
 ssport=1972
 kittemp=/tmp/iriskit
