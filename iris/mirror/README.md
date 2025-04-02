@@ -170,11 +170,14 @@ Printing out contents of SELECT query:
 ```
 
 ### 可用性ゾーンへの変更
-arbiter-resources.json及びdatabase-resources.jsonを修正することで、可用性ゾーンへのデプロイに変更可能です。
+可用性セットを使用している他と異なり、ミラーは可用性ゾーンを指定してデプロイしています。
+
+具体的にはiris/mirror/arbiter-resources.json及びiris/mirror/database-resources.jsonを修正しています。
+
 1. "properties"の"availabilitySet"を削除
 2. "zones"を追加
 
-変更後のarbiter-resources.jsonの例
+変更後のarbiter-resources.json
 ```
 "dependsOn": [
   "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
@@ -188,3 +191,22 @@ arbiter-resources.json及びdatabase-resources.jsonを修正することで、�
   },
 ```
 
+変更後のdatabase-resources.json
+```
+"dependsOn": [
+  "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('nicName'), copyindex()))]"
+],
+"copy": {
+  "name": "vmCopyLoop",
+  "count": "[variables('vmCount')]"
+},
+"zones": [
+  "[parameters('machineSettings').zone]"
+],
+"properties": {
+  "hardwareProfile": {
+    "vmSize": "[parameters('machineSettings').vmSize]"
+  },
+```
+
+parameters('machineSettings').zoneの値は、iris/mirror/azuredeploy.jsonにて、arbiter は"zone": "1",Primaryは"2", Backup は"3"に設定しています。
