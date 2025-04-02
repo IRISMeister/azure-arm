@@ -105,6 +105,9 @@
         "name": "vmCopyLoop",
         "count": "[variables('vmCount')]"
       },
+      "zones": [
+        "[parameters('machineSettings').zone]"
+      ],
       "properties": {
         "availabilitySet": {
           "id": "[resourceId('Microsoft.Compute/availabilitySets', parameters('machineSettings').availabilitySet)]"
