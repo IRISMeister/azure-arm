@@ -188,7 +188,7 @@ VM名は以下の通りです。
 ### IRISへのログイン
 各VMホストへのSSH後の、IRISセッションへのログインはrootユーザであればO/S認証を使用可能です。
 ```
-irismeister@MyubuntuVM:~$ sudo -u irisowner iris session iris
+irismeister@MyubuntuVM:~$ sudo iris session iris
 Node: MyubuntuVM, Instance: IRIS
 USER>
 ```
