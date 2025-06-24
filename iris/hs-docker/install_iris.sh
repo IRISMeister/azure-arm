@@ -110,8 +110,6 @@ USERHOME=/home/$ADMINUSER
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-kit=IRIS-2023.1.3.517.0-lnxubuntu2204x64 # vanilla IRIS
-#kit=IRISHealth-2023.1.3.517.0-lnxubuntu2204x64
 password=sys
 ssport=1972
 webport=52773
@@ -123,20 +121,20 @@ ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
 
 # download iris binary kit
-kitcv=HealthShare_ClinicalViewer-2021.2.2CV-1000-0-lnxubuntux64 
+kitcv=HealthShare_ClinicalViewer-2025.1.0CV-1007-0-lnxubuntu2004x64 
 wget "${SECRETURL}/${kitcv}.tar.gz?${SECRETSASTOKEN}" -O $kitcv.tar.gz
-kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2021.2.1-1000-0-lnxubuntux64 
+kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2025.1-1006-0-lnxubuntu2004x64 
 wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
-kitwg=WebGateway-2021.1.2.338.0-lnxubuntux64
+kitwg=WebGateway-2024.1.0.267.2-lnxubuntu2004x64
 wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
 #kitdc=HealthShare-Docker 
 #wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
 
 # For upgrade test
-kitnewcv=HealthShare_ClinicalViewer-2023.2.0CV-1006-0-lnxubuntu2004x64
-wget "${SECRETURL}/${kitnewcv}.tar.gz?${SECRETSASTOKEN}" -O $kitnewcv.tar.gz
-kitnewhs=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2023.2-1015-0-lnxubuntu2004x64
-wget "${SECRETURL}/${kitnewhs}.tar.gz?${SECRETSASTOKEN}" -O $kitnewhs.tar.gz
+#kitnewcv=HealthShare_ClinicalViewer-2023.2.0CV-1006-0-lnxubuntu2004x64
+#wget "${SECRETURL}/${kitnewcv}.tar.gz?${SECRETSASTOKEN}" -O $kitnewcv.tar.gz
+#kitnewhs=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2023.2-1015-0-lnxubuntu2004x64
+#wget "${SECRETURL}/${kitnewhs}.tar.gz?${SECRETSASTOKEN}" -O $kitnewhs.tar.gz
 
 # mount user disks and create iris related folders 
 wget ${TEMPLATECMNURI}/container-mount-disks.sh
@@ -165,9 +163,9 @@ mkdir $kittemp
 git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp/HealthShare-Docker
 cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
-cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/
+#cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
-cp $kitnewcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
+#cp $kitnewcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/webgateway/build/
 chown -R ${ADMINUSER}:${ADMINUSER} $kittemp
 
