@@ -68,6 +68,12 @@ Shard構成のデプロイ
     $ ../deploy.sh
     ```
 
+    Windowsの場合は、powershellも使えます。
+    ```
+    powershell ..\deploy.ps1
+    ```
+
+
     下記は、ミラー構成用のazuredeploy.parameters.jsonの編集例です。  
 ```
 $ cd mirror

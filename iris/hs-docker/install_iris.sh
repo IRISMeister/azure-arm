@@ -127,8 +127,6 @@ kiths=HealthShare_UnifiedCareRecord_Insight_PatientIndex-2025.1-1006-0-lnxubuntu
 wget "${SECRETURL}/${kiths}.tar.gz?${SECRETSASTOKEN}" -O $kiths.tar.gz
 kitwg=WebGateway-2024.1.0.267.2-lnxubuntu2004x64
 wget "${SECRETURL}/${kitwg}.tar.gz?${SECRETSASTOKEN}" -O $kitwg.tar.gz
-#kitdc=HealthShare-Docker 
-#wget "${SECRETURL}/${kitdc}.tar.gz?${SECRETSASTOKEN}" -O $kitdc.tar.gz
 
 # For upgrade test
 #kitnewcv=HealthShare_ClinicalViewer-2023.2.0CV-1006-0-lnxubuntu2004x64
@@ -161,10 +159,12 @@ chown ${ADMINUSER}:${ADMINUSER} $USERHOME/.netrc
 mkdir $kittemp
 #tar -xvf $kitdc.tar.gz -C $kittemp
 git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp/HealthShare-Docker
-cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/
-cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/
+git checkout dev20251
+cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/base/
+cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/base/
 #cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/
 cp $kitcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
+cp $kitwg.tar.gz $kittemp/HealthShare-Docker/viewer/build/
 #cp $kitnewcv.tar.gz $kittemp/HealthShare-Docker/viewer/build/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/webgateway/build/
 chown -R ${ADMINUSER}:${ADMINUSER} $kittemp
@@ -172,14 +172,14 @@ chown -R ${ADMINUSER}:${ADMINUSER} $kittemp
 #rm -fR $kittemp
 
 # copy iris.key from secure location...
-wget "${SECRETURL}/iris-hs.key?${SECRETSASTOKEN}" -O $kittemp/HealthShare-Docker/hs/build/iris.key
+wget "${SECRETURL}/iris-hs.key?${SECRETSASTOKEN}" -O $kittemp/HealthShare-Docker/hs/build/target/iris.key
 wget "${SECRETURL}/iris-cv.key?${SECRETSASTOKEN}" -O $kittemp/HealthShare-Docker/viewer/build/iris.key
 
 cd $kittemp/HealthShare-Docker
 
 ./create_cert_keys.sh
 docker login -u="${DOCKERUSER}" -p="${DOCKERTOKEN}"  containers.intersystems.com
-docker compose -f docker-compose-base.yml build hs
+docker compose -f docker-compose-base.yml build
 ./build.sh
 
 exit 0
