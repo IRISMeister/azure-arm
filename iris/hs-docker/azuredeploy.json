@@ -31,7 +31,7 @@
                 "22_04-lts"
             ],
             "metadata": {
-                "description": "The Ubuntu version for the VM. This will pick a fully patched image of this given Ubuntu version."
+                "description": "The Ubuntu version for the VM. imageOffer is 0001-com-ubuntu-server-jammy for 22.04, 0001-com-ubuntu-server-focal for 20.04"
             }
         },
         "location": {
@@ -118,7 +118,7 @@
     },
     "variables": {
         "imagePublisher": "Canonical",
-        "imageOffer": "0001-com-ubuntu-server-jammy",
+        "imageOffer": "0001-com-ubuntu-server-focal",
         "nsgName": "myNSG",
         "nicName": "myVMNic",
         "addressPrefix": "10.0.0.0/16",
