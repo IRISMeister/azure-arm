@@ -159,7 +159,9 @@ chown ${ADMINUSER}:${ADMINUSER} $USERHOME/.netrc
 mkdir $kittemp
 #tar -xvf $kitdc.tar.gz -C $kittemp
 git clone --recursive https://github.com/Intersystems-jp/HealthShare-Docker.git $kittemp/HealthShare-Docker
+pushd $kittemp/HealthShare-Docker/
 git checkout dev20251
+popd
 cp $kiths.tar.gz $kittemp/HealthShare-Docker/hs/build/base/
 cp $kitwg.tar.gz $kittemp/HealthShare-Docker/hs/build/base/
 #cp $kitnewhs.tar.gz $kittemp/HealthShare-Docker/hs/build/
