@@ -140,8 +140,8 @@ chmod +x ./container-mount-disks.sh
 ./container-mount-disks.sh
 
 # change owner so that IRIS can create folders and database files
-chown ${ADMINUSER}:${ADMINUSER} /iris
-chown ${ADMINUSER}:${ADMINUSER} /iris/durable
+#chown ${ADMINUSER}:${ADMINUSER} /iris
+#chown ${ADMINUSER}:${ADMINUSER} /iris/durable
 
 # install docker
 curl -fsSL https://get.docker.com -o get-docker.sh

@@ -300,14 +300,6 @@
                           "managedDisk": {
                             "storageAccountType": "Premium_LRS"
                           }                          
-                        },
-                        {
-                          "diskSizeGB": 1024,
-                          "lun": 1,
-                          "createOption": "Empty",
-                          "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                          }                          
                         }
                       ]
                 },
