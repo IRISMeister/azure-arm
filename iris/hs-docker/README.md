@@ -25,7 +25,7 @@ https://my-irishost-1.japaneast.cloudapp.azure.com/viewer/csp/sys/UtilHome.csp (
 
 > 注意：fedearationを有効化すると、上記URLではログインできなくなる。CLIでfedearationを無効化する方法は不明。
 
-NavAppやCVを使うには、Oauth2認証によるSSOfedearationを有効化する必要がある。
+NavAppやCVを使うには、Oauth2認証によるSSO(fedearation)を有効化する必要がある。
 
 Oauth2各種設定のホスト名がhs.example.orgになっているのでAzureのURLそのままでは動作しない。そこで
 
@@ -52,11 +52,11 @@ https://viewer.example.org/viewer/csp/sys/UtilHome.csp (hayashi/demo)  <= ちゃ
 > 起動後のマニュアル操作で、WGWを変更することも可能らしいが不明。  
 > https://usjira.iscinternal.com/browse/HSIEO-6457
 
-> クライアント証明書によるアクセス制限は保留。これもコンテナベースでは難しい。理由はHealthShare-Docker「クライアント認証」参照。
+2024.1以降、Federationの関係の変更のためと思われるが、クライアント証明書によるアクセス制限が出来なくなった。コンテナベースでなければ可能なのかもしれない。理由はHealthShare-Docker「クライアント認証」参照。
 
-# Option
+# port forwardでHSの管理ポータルに接続する方法
 
-fedearationを有効化する前に、port forwardでHSの管理ポータルに接続する方法
+fedearationを有効化する前であれば、port forwardでHSの管理ポータルに接続できる。VMにPublicIPが無い場合には有益。
 
 > 有効化後はこの方法ではアクセス拒否される
 
