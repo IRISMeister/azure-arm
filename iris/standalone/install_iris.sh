@@ -95,9 +95,9 @@ USERHOME=/home/$ADMINUSER
 # apt install時のrestartの抑止
 echo "\$nrconf{restart} = 'a';" | tee /etc/needrestart/conf.d/50local.conf
 
- export DEBIAN_FRONTEND=noninteractive 
- apt -y update && apt -y install apache2 openjdk-8-jre-headless
- echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
+export DEBIAN_FRONTEND=noninteractive 
+apt -y update && apt -y install apache2 openjdk-8-jre-headless
+echo 'export LANG=ja_JP.UTF-8' >> ~/.bashrc && echo 'export LANGUAGE="ja_JP:ja"' >> ~/.bashrc
 
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
