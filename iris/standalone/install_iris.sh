@@ -42,7 +42,7 @@ tar -xvf WebGateway-${wgwversion}-${platform}.tar.gz
 
 HTTPD_PREFIX=/etc/apache2
 ISC_PACKAGE_INITIAL_SECURITY=Normal
-ISC_PACKAGE_CSPSYSTEM_PASSWORD=sys
+ISC_PACKAGE_CSPSYSTEM_PASSWORD=${IRISPASSWORD}
 CSPGATEWAYDIR=/opt/webgateway
 pushd WebGateway-${wgwversion}-${platform}/install
 ./GatewayInstall quiet
@@ -57,7 +57,7 @@ cp webgateway.conf /opt/webgateway/apache/
 wget ${TEMPLATEROOTURI}/wgw/create-cspini.sh
 cp create-cspini.sh /opt/webgateway/bin
 chmod +x /opt/webgateway/bin/create-cspini.sh
-/opt/webgateway/bin/create-cspini.sh
+PASSWORD=${IRISPASSWORD} /opt/webgateway/bin/create-cspini.sh
 
 wget ${TEMPLATEROOTURI}/wgw/create_cert_keys.sh
 chmod +x create_cert_keys.sh
