@@ -31,5 +31,9 @@
     },
     "gitToken": {
       "value": ""
-    }  }
+    },  
+    "irisPassword": {
+      "value": ""
+    }  
+  }
 }

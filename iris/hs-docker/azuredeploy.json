@@ -113,6 +113,13 @@
             "metadata": {
               "description": ""
             }
+          },
+          "irisPassword": {
+            "type": "securestring",
+            "metadata": {
+              "description": ""
+            },
+            "defaultValue": "sys"
           }
 
     },
@@ -329,7 +336,7 @@
                     "fileUris": [
                         "[uri(parameters('_artifactsLocation'), concat('install_iris.sh', parameters('_artifactsLocationSasToken')))]"
                     ],
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'), ' -D ',variables('singleQuote'),parameters('dockerUsername'),variables('singleQuote'), ' -d ',variables('singleQuote'),parameters('dockerToken'),variables('singleQuote') , ' -G ',variables('singleQuote'),parameters('gitUsername'),variables('singleQuote'), ' -g ',variables('singleQuote'),parameters('gitToken'),variables('singleQuote'))]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'), ' -D ',variables('singleQuote'),parameters('dockerUsername'),variables('singleQuote'), ' -d ',variables('singleQuote'),parameters('dockerToken'),variables('singleQuote') , ' -G ',variables('singleQuote'),parameters('gitUsername'),variables('singleQuote'), ' -g ',variables('singleQuote'),parameters('gitToken'),variables('singleQuote'), ' -p ',variables('singleQuote'),parameters('irisPassword'),variables('singleQuote') )]"
                 }
             }
         }

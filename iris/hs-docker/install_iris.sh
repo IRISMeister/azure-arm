@@ -41,7 +41,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A:D:d:G:g: optname; do
+while getopts :m:s:a:t:L:T:u:A:D:d:G:g:p: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -74,6 +74,9 @@ while getopts :m:s:a:t:L:T:u:A:D:d:G:g: optname; do
     g) GitHub token
       GITTOKEN=${OPTARG}
       ;;
+    p) IRIS Password
+      IRISPASSWORD=${OPTARG}
+      ;;
     h)  #show help
       help
       exit 2
@@ -99,6 +102,7 @@ echo DOCKERUSER=$DOCKERUSER >> params.sh
 echo DOCKERTOKEN=$DOCKERTOKEN >> params.sh
 echo GITUSER=$GITUSER >> params.sh
 echo GITTOKEN=$GITTOKEN >> params.sh
+echo IRISPASSWORD=$IRISPASSWORD >> params.sh
 
 install_iris_service() {
 #!/bin/bash -e
@@ -110,7 +114,7 @@ USERHOME=/home/$ADMINUSER
 wget ${TEMPLATECMNURI}/iris.service
 wget ${TEMPLATEBASEURI}/Installer.cls
 # ++ edit here for optimal settings ++
-password=sys
+password=${IRISPASSWORD}
 ssport=1972
 webport=52773
 kittemp=/home/${ADMINUSER}/kit
