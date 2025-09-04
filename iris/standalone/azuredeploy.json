@@ -92,6 +92,13 @@
             "metadata": {
               "description": "Generated Shared Acccess Signature token to access _secretsLocation"
             }
+          },
+          "irisPassword": {
+            "type": "securestring",
+            "metadata": {
+              "description": ""
+            },
+            "defaultValue": "sys"
           }
     },
     "variables": {
@@ -326,7 +333,7 @@
                     ]
                 },
                 "protectedSettings": {
-                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote') )]"
+                    "commandToExecute": "[concat('bash install_iris.sh -L ',variables('singleQuote'),parameters('_secretsLocation'),variables('singleQuote'),' -T ',variables('singleQuote'),parameters('_secretsLocationSasToken'),variables('singleQuote'),' -u ',variables('singleQuote'),parameters('_artifactsLocation'),variables('singleQuote'),' -A ',variables('singleQuote'),parameters('adminUsername'),variables('singleQuote'),' -I ',variables('singleQuote'),parameters('IRISKitName'),variables('singleQuote'), ' -p ',variables('singleQuote'),parameters('irisPassword'),variables('singleQuote') )]"
                 }
             }
         }

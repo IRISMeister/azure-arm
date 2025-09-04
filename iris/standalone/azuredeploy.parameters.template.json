@@ -22,6 +22,9 @@
     },
     "IRISKitName": {
       "value": "IRIS-2025.1.0.223.0-lnxubuntu2204x64"
-    }
+    },
+    "irisPassword": {
+      "value": ""
+    }  
   }
 }

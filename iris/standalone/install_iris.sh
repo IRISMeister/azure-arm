@@ -107,7 +107,7 @@ chown $ADMINUSER:$ADMINUSER $ADMINHOME/readme.txt
 
 # ++ edit here for optimal settings ++
 kit=$IRISKIT 
-password=sys
+password=${IRISPASSWORD}
 ssport=1972
 kittemp=/tmp/iriskit
 ISC_PACKAGE_INSTALLDIR=/usr/irissys
@@ -116,13 +116,13 @@ ISC_PACKAGE_INSTANCENAME=IRIS
 ISC_PACKAGE_MGRUSER=irisowner
 ISC_PACKAGE_IRISUSER=irisusr
 # -- edit here for optimal settings --
-echo kit=$kit >> params.log
-echo password=$password >> params.log
-echo kittemp=$kittemp >> params.log
-echo ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR >> params.log
-echo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME >> params.log
-echo ISC_PACKAGE_MGRUSER=$ISC_PACKAGE_MGRUSER >> params.log
-echo ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER >> params.log
+echo kit=$kit >> params.sh
+echo password=$password >> params.sh
+echo kittemp=$kittemp >> params.sh
+echo ISC_PACKAGE_INSTALLDIR=$ISC_PACKAGE_INSTALLDIR >> params.sh
+echo ISC_PACKAGE_INSTANCENAME=$ISC_PACKAGE_INSTANCENAME >> params.sh
+echo ISC_PACKAGE_MGRUSER=$ISC_PACKAGE_MGRUSER >> params.sh
+echo ISC_PACKAGE_IRISUSER=$ISC_PACKAGE_IRISUSER >> params.sh
 
 # download iris binary kit
 wget "${SECRETURL}/${kit}.tar.gz?${SECRETSASTOKEN}" -O $kit.tar.gz
@@ -246,7 +246,7 @@ echo "end of install_iris_service"
 }
 
 # MAIN ROUTINE
-if [ ! -f params.log ]; then
+if [ ! -f params.sh ]; then
 # You must be root to run this script
 if [ "${UID}" -ne 0 ];
 then
@@ -266,7 +266,7 @@ SECRETURL=""
 SECRETSASTOKEN=""
 
 #Loop through options passed
-while getopts :m:s:a:t:L:T:u:A:I: optname; do
+while getopts :m:s:a:t:L:T:u:A:I:p: optname; do
     echo "Option $optname set with value ${OPTARG}"
   case $optname in
     m)
@@ -290,6 +290,9 @@ while getopts :m:s:a:t:L:T:u:A:I: optname; do
     I) #IRIS kit name
       IRISKIT=${OPTARG}
       ;;
+    p) IRIS Password
+      IRISPASSWORD=${OPTARG}
+      ;;
     h)  #show help
       help
       exit 2
@@ -303,15 +306,16 @@ while getopts :m:s:a:t:L:T:u:A:I: optname; do
 done
 
 timedatectl set-timezone Asia/Tokyo
-echo "# id=$(id)" >> params.log
-echo NOW=$now >> params.log
-echo MASTERIP=$MASTERIP >> params.log
-echo SUBNETADDRESS=$SUBNETADDRESS >> params.log
-echo SECRETURL=$SECRETURL  >> params.log
-echo SECRETSASTOKEN=\"$SECRETSASTOKEN\"  >> params.log
-echo TEMPLATEURI=$TEMPLATEURI  >> params.log
-echo ADMINUSER=$ADMINUSER >> params.log
-echo IRISKIT=$IRISKIT >> params.log
+echo "# id=$(id)" >> params.sh
+echo NOW=$now >> params.sh
+echo MASTERIP=$MASTERIP >> params.sh
+echo SUBNETADDRESS=$SUBNETADDRESS >> params.sh
+echo SECRETURL=$SECRETURL  >> params.sh
+echo SECRETSASTOKEN=\"$SECRETSASTOKEN\"  >> params.sh
+echo TEMPLATEURI=$TEMPLATEURI  >> params.sh
+echo ADMINUSER=$ADMINUSER >> params.sh
+echo IRISKIT=$IRISKIT >> params.sh
+echo IRISPASSWORD=$IRISPASSWORD >> params.sh
 
 fi
 
