@@ -103,7 +103,9 @@
         "virtualNetworkName": "MyVNET",
         "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
-        "singleQuote": "'"
+        "singleQuote": "'",
+        "openQuote": "'\"",
+        "closeQuote": "\"'"
     },
     "resources": [
         {
@@ -202,18 +204,17 @@
                   }
                 },
                 {
-                  "name": "ssh",
-                  "properties": {
-                    "description": "Allow SSH",
+                    "name": "default-allow-3389",
+                    "properties": {
+                    "priority": 1000,
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "destinationPortRange": "3389",
                     "protocol": "Tcp",
                     "sourcePortRange": "*",
-                    "destinationPortRange": "22",
-                    "sourceAddressPrefix": "Internet",
-                    "destinationAddressPrefix": "*",
-                    "access": "Allow",
-                    "priority": 110,
-                    "direction": "Inbound"
-                  }
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*"
+                    }
                 }
               ]
             }
@@ -255,26 +256,9 @@
                     },
                     "dataDisks": [
                         {
-                          "diskSizeGB": 1024,
+                          "diskSizeGB": 256,
                           "lun": 0,
                           "createOption": "Empty",
-                          "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                          }                          
-                        },
-                        {
-                          "diskSizeGB": 1024,
-                          "lun": 1,
-                          "createOption": "Empty",
-                          "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
-                          }                          
-                        },
-                        {
-                          "diskSizeGB": 1024,
-                          "lun": 2,
-                          "createOption": "Empty",
-                          "caching": "ReadOnly",
                           "managedDisk": {
                             "storageAccountType": "Premium_LRS"
                           }                          
@@ -306,9 +290,8 @@
                 "settings": {
                 "fileUris": [
                     "[uri(parameters('_artifactsLocation'), concat('install.ps1', parameters('_artifactsLocationSasToken')))]"
-
                 ],
-                "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File install.ps1"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', variables('openQuote'), parameters('_secretsLocation'), variables('closeQuote'), ' -IRISKITNAME ', variables('openQuote'), parameters('IRISKitName'), variables('closeQuote'), ' -IRISPASSWORD ', variables('openQuote'), parameters('irisPassword'), variables('closeQuote'))]"
                 }
             }
         }
