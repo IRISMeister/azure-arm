@@ -1,4 +1,4 @@
-Param($SASTOKEN,$SECRETSLOCATION,$KITNAME)
+Param($SASTOKEN,$SECRETSLOCATION,$IRISKITNAME)
 # IISインストール
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
 
@@ -9,5 +9,12 @@ Start-Process -FilePath $chromeInstaller -Args "/silent /install" -Wait
 Remove-Item $chromeInstaller
 
 # IRISキットの取得
-$KITNAME="IRIS-2025.1.1.313.1-win_x64"+".exe"
-wget ${SECRETSLOCATION}/${KITNAME}?${SASTOKEN} -O $KITNAME
+# 余計な'が入るので、削除する。
+$SASTOKEN=$SASTOKEN.Replace("'","")
+$IRISKITNAME=$IRISKITNAME+".exe"
+
+echo "SECRETSLOCATION=${SECRETSLOCATION}" > params.ps1
+echo "SASTOKEN=${SASTOKEN}" >> params.ps1
+echo "IRISKITNAME=${IRISKITNAME}" >> params.ps1
+
+wget ${SECRETSLOCATION}/${IRISKITNAME}?${SASTOKEN} -O $IRISKITNAME
