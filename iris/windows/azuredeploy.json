@@ -291,7 +291,7 @@
                 "fileUris": [
                     "[uri(parameters('_artifactsLocation'), concat('install.ps1', parameters('_artifactsLocationSasToken')))]"
                 ],
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', parameters('_secretsLocation'), ' -IRISKITNAME ', parameters('IRISKitName'), ' -IRISPASSWORD ', parameters('irisPassword'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', parameters('_secretsLocation'), ' -IRISKITNAME ', parameters('IRISKitName'), ' -IRISUSERPASSWORD ', parameters('irisPassword'))]"
                 }
             }
         }
