@@ -253,3 +253,14 @@ rm -fR /iris/journal1/*
 rm -fR /iris/journal2/*
 source params.log
 source install_iris.sh
+
+## Windowsをデプロイする場合
+
+### ファイルのデプロイ先
+
+```
+C:\Packages\Plugins\Microsoft.Compute.CustomScriptExtension\1.10.20\Downloads\0
+
+実行ログ。
+C:\WindowsAzure\Logs\Plugins\Microsoft.Compute.CustomScriptExtension\1.10.20\CustomScriptHandler.log 
+```
