@@ -1,5 +1,7 @@
 Param($SASTOKEN,$SECRETSLOCATION,$IRISKITNAME,$ADMINUSERNAME,$IRISUSERPASSWORD)
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
 # set JST TimeZone
 tzutil /s "Tokyo Standard Time"
 Set-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Value 1
@@ -31,8 +33,22 @@ wget ${SECRETSLOCATION}/${IRISKITNAME}?${SASTOKEN} -O $IRISKITNAME
 wget ${SECRETSLOCATION}/iris.key?${SASTOKEN} -O iris.key
 
 
-# IRISインストール
+# Disk初期化
+# 固定値。動的にするならcloudformation参照。
+$VolumeName="DISK1"
+New-Item -Force -Type File drives.diskpart.txt
+echo "select disk 2"  | out-file -append -encoding UTF8 drives.diskpart.txt 
+echo "online disk noerr"          | out-file -append -encoding UTF8 drives.diskpart.txt
+echo "attributes disk clear readonly"   | out-file -append -encoding UTF8 drives.diskpart.txt
+echo "clean"                            | out-file -append -encoding UTF8 drives.diskpart.txt
+echo "convert gpt"                      | out-file -append -encoding UTF8 drives.diskpart.txt
+echo "create partition primary"         | out-file -append -encoding UTF8 drives.diskpart.txt
+echo "format quick fs=ntfs label=${VolumeName}" | out-file -append -encoding UTF8 drives.diskpart.txt
+$DriveLetter="H"
+echo "assign letter=${DriveLetter}"             | out-file -append -encoding UTF8 drives.diskpart.txt
+diskpart /s .\drives.diskpart.txt > .\diskpart.log
 
+# IRISインストール
 $irisdir="c:\InterSystems\IRIS"
 $irismgr=$irisdir+"\mgr"
 $cur=$PWD.Path
