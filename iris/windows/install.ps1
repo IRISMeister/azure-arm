@@ -38,7 +38,8 @@ $irisjrndir="c:\iris\jrnl\pri"
 $irisjrnaltdir="c:\iris\jrnl\alt"
 $iris=$irisdir+"\bin\iris.exe"
 $irismgr=$irisdir+"\mgr"
+$cur=$PWD.Path
 
-& .\$IRISKITNAME /instance IRIS /qn INSTALLERMANIFESTLOGFILE=C:\temp\silentinstall.log INSTALLDIR=$irisdir INITIALSECURITY=Normal ISCSTARTLAUNCHER=0 IRISUSERPASSWORD=$IRISUSERPASSWORD SUPERSERVERPORT=1972 WEBSERVERPORT=80 
+& .\$IRISKITNAME /instance IRIS /qn INSTALLERMANIFESTLOGFILE=C:\temp\silentinstall.log INSTALLDIR=$irisdir INITIALSECURITY=Normal ISCSTARTLAUNCHER=0 IRISUSERPASSWORD=$IRISUSERPASSWORD SUPERSERVERPORT=1972 WEBSERVERPORT=80 INSTALLERMANIFEST=${cur}\MyInstaller.xml
 
-#INSTALLERMANIFEST=c:\temp\irisdistr\MirrorInstaller.xml INSTALLERMANIFESTPARAMS=ConfigGlobalBuffers=$ConfigGlobalBuffers,DBDir=$irisdbdir,JrnDir=$irisjrndir,JrnAltDir=$irisjrnaltdir
+#INSTALLERMANIFEST=c:\temp\irisdistr\MyInstaller.xml INSTALLERMANIFESTPARAMS=ConfigGlobalBuffers=$ConfigGlobalBuffers,DBDir=$irisdbdir,JrnDir=$irisjrndir,JrnAltDir=$irisjrnaltdir

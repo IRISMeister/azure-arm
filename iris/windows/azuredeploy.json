@@ -289,7 +289,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                 "fileUris": [
-                    "[uri(parameters('_artifactsLocation'), concat('install.ps1', parameters('_artifactsLocationSasToken')))]"
+                    "[uri(parameters('_artifactsLocation'), concat('install.ps1', parameters('_artifactsLocationSasToken')))]",
+                    "[uri(parameters('_artifactsLocation'), concat('MyInstaller.xml', parameters('_artifactsLocationSasToken')))]",
+                    "[uri(parameters('_artifactsLocation'), concat('merge.cpf', parameters('_artifactsLocationSasToken')))]"
                 ],
                 "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', parameters('_secretsLocation'), ' -IRISKITNAME ', parameters('IRISKitName'), ' -IRISUSERPASSWORD ', parameters('irisPassword'))]"
                 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2025.1 (Build 225_1U)" ts="2025-10-10 14:23:29">
+<Class name="MyApp.MyInstaller">
+<Description>
+%Installer Manifest MyApp.MyInstaller</Description>
+<IncludeCode>%occInclude</IncludeCode>
+<TimeChanged>67488,51726.1354506</TimeChanged>
+<TimeCreated>67488,51457.6215545</TimeCreated>
+
+<XData name="MyManifest">
+<Description>
+マニフェスト定義.</Description>
+<XMLNamespace>INSTALLER</XMLNamespace>
+<Data><![CDATA[
+<Manifest>
+<SystemSetting Name="Config.SQL.SaveMAC"  Value="1"/>      
+<Namespace Name="%SYS">
+<Invoke Class="MyApp.MyInstaller" Method="Init" CheckStatus="1"/>
+</Namespace>
+</Manifest>
+]]></Data>
+</XData>
+
+<Method name="Init">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    do ##class(Security.Users).UnExpireUserPasswords("*")
+    do ##class(Security.System).Get(,.p)
+    set p("AutheEnabled")=$zb(p("AutheEnabled"),16,7)
+    set sc = ##class(Security.System).Modify(,.p)
+    quit sc
+]]></Implementation>
+</Method>
+
+<Method name="setup">
+<Description>
+これは XGL により生成されたメソッド・ジェネレーターです。.</Description>
+<Internal>1</Internal>
+<ClassMethod>1</ClassMethod>
+<CodeMode>objectgenerator</CodeMode>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%Integer=3,pInstaller:%Installer.Installer,pLogger:%Installer.AbstractLogger]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+ #; XGL ドキュメントでこのメソッドのコードを生成する.
+ Quit ##class(%Installer.Manifest).%Generate(%compiledclass, %code, "MyManifest")
+]]></Implementation>
+</Method>
+</Class>
+</Export>
