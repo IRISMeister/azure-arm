@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "VmSize": {
-      "value": "" // // TODO: VMSIZE here
+      "value": "Standard_D4s_v3" // TODO: VMSIZE here
     },
     "adminUsername": {
-      "value": "GEN-UNIQUE"
+      "value": "" // TODO: Fill in parameter value
     },
-    "adminPublicKey": {
-      "value": "GEN-SSH-PUB-KEY"
+    "adminPassword": {
+      "value": ""  // TODO: Fill in parameter value
     },
     "domainName": {
       "value": "GEN-UNIQUE"
@@ -24,7 +24,7 @@
       "value": "IRIS-2025.1.1.313.1-win_x64"
     },
     "irisPassword": {
-      "value": ""
+      "value": ""  // TODO: Fill in parameter value
     }  
   }
 }

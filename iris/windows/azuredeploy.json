@@ -99,7 +99,7 @@
         "subnetPrefix": "10.0.0.0/24",
         "publicIPAddressName": "myPublicIP",
         "publicIPAddressType": "Static",
-        "vmName": "MyubuntuVM",
+        "vmName": "MyWindowsVM",
         "virtualNetworkName": "MyVNET",
         "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]",
         "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetName'))]",
@@ -293,7 +293,7 @@
                     "[uri(parameters('_artifactsLocation'), concat('MyInstaller.xml', parameters('_artifactsLocationSasToken')))]",
                     "[uri(parameters('_artifactsLocation'), concat('merge.cpf', parameters('_artifactsLocationSasToken')))]"
                 ],
-                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', parameters('_secretsLocation'), ' -IRISKITNAME ', parameters('IRISKitName'), ' -IRISUSERPASSWORD ', parameters('irisPassword'))]"
+                "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File install.ps1 -SASTOKEN ',variables('openQuote'), parameters('_secretsLocationSasToken'), variables('closeQuote'), ' -SECRETSLOCATION ', parameters('_secretsLocation'), ' -IRISKITNAME ', parameters('IRISKitName'), ' -ADMINUSERNAME ', parameters('adminUsername'), ' -IRISUSERPASSWORD ', parameters('irisPassword'))]"
                 }
             }
         }

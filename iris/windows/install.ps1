@@ -1,4 +1,4 @@
-Param($SASTOKEN,$SECRETSLOCATION,$IRISKITNAME,$IRISUSERPASSWORD)
+Param($SASTOKEN,$SECRETSLOCATION,$IRISKITNAME,$ADMINUSERNAME,$IRISUSERPASSWORD)
 
 # set JST TimeZone
 tzutil /s "Tokyo Standard Time"
@@ -28,18 +28,18 @@ echo "IRISKITNAME=${IRISKITNAME}" >> params.ps1
 echo "IRISUSERPASSWORD=${IRISUSERPASSWORD}" >> params.ps1
 
 wget ${SECRETSLOCATION}/${IRISKITNAME}?${SASTOKEN} -O $IRISKITNAME
+wget ${SECRETSLOCATION}/iris.key?${SASTOKEN} -O iris.key
+
 
 # IRISインストール
 
 $irisdir="c:\InterSystems\IRIS"
-$irissvcname="IRIS_c-_intersystems_iris"
-$irisdbdir="c:\InterSystems\db\"
-$irisjrndir="c:\iris\jrnl\pri"
-$irisjrnaltdir="c:\iris\jrnl\alt"
-$iris=$irisdir+"\bin\iris.exe"
 $irismgr=$irisdir+"\mgr"
 $cur=$PWD.Path
 
-& .\$IRISKITNAME /instance IRIS /qn INSTALLERMANIFESTLOGFILE=C:\temp\silentinstall.log INSTALLDIR=$irisdir INITIALSECURITY=Normal ISCSTARTLAUNCHER=0 IRISUSERPASSWORD=$IRISUSERPASSWORD SUPERSERVERPORT=1972 WEBSERVERPORT=80 INSTALLERMANIFEST=${cur}\MyInstaller.xml
+mkdir $irismgr
+Copy-Item -Path .\iris.key -Destination $irismgr
 
-#INSTALLERMANIFEST=c:\temp\irisdistr\MyInstaller.xml INSTALLERMANIFESTPARAMS=ConfigGlobalBuffers=$ConfigGlobalBuffers,DBDir=$irisdbdir,JrnDir=$irisjrndir,JrnAltDir=$irisjrnaltdir
+& .\$IRISKITNAME /instance IRIS /qn INSTALLERMANIFESTLOGFILE=C:\temp\silentinstall.log INSTALLDIR=$irisdir INITIALSECURITY=Normal ISCSTARTLAUNCHER=0 IRISUSERPASSWORD=$IRISUSERPASSWORD SUPERSERVERPORT=1972 WEBSERVERPORT=80 INSTALLERMANIFEST=${cur}\MyInstaller.xml INSTALLERMANIFESTPARAMS=ADMINUSERNAME=$ADMINUSERNAME
+
+# \InterSystems\IRIS\bin\iris.exe merge iris C:\Packages\Plugins\Microsoft.Compute.CustomScriptExtension\1.10.20\Downloads\0\merge.cpf

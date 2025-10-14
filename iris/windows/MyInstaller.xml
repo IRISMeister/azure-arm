@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2025.1 (Build 225_1U)" ts="2025-10-10 14:23:29">
+<Export generator="IRIS" version="26" zv="IRIS for Windows (x86-64) 2025.1 (Build 225_1U)" ts="2025-10-14 13:54:01">
 <Class name="MyApp.MyInstaller">
 <Description>
 %Installer Manifest MyApp.MyInstaller</Description>
 <IncludeCode>%occInclude</IncludeCode>
-<TimeChanged>67488,51726.1354506</TimeChanged>
+<TimeChanged>67492,50011.1152876</TimeChanged>
 <TimeCreated>67488,51457.6215545</TimeCreated>
 
 <XData name="MyManifest">
@@ -15,7 +15,9 @@
 <Manifest>
 <SystemSetting Name="Config.SQL.SaveMAC"  Value="1"/>      
 <Namespace Name="%SYS">
-<Invoke Class="MyApp.MyInstaller" Method="Init" CheckStatus="1"/>
+<Invoke Class="MyApp.MyInstaller" Method="Init" CheckStatus="1">
+<Arg Value="${ADMINUSERNAME}" />
+</Invoke>
 </Namespace>
 </Manifest>
 ]]></Data>
@@ -23,11 +25,15 @@
 
 <Method name="Init">
 <ClassMethod>1</ClassMethod>
+<FormalSpec>adminuser=""</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
     do ##class(Security.Users).UnExpireUserPasswords("*")
+    If (adminuser'="") {
+	    do ##class(Security.Users).Copy("SYSTEM",adminuser)
+    }
     do ##class(Security.System).Get(,.p)
-    set p("AutheEnabled")=$zb(p("AutheEnabled"),16,7)
+    set p("AutheEnabled")=$zb(p("AutheEnabled"),16,7) ; enable O/S
     set sc = ##class(Security.System).Modify(,.p)
     quit sc
 ]]></Implementation>
